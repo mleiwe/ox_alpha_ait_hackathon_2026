@@ -1,0 +1,21 @@
+{
+  "cli_path": "compliance/compliance-check",
+  "kb": {
+    "corpus": "data/eu-ai-act",
+    "articles": "data/eu-ai-act/articles",
+    "note": "Populated by PR #1 (ml_eu-ai-act-markdown). Until it merges, article retrieval in --llm mode is best-effort and citations come from rules.json only."
+  },
+  "ledger": ".compliance/ledger.jsonl",
+  "reports_dir": ".compliance",
+  "llm_command": "",
+  "llm_timeout_s": 120,
+  "debounce_ms": 30000,
+  "stage_globs": {
+    "planning": ["**/prd.md", "docs/requirements/**", "**/requirements/**", "**/PRD*.md"],
+    "implementation": ["src/**", "prompts/**", "**/agent/**", "lib/**"],
+    "ci": [".github/**"],
+    "release": ["RELEASE.md", "dist/**", "release/**"]
+  },
+  "stage_first_match_wins": true,
+  "default_stage": "other"
+}
