@@ -269,6 +269,29 @@ def short_verdict(path: str, stage: str, findings: list[dict], report_path: str 
     return "\n".join(out)[:600]
 
 
+def cmd_override(args, cfg, rules) -> int:
+    """Record the user's explicit override decision for a flagged write.
+
+    The gate refuses a violating write; if the USER chooses to proceed anyway,
+    the agent calls this tool (never the other way round). The override is a
+    ledger record with the user's decision, not a bypass of the scan."""
+    ledger_append(cfg, {
+        "ts": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "session": args.session or "",
+        "stage": args.stage or "",
+        "file": args.file or "",
+        "mode": "override",
+        "exit": EXIT_BLOCK,
+        "rules": [],
+        "citations": [],
+        "verdict": f"user_override_{args.decision}",
+        "latency_ms": 0,
+    })
+    print(f"Recorded: user chose to {args.decision} the flagged write to {args.file}. "
+          f"This decision is in the ledger.")
+    return EXIT_CLEAN
+
+
 def read_content(args) -> str:
     if args.content is not None:
         return args.content
@@ -483,6 +506,8 @@ def main():
     ap.add_argument("--base")
     ap.add_argument("--files", help="comma-separated file list for --scan (testing/CI override)")
     ap.add_argument("--tail", type=int, default=20)
+    ap.add_argument("--decision", help="override decision: proceed|abandon (compliance_override tool)")
+    ap.add_argument("--stage", help="lifecycle stage of the flagged write (for --decision)")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
     cfg, rules = load_config(), load_rules()
@@ -496,6 +521,8 @@ def main():
         sys.exit(cmd_scan(args, cfg, rules))
     if args.ledger_flag:
         sys.exit(cmd_ledger(args, cfg, rules))
+    if args.decision:
+        sys.exit(cmd_override(args, cfg, rules))
     ap.print_help()
 
 

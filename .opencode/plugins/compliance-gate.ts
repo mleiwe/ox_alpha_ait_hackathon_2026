@@ -37,7 +37,9 @@ function loadConfig(directory: string): any {
 }
 
 // Repo has its own CLI copy; a bare workspace uses the global install.
-const cliPath = (cfg: any) => (cfg._source === "global" ? CLI_FALLBACK : CLI)
+// The repo CLI is resolved against the repo root, never the shell cwd: the
+// plugin's $ may run from another directory, and a relative path makes python
+// exit 2 with empty output, which the gate misreads as a compliance block.
 
 function stageOf(relPath: string, cfg: any): string {
   const p = relPath.toLowerCase()
@@ -57,6 +59,7 @@ export const ComplianceGate: Plugin = async ({ client, $, directory, worktree })
   if (!cfg) return {} // no config in this worktree: middleware off
 
   const root = worktree || directory
+  const cliPath = (cfg: any) => (cfg._source === "global" ? CLI_FALLBACK : join(root, CLI))
   const lastReview = new Map<string, number>()
   const rel = (p: string) => (isAbsolute(p) ? relative(root, p) : p)
   const resolve = (p: string) => (isAbsolute(p) ? p : join(root, p))
@@ -79,7 +82,9 @@ export const ComplianceGate: Plugin = async ({ client, $, directory, worktree })
   }
 
   return {
-    // ── 1. Gate: synchronous Tier 1 on product-surface writes. Exit 2 aborts the call. ──
+    // ── 1. Gate: Tier 1 on product-surface writes. Raise a flag to the user ──
+    // (toast + permission prompt), never a silent failed tool result the model
+    // can iterate around. Warn → allow with warning; Block → user decides.
     "tool.execute.before": async (input, output) => {
       if (!GATED_TOOLS.includes(input.tool)) return
       const p = output.args?.filePath ?? output.args?.path ?? output.args?.file
@@ -91,13 +96,26 @@ export const ComplianceGate: Plugin = async ({ client, $, directory, worktree })
       const cmd = [cli, "--fast", "--file", resolve(p), "--session", input.sessionID]
       if (content !== null) cmd.push("--content", content)
       const proc = await $`python3 ${cmd}`.quiet().nothrow()
+      if (proc.exitCode === 0) return
+      const verdict = proc.text().trim()
+      // Flag the non-compliance to the user: what it is, which articles, the report.
+      client.tui.showToast({
+        message: `⚖ Compliance flag (${stage}): ${verdict.slice(0, 300)}`,
+        variant: proc.exitCode === 2 ? "error" : "warning",
+      })
       if (proc.exitCode === 2) {
-        // The thrown error becomes the failed tool result the model sees.
         throw new Error(
-          `COMPLIANCE_BLOCKED — write refused by compliance middleware\n${proc.text().trim()}`,
+          `COMPLIANCE_BLOCKED — the write was refused by the compliance middleware.\n` +
+          `${verdict}\n` +
+          `STOP iterating: do not retry this write, do not rephrase the same content, ` +
+          `and do not write via bash. Instead, tell the user exactly what was flagged ` +
+          `(the rule, the article citation, and the report path above) and ask them to choose:\n` +
+          `  (a) fix the flagged lines and rewrite, or\n` +
+          `  (b) record an explicit user override via the compliance_override tool.\n` +
+          `Only call compliance_override if the user explicitly chooses to proceed.`,
         )
       }
-      // exit 1 (warn): do not block; the background Tier 2 review toasts findings.
+      // exit 1 (warn): allow the write; the flag is raised and Tier 2 review follows.
     },
 
     // ── 2. Ambient channel: Tier 2 after edits (debounced), session summary on idle. ──
@@ -139,6 +157,24 @@ export const ComplianceGate: Plugin = async ({ client, $, directory, worktree })
           const proc = await $`python3 ${[cliPath(cfg), "--llm", "--file", resolve(args.path)]}`
             .quiet().nothrow()
           return proc.text() || `compliance-check exit ${proc.exitCode}`
+        },
+      }),
+      compliance_override: tool({
+        description:
+          "Record the USER's explicit decision on a compliance-blocked write. " +
+          "Call ONLY when the user, having seen the compliance flag, chooses to proceed anyway. " +
+          "The decision is logged to the compliance ledger; this is not a bypass of the scan.",
+        args: {
+          path: tool.schema.string().describe("File the flagged write targeted"),
+          decision: tool.schema.enum(["proceed", "abandon"]).describe("User's decision"),
+        },
+        async execute(args) {
+          const proc = await $`python3 ${[
+            cliPath(cfg), "--decision", args.decision,
+            "--file", resolve(args.path), "--stage", stageOf(rel(args.path), cfg),
+            "--session", "",
+          ]}`.quiet().nothrow()
+          return proc.text() || `override recorded (exit ${proc.exitCode})`
         },
       }),
     },
