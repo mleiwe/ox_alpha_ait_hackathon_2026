@@ -163,26 +163,29 @@ def static_charts(g, out_dir: Path) -> None:
 
 
 def heatmap_chart(g, out_dir: Path, level: str = "article") -> None:
-    """Interaction heatmap: unit × unit REFERENCES matrix, grouped by
+    """Interaction heatmap: unit × unit interaction matrix, grouped by
     hierarchical clustering with dendrograms on both axes.
 
-    Dendrograms show the cluster hierarchy (which units cite alike) alongside
-    the collated matrix — block structure emerges from the clustering order.
+    Cells count ALL semantic interactions between two units (direct
+    REFERENCES + clause-level USES_DEFINITION/INTERPRETS aggregated to
+    unit level), so cell intensity spans 0..6+ rather than binary.
+
+    Dendrograms show the cluster hierarchy (which units interact alike)
+    alongside the collated matrix.
     """
     import numpy as np
     from scipy.cluster.hierarchy import dendrogram, linkage
-    from scipy.spatial.distance import pdist
 
     if level == "article":
         unit_ids = sorted(n.id for n in g.nodes.values() if n.type in ("Article", "Annex"))
-        title = "Article ↔ Annex citation interactions"
+        title = "Article ↔ Annex interactions (all semantic edges)"
         fname = "heatmap-articles.png"
     else:
         # Clause-level: paragraphs + points (top N by interaction count)
         unit_ids = sorted(
             n.id for n in g.nodes.values() if n.type in ("Paragraph", "Point", "SubPoint")
         )
-        title = "Clause-level citation interactions (paragraphs/points)"
+        title = "Clause-level interactions (paragraphs/points)"
         fname = "heatmap-clauses.png"
 
     index = {nid: i for i, nid in enumerate(unit_ids)}
@@ -190,12 +193,20 @@ def heatmap_chart(g, out_dir: Path, level: str = "article") -> None:
     if n < 5:
         return
 
+    # Aggregate ALL semantic edges to unit level. USES_DEFINITION and
+    # clause-level REFERENCES live on sub-units (article-6.1.a) — roll them
+    # up to their root unit so the matrix reflects total interaction strength.
+    SEMANTIC_KINDS = ("REFERENCES", "USES_DEFINITION", "INTERPRETS", "CLASSIFIES_AS")
     mat = np.zeros((n, n))
     for e in g.edges:
-        if e.kind != "REFERENCES":
+        if e.kind not in SEMANTIC_KINDS:
             continue
-        if e.src in index and e.dst in index:
-            mat[index[e.src], index[e.dst]] += 1
+        src_root = e.src.split(".")[0]
+        dst_root = e.dst.split(".")[0]
+        if src_root == dst_root:
+            continue  # skip self-interactions within a unit
+        if src_root in index and dst_root in index:
+            mat[index[src_root], index[dst_root]] += 1
 
     # Clause-level matrix is huge — keep only units with >=1 interaction
     if level != "article":
