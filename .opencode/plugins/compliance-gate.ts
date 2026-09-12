@@ -14,6 +14,7 @@ import { tool } from "@opencode-ai/plugin"
 import { readFileSync } from "node:fs"
 import { join, isAbsolute, relative } from "node:path"
 
+const CLI_FALLBACK = join(process.env.HOME || "~", ".config/compliance/compliance-check")
 const CLI = "compliance/compliance-check"
 const GATED_TOOLS = ["write", "edit", "patch"]
 const GATED_STAGES = new Set(["planning", "implementation"])
@@ -21,11 +22,22 @@ const DEBOUNCE_MS = 30_000
 
 function loadConfig(directory: string): any {
   try {
-    return JSON.parse(readFileSync(join(directory, "compliance/config.json"), "utf-8"))
+    const cfg = JSON.parse(readFileSync(join(directory, "compliance/config.json"), "utf-8"))
+    return { ...cfg, _source: "repo" }
   } catch {
-    return null
+    // not a compliance repo: fall back to the global install so any
+    // workspace gets the middleware
+    try {
+      const cfg = JSON.parse(readFileSync(CLI_FALLBACK.replace("compliance-check", "config.json"), "utf-8"))
+      return { ...cfg, _source: "global" }
+    } catch {
+      return null
+    }
   }
 }
+
+// Repo has its own CLI copy; a bare workspace uses the global install.
+const cliPath = (cfg: any) => (cfg._source === "global" ? CLI_FALLBACK : CLI)
 
 function stageOf(relPath: string, cfg: any): string {
   const p = relPath.toLowerCase()
@@ -75,7 +87,8 @@ export const ComplianceGate: Plugin = async ({ client, $, directory, worktree })
       const stage = stageOf(rel(p), cfg)
       if (!GATED_STAGES.has(stage)) return // README/tests/business code pass untouched
       const content = candidateContent(output.args)
-      const cmd = [CLI, "--fast", "--file", resolve(p), "--session", input.sessionID]
+      const cli = cliPath(cfg)
+      const cmd = [cli, "--fast", "--file", resolve(p), "--session", input.sessionID]
       if (content !== null) cmd.push("--content", content)
       const proc = await $`python3 ${cmd}`.quiet().nothrow()
       if (proc.exitCode === 2) {
@@ -97,7 +110,7 @@ export const ComplianceGate: Plugin = async ({ client, $, directory, worktree })
         const last = lastReview.get(file) ?? 0
         if (Date.now() - last < DEBOUNCE_MS) return
         lastReview.set(file, Date.now())
-        $`python3 ${[CLI, "--llm", "--file", resolve(file)]}`.quiet().nothrow().then((proc: any) => {
+        $`python3 ${[cliPath(cfg), "--llm", "--file", resolve(file)]}`.quiet().nothrow().then((proc: any) => {
           const out = proc.text().trim()
           if (proc.exitCode !== 0 && out) {
             client.tui.showToast({ message: `⚖ ${out.slice(0, 400)}`, variant: "warning" })
@@ -107,7 +120,7 @@ export const ComplianceGate: Plugin = async ({ client, $, directory, worktree })
       if (event.type === "session.idle") {
         const sid = (event.properties as any).sessionID as string
         if (!sid) return
-        const proc = await $`python3 ${[CLI, "--report", "--session", sid]}`.quiet().nothrow()
+        const proc = await $`python3 ${[cliPath(cfg), "--report", "--session", sid]}`.quiet().nothrow()
         const out = proc.text().trim()
         if (out && !out.startsWith("No ")) {
           client.tui.showToast({ message: `⚖ ${out.slice(0, 400)}`, variant: "info" })
@@ -123,7 +136,7 @@ export const ComplianceGate: Plugin = async ({ client, $, directory, worktree })
           "Returns a verdict with article citations. Use before committing PRDs or product AI-surface code.",
         args: { path: tool.schema.string().describe("File to review") },
         async execute(args) {
-          const proc = await $`python3 ${[CLI, "--llm", "--file", resolve(args.path)]}`
+          const proc = await $`python3 ${[cliPath(cfg), "--llm", "--file", resolve(args.path)]}`
             .quiet().nothrow()
           return proc.text() || `compliance-check exit ${proc.exitCode}`
         },

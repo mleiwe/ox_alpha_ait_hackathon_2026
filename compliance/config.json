@@ -19,7 +19,7 @@
   "llm_timeout_s": 240,
   "debounce_ms": 30000,
   "stage_globs": {
-    "planning": ["**/prd.md", "docs/requirements/**", "**/requirements/**", "**/PRD*.md"],
+    "planning": ["**/prd.md", "docs/requirements/**", "**/requirements/**", "**/PRD*.md", "**/plan.md", "**/plan-*.md", "**/PLAN*.md"],
     "implementation": ["src/**", "prompts/**", "**/agent/**", "lib/**"],
     "documentation": ["**/README.md", "docs/**", "**/modelcard*.md", "**/model-card*.md"],
     "ci": [".github/**"],

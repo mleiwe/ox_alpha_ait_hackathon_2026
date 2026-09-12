@@ -32,10 +32,13 @@ from pathlib import Path
 EXIT_CLEAN, EXIT_WARN, EXIT_BLOCK = 0, 1, 2
 
 REPO_ROOT = Path(subprocess.run(
-    ["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True
-).stdout.strip() or Path(__file__).resolve().parent.parent)
+    ["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, cwd=os.getcwd()
+).stdout.strip() or os.getcwd())
 
 CFG_PATH = REPO_ROOT / "compliance" / "config.json"
+if not CFG_PATH.exists():
+    # global install: config sits next to the script (in compliance/, not under a repo root)
+    CFG_PATH = Path(__file__).resolve().parent / "config.json"
 
 
 def load_config():
@@ -67,7 +70,10 @@ def stage_for(path: str, cfg: dict) -> str:
 
 
 def load_rules():
-    return json.loads((REPO_ROOT / "compliance" / "rules.json").read_text(encoding="utf-8"))["rules"]
+    rules_path = REPO_ROOT / "compliance" / "rules.json"
+    if not rules_path.exists():
+        rules_path = Path(__file__).resolve().parent / "rules.json"
+    return json.loads(rules_path.read_text(encoding="utf-8"))["rules"]
 
 
 def rule_applies_to_stage(rule: dict, stage: str) -> bool:
