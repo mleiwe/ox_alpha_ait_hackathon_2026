@@ -1,0 +1,15 @@
+---
+id: article-103
+type: article
+celex: 02024R1689-20260727
+source_url: http://publications.europa.eu/resource/celex/02024R1689-20260727
+retrieved: 2026-09-12
+attribution: "© European Union, http://eur-lex.europa.eu"
+---
+Article 103
+
+Amendment to Regulation (EU) No 167/2013
+
+In Article 17(5) of Regulation (EU) No 167/2013, the following subparagraph is added:
+
+‘When adopting delegated acts pursuant to the first subparagraph concerning artificial intelligence systems which are safety components within the meaning of Regulation (EU) 2024/1689 of the European Parliament and of the Council ( *2 ), the requirements set out in Chapter III, Section 2, of that Regulation shall be taken into account.

@@ -1,0 +1,17 @@
+---
+id: article-84
+type: article
+celex: 02024R1689-20260727
+source_url: http://publications.europa.eu/resource/celex/02024R1689-20260727
+retrieved: 2026-09-12
+attribution: "© European Union, http://eur-lex.europa.eu"
+---
+Article 84
+
+Union AI testing support structures
+
+**1\.**
+The Commission shall designate one or more Union AI testing support structures to perform the tasks listed under Article 21(6) of Regulation (EU) 2019/1020 in the area of AI.
+
+**2\.**
+Without prejudice to the tasks referred to in paragraph 1, Union AI testing support structures shall also provide independent technical or scientific advice at the request of the Board, the Commission, or of market surveillance authorities.

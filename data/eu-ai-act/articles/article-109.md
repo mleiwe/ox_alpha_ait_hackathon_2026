@@ -1,0 +1,17 @@
+---
+id: article-109
+type: article
+celex: 02024R1689-20260727
+source_url: http://publications.europa.eu/resource/celex/02024R1689-20260727
+retrieved: 2026-09-12
+attribution: "© European Union, http://eur-lex.europa.eu"
+---
+Article 109
+
+Amendment to Regulation (EU) 2019/2144
+
+In Article 11 of Regulation (EU) 2019/2144, the following paragraph is added:
+
+‘3. 
+
+When adopting the implementing acts pursuant to paragraph 2, concerning artificial intelligence systems which are safety components within the meaning of Regulation (EU) 2024/1689 of the European Parliament and of the Council ( *8 ), the requirements set out in Chapter III, Section 2, of that Regulation shall be taken into account.

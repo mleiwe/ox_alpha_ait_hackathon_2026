@@ -1,0 +1,15 @@
+---
+id: article-102
+type: article
+celex: 02024R1689-20260727
+source_url: http://publications.europa.eu/resource/celex/02024R1689-20260727
+retrieved: 2026-09-12
+attribution: "© European Union, http://eur-lex.europa.eu"
+---
+Article 102
+
+Amendment to Regulation (EC) No 300/2008
+
+In Article 4(3) of Regulation (EC) No 300/2008, the following subparagraph is added:
+
+‘When adopting detailed measures related to technical specifications and procedures for approval and use of security equipment concerning Artificial Intelligence systems within the meaning of Regulation (EU) 2024/1689 of the European Parliament and of the Council ( *1 ), the requirements set out in Chapter III, Section 2, of that Regulation shall be taken into account.

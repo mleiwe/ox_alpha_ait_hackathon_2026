@@ -1,0 +1,46 @@
+name: Update EU AI Act corpus
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: uv sync --frozen
+
+      - name: Fetch and parse EUR-Lex
+        run: uv run python scripts/update_sources.py
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if [[ -n "$(git status --porcelain data/eu-ai-act)" ]]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open update PR
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: chore/eur-lex-update
+          title: "chore: EUR-Lex consolidated AI Act update"
+          body: |
+            Automated update of the EU AI Act markdown corpus from
+            [EUR-Lex consolidated text](https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng).
+
+            Review the diff for amended articles/recitals/annexes before merging.
+          commit-message: "chore: refresh EU AI Act corpus from EUR-Lex"
