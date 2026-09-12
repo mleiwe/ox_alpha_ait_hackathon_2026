@@ -8,7 +8,7 @@
       "severity": "block",
       "title": "Social scoring of people with detrimental treatment",
       "citations": ["Art. 5(1)(c)"],
-      "stage": ["planning", "implementation"],
+      "stage": ["planning", "implementation", "documentation"],
       "patterns": [
         {"all": ["scor(e|ing|es)", "access", "restrict|suspend|ban|limit|deny|revoke"]},
         {"all": ["scor(e|ing|es)", "reliability|trustworthiness|creditworthiness", "account|user|person|applicant"]},
@@ -22,7 +22,7 @@
       "severity": "block",
       "title": "Emotion recognition in workplace or education",
       "citations": ["Art. 5(1)(f)"],
-      "stage": ["planning", "implementation"],
+      "stage": ["planning", "implementation", "documentation"],
       "patterns": [
         {"all": ["emotion", "workplace|workplace-related|employee|staff|office|employer"]},
         {"all": ["emotion", "education|student|school|classroom|exam"]},
@@ -35,7 +35,7 @@
       "severity": "block",
       "title": "Untargeted scraping of facial images for facial recognition databases",
       "citations": ["Art. 5(1)(e)"],
-      "stage": ["planning", "implementation"],
+      "stage": ["planning", "implementation", "documentation"],
       "patterns": [
         {"all": ["scrape|scraping|crawl|crawling|harvest|harvesting|collect", "facial image|face image|face image(s)?|faces from", "database|recognition"]}
       ]
@@ -46,7 +46,7 @@
       "severity": "warn",
       "title": "Manipulative-technique pattern (guaranteed results + urgency pressure)",
       "citations": ["Art. 5(1)(a)", "Art. 5(1)(b)"],
-      "stage": ["planning", "implementation"],
+      "stage": ["planning", "implementation", "documentation"],
       "patterns": [
         {"all": ["guarantee(d|s)?|cannot fail|risk.?free|100% (success|accuracy)", "result(s)?|outcome(s)?|accuracy"]},
         {"all": ["act now|act immediately|limited time|last chance|don.?t miss", "purchase|buy|subscribe|sign up|convert"]}

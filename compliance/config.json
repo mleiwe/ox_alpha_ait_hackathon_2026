@@ -13,6 +13,7 @@
   "stage_globs": {
     "planning": ["**/prd.md", "docs/requirements/**", "**/requirements/**", "**/PRD*.md"],
     "implementation": ["src/**", "prompts/**", "**/agent/**", "lib/**"],
+    "documentation": ["**/README.md", "docs/**", "**/modelcard*.md", "**/model-card*.md"],
     "ci": [".github/**"],
     "release": ["RELEASE.md", "dist/**", "release/**"]
   },

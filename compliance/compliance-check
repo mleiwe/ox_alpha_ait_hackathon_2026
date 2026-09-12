@@ -46,13 +46,22 @@ def load_config():
     return cfg
 
 
+def glob_match(rel_l: str, g: str) -> bool:
+    """fnmatch with standard-glob semantics: a leading '**/' also matches root-level paths."""
+    gl = g.lower()
+    if fnmatch.fnmatch(rel_l, gl) or fnmatch.fnmatch(rel_l, gl.rstrip("/") + "/*"):
+        return True
+    if gl.startswith("**/"):
+        return fnmatch.fnmatch(rel_l, gl[3:])
+    return False
+
+
 def stage_for(path: str, cfg: dict) -> str:
     rel = os.path.relpath(path, REPO_ROOT)
     rel_l = rel.lower()
     for stage, globs in cfg["stage_globs"].items():
         for g in globs:
-            gl = g.lower()
-            if fnmatch.fnmatch(rel_l, gl) or fnmatch.fnmatch(rel_l, gl.rstrip("/") + "/*"):
+            if glob_match(rel_l, g):
                 return stage
     return cfg.get("default_stage", "other")
 
@@ -83,9 +92,9 @@ def scan_pattern_rule(rule: dict, lines: list[str]):
 
 def scan_disclosure_rule(rule: dict, path: str, lines: list[str], cfg: dict):
     """AI mentioned in a UI-surface file without the required disclosure string."""
-    rel = os.path.relpath(path, REPO_ROOT)
+    rel = os.path.relpath(path, REPO_ROOT).lower()
     globs = rule.get("applies_globs") or []
-    if not any(fnmatch.fnmatch(rel, g) for g in globs):
+    if not any(glob_match(rel, g) for g in globs):
         return []
     mention = [re.compile(p, re.I) for p in rule.get("mention", [])]
     required = [re.compile(p, re.I) for p in rule.get("required", [])]
