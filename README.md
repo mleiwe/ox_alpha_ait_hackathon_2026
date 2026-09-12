@@ -28,6 +28,10 @@ compliance-check --llm         Tier 2: KB-first review against the knowledge gra
 
 The agent's Tier-2 review is grounded in a structured knowledge graph of the EU AI Act (Reg (EU) 2024/1689 incl. recitals + the 2026 Omnibus amendment), parsed from 308 EUR-Lex files into an Article → Paragraph → Point hierarchy: **2,347 nodes / 6,135 edges**.
 
+![EU AI Act knowledge graph — 2,347 nodes, colour by node type](viz/graph-interactive.png)
+
+*The full graph ([interactive version](viz/graph-interactive.html)): articles and their hierarchy in blue, recitals in orange, obligations in gold — the typed edges the agent traverses for multi-hop compliance answers.*
+
 Retrieval strategy was selected by a pre-registered benchmark ([`bench/REPORT.md`](bench/REPORT.md)): **GraphRAG (BM25 seeds + typed-edge expansion on NetworkX)** — BM25 led raw MRR@5 (0.456 vs 0.418, within the Δ0.05 margin), but GraphRAG won the pre-registered composition tiebreak: multi-hop chain recall **0.60 vs 0.20** (3×) and reasoning-tier hop coverage 0.300 vs 0.233, at 9 ms mean latency (50× under a 1 s IDE budget). NetworkX ships as the backend (LLMwiki preserves rankings at −0.2 MRR).
 
 ## Repo layout
