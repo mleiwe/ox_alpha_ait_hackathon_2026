@@ -6,9 +6,8 @@ source_url: http://publications.europa.eu/resource/celex/02024R1689-20260727
 retrieved: 2026-09-12
 attribution: "© European Union, http://eur-lex.europa.eu"
 ---
-Article 103
 
-Amendment to Regulation (EU) No 167/2013
+# Article 103 — Amendment to Regulation (EU) No 167/2013
 
 In Article 17(5) of Regulation (EU) No 167/2013, the following subparagraph is added:
 

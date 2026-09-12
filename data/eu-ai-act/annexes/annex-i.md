@@ -6,13 +6,13 @@ source_url: http://publications.europa.eu/resource/celex/02024R1689-20260727
 retrieved: 2026-09-12
 attribution: "© European Union, http://eur-lex.europa.eu"
 ---
-ANNEX I
 
-List of Union harmonisation legislation
+**List of Union harmonisation legislation**
 
-Section A. List of Union harmonisation legislation based on the New Legislative Framework
 
- —————
+## Section A. List of Union harmonisation legislation based on the New Legislative Framework
+
+—————
 
 2. Directive 2009/48/EC of the European Parliament and of the Council of 18 June 2009 on the safety of toys (OJ L 170, 30.6.2009, p. 1);
 
@@ -36,7 +36,8 @@ Section A. List of Union harmonisation legislation based on the New Legislative 
 
 12. Regulation (EU) 2017/746 of the European Parliament and of the Council of 5 April 2017 on in vitro diagnostic medical devices and repealing Directive 98/79/EC and Commission Decision 2010/227/EU (OJ L 117, 5.5.2017, p. 176).
 
-Section B. List of other Union harmonisation legislation
+
+## Section B. List of other Union harmonisation legislation
 
 13. Regulation (EC) No 300/2008 of the European Parliament and of the Council of 11 March 2008 on common rules in the field of civil aviation security and repealing Regulation (EC) No 2320/2002 (OJ L 97, 9.4.2008, p. 72);
 
@@ -54,4 +55,4 @@ Section B. List of other Union harmonisation legislation
 
 20. Regulation (EU) 2018/1139 of the European Parliament and of the Council of 4 July 2018 on common rules in the field of civil aviation and establishing a European Union Aviation Safety Agency, and amending Regulations (EC) No 2111/2005, (EC) No 1008/2008, (EU) No 996/2010, (EU) No 376/2014 and Directives 2014/30/EU and 2014/53/EU of the European Parliament and of the Council, and repealing Regulations (EC) No 552/2004 and (EC) No 216/2008 of the European Parliament and of the Council and Council Regulation (EEC) No 3922/91 (OJ L 212, 22.8.2018, p. 1), in so far as the design, production and placing on the market of aircrafts referred to in Article 2(1), points (a) and (b) thereof, where it concerns unmanned aircraft and their engines, propellers, parts and equipment to control them remotely, are concerned;
 
-21. Regulation (EU) 2023/1230 of the European Parliament and of the Council of 14 June 2023 on machinery and repealing Directive 2006/42/EC of the European Parliament and of the Council and Council Directive 73/361/EEC (OJ L 165, 29.6.2023, p. 1, ELI: <http://data.europa.eu/eli/reg/2023/1230/oj>).
+21. Regulation (EU) 2023/1230 of the European Parliament and of the Council of 14 June 2023 on machinery and repealing Directive 2006/42/EC of the European Parliament and of the Council and Council Directive 73/361/EEC (OJ L 165, 29.6.2023, p. 1, ELI: http://data.europa.eu/eli/reg/2023/1230/oj).

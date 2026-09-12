@@ -6,43 +6,63 @@ source_url: http://publications.europa.eu/resource/celex/02024R1689-20260727
 retrieved: 2026-09-12
 attribution: "© European Union, http://eur-lex.europa.eu"
 ---
-ANNEX VII
 
-Conformity based on an assessment of the quality management system and an assessment of the technical documentation
+**Conformity based on an assessment of the quality management system and an assessment of the technical documentation**
 
-1\. Introduction
+
+## 1. Introduction
 
 Conformity based on an assessment of the quality management system and an assessment of the technical documentation is the conformity assessment procedure based on points 2 to 5.
 
-2\. Overview
+
+## 2. Overview
 
 The approved quality management system for the design, development and testing of AI systems pursuant to Article 17 shall be examined in accordance with point 3 and shall be subject to surveillance as specified in point 5. The technical documentation of the AI system shall be examined in accordance with point 4.
 
-3\. Quality management system
+
+## 3. Quality management system
 
 3.1. The application of the provider shall include:
 
-(a) 
+
+#### (a)
 
 the name and address of the provider and, if the application is lodged by an authorised representative, also their name and address;
 
-(b) 
+the name and address of the provider and, if the application is lodged by an authorised representative, also their name and address;
+
+
+#### (b)
 
 the list of AI systems covered under the same quality management system;
 
-(c) 
+the list of AI systems covered under the same quality management system;
+
+
+#### (c)
 
 the technical documentation for each AI system covered under the same quality management system;
 
-(d) 
+the technical documentation for each AI system covered under the same quality management system;
+
+
+#### (d)
 
 the documentation concerning the quality management system which shall cover all the aspects listed under Article 17;
 
-(e) 
+the documentation concerning the quality management system which shall cover all the aspects listed under Article 17;
+
+
+#### (e)
 
 a description of the procedures in place to ensure that the quality management system remains adequate and effective;
 
-(f) 
+a description of the procedures in place to ensure that the quality management system remains adequate and effective;
+
+
+#### (f)
+
+a written declaration that the same application has not been lodged with any other notified body.
 
 a written declaration that the same application has not been lodged with any other notified body.
 
@@ -60,21 +80,31 @@ The proposed changes shall be examined by the notified body, which shall decide 
 
 The notified body shall notify the provider of its decision. The notification shall contain the conclusions of the examination of the changes and the reasoned assessment decision.
 
-4\. Control of the technical documentation.
+
+## 4. Control of the technical documentation.
 
 4.1. In addition to the application referred to in point 3, an application with a notified body of their choice shall be lodged by the provider for the assessment of the technical documentation relating to the AI system which the provider intends to place on the market or put into service and which is covered by the quality management system referred to under point 3.
 
 4.2. The application shall include:
 
-(a) 
+
+#### (a)
 
 the name and address of the provider;
 
-(b) 
+the name and address of the provider;
+
+
+#### (b)
 
 a written declaration that the same application has not been lodged with any other notified body;
 
-(c) 
+a written declaration that the same application has not been lodged with any other notified body;
+
+
+#### (c)
+
+the technical documentation referred to in Annex IV.
 
 the technical documentation referred to in Annex IV.
 
@@ -96,7 +126,8 @@ Where the AI system does not meet the requirement relating to the data used to t
 
 4.7. Any change to the AI system that could affect the compliance of the AI system with the requirements or its intended purpose shall be assessed by the notified body which issued the Union technical documentation assessment certificate. The provider shall inform such notified body of its intention to introduce any of the abovementioned changes, or if it otherwise becomes aware of the occurrence of such changes. The intended changes shall be assessed by the notified body, which shall decide whether those changes require a new conformity assessment in accordance with Article 43(4) or whether they could be addressed by means of a supplement to the Union technical documentation assessment certificate. In the latter case, the notified body shall assess the changes, notify the provider of its decision and, where the changes are approved, issue to the provider a supplement to the Union technical documentation assessment certificate.
 
-5\. Surveillance of the approved quality management system.
+
+## 5. Surveillance of the approved quality management system.
 
 5.1. The purpose of the surveillance carried out by the notified body referred to in Point 3 is to make sure that the provider duly complies with the terms and conditions of the approved quality management system.
 

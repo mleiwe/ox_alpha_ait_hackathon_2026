@@ -15,6 +15,13 @@ CELLAR requires content negotiation:
   Accept: application/xhtml+xml
   Accept-Language: eng
 
+Markdown structure: legal hierarchy is encoded as headings so sub-units are
+addressable and navigable:
+  # Article 6 — Title
+  ## 1                (paragraph)
+  ### (a)             (point)
+  #### (i)            (sub-point)
+
 Usage:
     uv run python scripts/update_sources.py [--output-dir data/eu-ai-act] [--dry-run]
 """
@@ -25,6 +32,7 @@ import argparse
 import datetime as dt
 import re
 import sys
+from html.parser import HTMLParser
 from pathlib import Path
 
 CONSOLIDATED_CELEX = "02024R1689-20260727"  # in-force consolidated version (Omnibus applied)
@@ -56,106 +64,270 @@ def fetch_xhtml(celex: str) -> str:
     return resp.text
 
 
-def html_to_markdown(html: str) -> str:
-    """Convert XHTML to markdown via html2text."""
-    import html2text
+# --- tree parsing (stdlib html.parser; handles XHTML entities via convert_charrefs) ---
 
-    h = html2text.HTML2Text()
-    h.body_width = 0
-    h.ignore_images = True
-    h.ignore_links = False
-    h.mark_code = False
-    return h.handle(html)
+VOID_TAGS = {"br", "hr", "img", "meta", "link", "input", "col"}
 
 
-def extract_divs(html: str, prefix: str, unit_prefix: str) -> list[tuple[str, str]]:
-    """Extract <div class='eli-subdivision' id='{prefix}_N'>...</div> blocks.
+class Element:
+    __slots__ = ("tag", "attrs", "parent", "children")
 
-    Returns [(unit_id, html_fragment)]. Uses balanced-div scanning because
-    nested divs make naive regex splitting unreliable. Unit IDs use
-    {unit_prefix}-N (e.g. article-5, recital-42).
-    """
-    units: list[tuple[str, str]] = []
-    for m in re.finditer(rf'<div class="eli-subdivision" id="{prefix}_(\d+)">', html):
-        start = m.start()
-        depth = 0
-        pos = start
-        for tag in re.finditer(r"<div\b|</div>", html[start:]):
-            if tag.group(0) == "<div":
-                depth += 1
-            else:
-                depth -= 1
-                if depth == 0:
-                    pos = start + tag.end()
-                    break
-        units.append((f"{unit_prefix}-{m.group(1)}", html[start:pos]))
-    return units
+    def __init__(self, tag: str, attrs: dict[str, str] | None = None, parent: "Element | None" = None):
+        self.tag = tag
+        self.attrs = attrs or {}
+        self.parent = parent
+        self.children: list[Element | str] = []
 
 
-def extract_annexes(html: str) -> list[tuple[str, str]]:
-    """Extract annex sections delimited by <hr class='separator-annex'/>."""
-    marker = '<hr class="separator-annex"/>'
-    title_re = re.compile(r'<p class="title-annex-1"[^>]*>\s*ANNEX\s+([IVX]+)\s*</p>')
-    units: list[tuple[str, str]] = []
+class TreeBuilder(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.root = Element("#root")
+        self.cur = self.root
 
-    positions = [m.start() for m in re.finditer(re.escape(marker), html)]
-    # Annex content runs from its separator to the next separator (or doc end).
-    for i, pos in enumerate(positions):
-        end = positions[i + 1] if i + 1 < len(positions) else len(html)
-        chunk = html[pos:end]
-        tm = title_re.search(chunk)
-        if not tm:
+    def handle_starttag(self, tag, attrs):
+        el = Element(tag, dict(attrs), self.cur)
+        self.cur.children.append(el)
+        if tag not in VOID_TAGS:
+            self.cur = el
+
+    def handle_endtag(self, tag):
+        node = self.cur
+        while node is not self.root and node.tag != tag:
+            node = node.parent
+        if node is not self.root:
+            self.cur = node.parent
+
+    def handle_data(self, data):
+        if data:
+            self.cur.children.append(data)
+
+
+def parse_html(html: str) -> Element:
+    builder = TreeBuilder()
+    builder.feed(html)
+    builder.close()
+    return builder.root
+
+
+def classes(el: Element) -> set[str]:
+    return set(el.attrs.get("class", "").split())
+
+
+def iter_elements(el: Element):
+    for child in el.children:
+        if isinstance(child, Element):
+            yield child
+            yield from iter_elements(child)
+
+
+AMENDMENT_RE = re.compile(r"▼[A-Z0-9]+")
+
+
+def text_of(el: Element) -> str:
+    """Normalized text content, skipping modref amendment markers."""
+    parts: list[str] = []
+
+    def walk(node: Element) -> None:
+        for child in node.children:
+            if isinstance(child, str):
+                parts.append(child)
+            elif "modref" not in classes(child):
+                walk(child)
+
+    walk(el)
+    return AMENDMENT_RE.sub("", " ".join("".join(parts).split())).strip()
+
+
+def find_subdivisions(root: Element, prefix: str) -> list[tuple[str, Element]]:
+    """Find <div class='eli-subdivision' id='{prefix}_N'> elements."""
+    out: list[tuple[str, Element]] = []
+    for el in iter_elements(root):
+        if el.tag == "div" and "eli-subdivision" in classes(el):
+            m = re.fullmatch(rf"{prefix}_(\d+)", el.attrs.get("id", ""))
+            if m:
+                out.append((m.group(1), el))
+    return out
+
+
+# --- norm rendering: legal hierarchy -> markdown headings ---
+
+def render_points(container: Element, level: int) -> list[str]:
+    """Render div.grid-container.grid-list: (a)/(i) markers + content."""
+    lines: list[str] = []
+    marker = ""
+    for child in container.children:
+        if not isinstance(child, Element):
             continue
-        # Drop the leading separator so files start with the annex title.
-        chunk = chunk.replace(marker, "", 1)
-        units.append((f"annex-{tm.group(1).lower()}", chunk))
-    return units
+        cls = classes(child)
+        if "grid-list-column-1" in cls:
+            marker = text_of(child).strip()
+        elif "grid-list-column-2" in cls:
+            if marker:
+                lines += ["", f"{'#' * level} {marker}", ""]
+            lines += render_content(child, level + 1)
+            marker = ""
+    return lines
 
 
-def strip_amendment_markers(md: str) -> str:
-    """Remove CELLAR amendment markers (▼M1, ▼B, ▼C1 ...) and modref remnants."""
-    # modref links render as: [▼M1](url "32026R1744: INSERTED") or bare ▼M1
-    md = re.sub(r"\[▼[A-Z0-9]+\]\([^)]*\s*\"[^\"]*\"\)", "", md)
-    md = re.sub(r"\[▼[A-Z0-9]+\]\([^)]*\)", "", md)
-    md = re.sub(r"▼[A-Z0-9]+", "", md)
-    # leftover quoted titles like "32026R1744: INSERTED")
-    md = re.sub(r"\"[0-9R/]+:\s*(INSERTED|REPLACED|AMENDED|DELETED)[^\"]*\"\)?", "", md)
-    return md
+def render_content(el: Element, level: int) -> list[str]:
+    """Render mixed content: text nodes, paragraphs, nested point lists, norm divs."""
+    lines: list[str] = []
+    for child in el.children:
+        if isinstance(child, str):
+            t = " ".join(child.split())
+            if t:
+                lines += [AMENDMENT_RE.sub("", t), ""]
+            continue
+        cls = classes(child)
+        if child.tag == "p":
+            t = text_of(child)
+            if t:
+                lines += [t, ""]
+        elif child.tag == "div" and "grid-container" in cls and "grid-list" in cls:
+            lines += render_points(child, level)
+        elif child.tag == "div" and "norm" in cls:
+            lines += render_norm(child, level)
+        elif child.tag == "table":
+            t = text_of(child)
+            if t:
+                lines += [t, ""]
+    return lines
 
 
-def fragment_to_markdown(fragment: str) -> str:
-    md = html_to_markdown(fragment)
-    md = strip_amendment_markers(md)
-    # collapse the "1\. \n\n" paragraph-number artifacts from CELLAR tables
-    md = re.sub(r"^(\d+\\\.)\s*$", r"**\1**", md, flags=re.MULTILINE)
-    md = re.sub(r"\n{3,}", "\n\n", md)
-    return md.strip()
+def render_norm(el: Element, level: int) -> list[str]:
+    """Render div.norm: optional span.no-parag number + content."""
+    lines: list[str] = []
+    num = ""
+    for child in el.children:
+        if isinstance(child, str):
+            continue
+        cls = classes(child)
+        if child.tag == "span" and "no-parag" in cls:
+            num = text_of(child).strip().rstrip(".")
+        elif child.tag == "div" and "norm" in cls:
+            if num:
+                lines += ["", f"{'#' * level} {num}", ""]
+                num = ""
+            lines += render_content(child, level + 1)
+        elif child.tag == "div" and "grid-container" in cls:
+            lines += render_points(child, level + 1)
+        elif child.tag == "p":
+            t = text_of(child)
+            if t:
+                if num:
+                    lines += ["", f"{'#' * level} {num}", ""]
+                    num = ""
+                lines += [t, ""]
+    return lines
 
 
-def frontmatter(unit_id: str, kind: str, celex: str, retrieved: str, extra: dict[str, str] | None = None) -> str:
-    lines = [
-        "---",
-        f"id: {unit_id}",
-        f"type: {kind}",
-        f"celex: {celex}",
-        f"source_url: {CELLAR}/{celex}",
-        f"retrieved: {retrieved}",
-        f'attribution: "{ATTRIBUTION}"',
-    ]
-    for k, v in (extra or {}).items():
-        lines.append(f"{k}: {v}")
-    lines += ["---", ""]
-    return "\n".join(lines)
+def article_markdown(el: Element, unit_id: str) -> str:
+    title, subtitle = "", ""
+    body: list[str] = []
+    for child in el.children:
+        if not isinstance(child, Element):
+            continue
+        cls = classes(child)
+        if child.tag == "p" and "title-article-norm" in cls:
+            title = text_of(child)
+        elif child.tag == "div" and "eli-title" in cls:
+            subtitle = text_of(child)
+        elif child.tag == "div" and "norm" in cls:
+            body += render_norm(child, 2)
+        elif child.tag == "div" and "grid-container" in cls and "grid-list" in cls:
+            # top-level point lists (e.g. Article 3 definitions)
+            body += render_points(child, 2)
+        elif child.tag == "p":
+            t = text_of(child)
+            if t:
+                body += [t, ""]
+    header = f"# {title or unit_id}"
+    if subtitle:
+        header += f" — {subtitle}"
+    return "\n".join([header, ""] + body).strip() + "\n"
 
 
-def write_units(units: list[tuple[str, str]], out_dir: Path, kind: str, celex: str, retrieved: str) -> int:
-    kind_dir = out_dir / f"{kind}s" if kind != "annex" else out_dir / "annexes"
-    kind_dir.mkdir(parents=True, exist_ok=True)
-    for unit_id, fragment in units:
-        md = fragment_to_markdown(fragment)
-        path = kind_dir / f"{unit_id}.md"
-        path.write_text(frontmatter(unit_id, kind, celex, retrieved) + md + "\n", encoding="utf-8")
-    return len(units)
+def recital_markdown(el: Element, unit_id: str) -> str:
+    num = unit_id.rsplit("-", 1)[-1]
+    text = re.sub(r"^\(\d+\)\s*", "", text_of(el))
+    return f"# Recital {num}\n\n{text}\n"
+
+
+def annex_markdown(elements: list[Element]) -> str:
+    lines: list[str] = []
+    for el in elements:
+        cls = classes(el)
+        if el.tag == "p" and "title-annex-1" in cls:
+            lines += [f"# {text_of(el)}", ""]
+        elif el.tag == "p" and "title-annex-2" in cls:
+            lines += [f"**{text_of(el)}**", ""]
+        elif el.tag == "p" and "title-gr-seq-level-1" in cls:
+            lines += ["", f"## {text_of(el)}", ""]
+        elif el.tag == "p" and "title-gr-seq-level-2" in cls:
+            lines += ["", f"### {text_of(el)}", ""]
+        elif el.tag == "div" and "norm" in cls:
+            lines += render_norm(el, 3)
+        elif el.tag == "div" and "grid-container" in cls:
+            lines += render_points(el, 4)
+        elif el.tag == "p":
+            t = text_of(el)
+            if t:
+                lines += [t, ""]
+        elif el.tag == "table":
+            t = text_of(el)
+            if t:
+                lines += [t, ""]
+    return "\n".join(lines).strip() + "\n"
+
+
+def find_annex_groups(root: Element) -> list[tuple[str, list[Element]]]:
+    """Group elements between p.title-annex-1 headings into annex sections."""
+    groups: list[tuple[str, list[Element]]] = []
+    current: tuple[str, list[Element]] | None = None
+    for el in iter_elements(root):
+        cls = classes(el)
+        if el.tag == "p" and "title-annex-1" in cls:
+            if current:
+                groups.append(current)
+            current = (text_of(el), [])
+        elif current is not None:
+            current[1].append(el)
+    if current:
+        groups.append(current)
+    return groups
+
+
+def frontmatter(unit_id: str, kind: str, celex: str, retrieved: str) -> str:
+    return (
+        "---\n"
+        f"id: {unit_id}\n"
+        f"type: {kind}\n"
+        f"celex: {celex}\n"
+        f"source_url: {CELLAR}/{celex}\n"
+        f"retrieved: {retrieved}\n"
+        f'attribution: "{ATTRIBUTION}"\n'
+        "---\n\n"
+    )
+
+
+def write_corpus(articles: list[tuple[str, str]], annexes: list[tuple[str, str]],
+                 recitals: list[tuple[str, str]], out_dir: Path, retrieved: str) -> int:
+    count = 0
+    for kind_dir, items in (
+        ("articles", articles),
+        ("annexes", annexes),
+        ("recitals", recitals),
+    ):
+        d = out_dir / kind_dir
+        d.mkdir(parents=True, exist_ok=True)
+        for unit_id, md in items:
+            celex = CONSOLIDATED_CELEX if kind_dir != "recitals" else ORIGINAL_CELEX
+            kind = {"articles": "article", "annexes": "annex", "recitals": "recital"}[kind_dir]
+            path = d / f"{unit_id}.md"
+            path.write_text(frontmatter(unit_id, kind, celex, retrieved) + md, encoding="utf-8")
+            count += 1
+    return count
 
 
 def main() -> int:
@@ -167,26 +339,35 @@ def main() -> int:
     retrieved = dt.date.today().isoformat()
 
     # 1. Consolidated text -> articles + annexes (current law incl. Omnibus)
-    consolidated = None
+    consolidated_html = None
+    consolidated_celex = None
     for celex in CONSOLIDATED_CANDIDATES:
         print(f"Trying consolidated {celex} ...")
         try:
-            consolidated = fetch_xhtml(celex)
-            print(f"  OK ({len(consolidated):,} bytes)")
+            consolidated_html = fetch_xhtml(celex)
+            consolidated_celex = celex
+            print(f"  OK ({len(consolidated_html):,} bytes)")
             break
         except Exception as exc:  # noqa: BLE001
             print(f"  failed: {exc}")
-    if consolidated is None:
+    if consolidated_html is None:
         print("ERROR: no consolidated version available", file=sys.stderr)
         return 1
 
     # 2. Original OJ -> recitals (consolidated renderings omit them)
     print(f"Fetching original OJ {ORIGINAL_CELEX} for recitals ...")
-    original = fetch_xhtml(ORIGINAL_CELEX)
+    original_html = fetch_xhtml(ORIGINAL_CELEX)
 
-    articles = extract_divs(consolidated, "art", "article")
-    annexes = extract_annexes(consolidated)
-    recitals = extract_divs(original, "rct", "recital")
+    cons_root = parse_html(consolidated_html)
+    orig_root = parse_html(original_html)
+
+    articles = [(f"article-{num}", article_markdown(el, f"article-{num}"))
+                for num, el in find_subdivisions(cons_root, "art")]
+    recitals = [(f"recital-{num}", recital_markdown(el, f"recital-{num}"))
+                for num, el in find_subdivisions(orig_root, "rct")]
+    annexes = [(name.lower().replace(" ", "-"), annex_markdown(els))
+               for name, els in find_annex_groups(cons_root)]
+
     print(f"Parsed: articles={len(articles)} annexes={len(annexes)} recitals={len(recitals)}")
 
     if not articles or not recitals:
@@ -197,12 +378,8 @@ def main() -> int:
         print("Dry run: not writing files.")
         return 0
 
-    out = args.output_dir
-    n = 0
-    n += write_units(articles, out, "article", CONSOLIDATED_CELEX, retrieved)
-    n += write_units(annexes, out, "annex", CONSOLIDATED_CELEX, retrieved)
-    n += write_units(recitals, out, "recital", ORIGINAL_CELEX, retrieved)
-    print(f"Wrote {n} files to {out}")
+    n = write_corpus(articles, annexes, recitals, args.output_dir, retrieved)
+    print(f"Wrote {n} files to {args.output_dir}")
     return 0
 
 

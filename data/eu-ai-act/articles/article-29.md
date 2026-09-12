@@ -6,22 +6,29 @@ source_url: http://publications.europa.eu/resource/celex/02024R1689-20260727
 retrieved: 2026-09-12
 attribution: "© European Union, http://eur-lex.europa.eu"
 ---
-Article 29
 
-Application of a conformity assessment body for notification
+# Article 29 — Application of a conformity assessment body for notification
 
-**1\.**
+
+## 1
+
 Conformity assessment bodies shall submit an application for notification to the notifying authority of the Member State in which they are established.
 
-**2\.**
+
+## 2
+
 The application for notification shall be accompanied by a description of the conformity assessment activities, the conformity assessment module or modules and the types of AI systems for which the conformity assessment body claims to be competent, as well as by an accreditation certificate, where one exists, issued by a national accreditation body attesting that the conformity assessment body fulfils the requirements laid down in Article 31.
 
 Any valid document related to existing designations of the applicant notified body under any other Union harmonisation legislation shall be added.
 
-**3\.**
+
+## 3
+
 Where the conformity assessment body concerned cannot provide an accreditation certificate, it shall provide the notifying authority with all the documentary evidence necessary for the verification, recognition and regular monitoring of its compliance with the requirements laid down in Article 31.
 
-**4\.**
+
+## 4
+
 For notified bodies which are designated pursuant to any other Union harmonisation legislation, all documents and certificates linked to those designations may be used to support and expedite their designation procedure under this Regulation, as appropriate.
 
 Notified bodies, which are designated pursuant to any of the Union harmonisation legislation listed in Section A of Annex I and which undergo the unified assessment procedure referred to in Article 28(8), shall submit the single application for assessment to the notifying authority designated pursuant to that Union harmonisation legislation.

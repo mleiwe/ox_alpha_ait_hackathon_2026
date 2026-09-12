@@ -6,35 +6,45 @@ source_url: http://publications.europa.eu/resource/celex/02024R1689-20260727
 retrieved: 2026-09-12
 attribution: "© European Union, http://eur-lex.europa.eu"
 ---
-Article 18
 
-Documentation keeping
+# Article 18 — Documentation keeping
 
-**1\.**
+
+## 1
+
 The provider shall, for a period ending 10 years after the high-risk AI system has been placed on the market or put into service, keep at the disposal of the national competent authorities:
 
-(a) 
+
+### (a)
 
 the technical documentation referred to in Article 11;
 
-(b) 
+
+### (b)
 
 the documentation concerning the quality management system referred to in Article 17;
 
-(c) 
+
+### (c)
 
 the documentation concerning the changes approved by notified bodies, where applicable;
 
-(d) 
+
+### (d)
 
 the decisions and other documents issued by the notified bodies, where applicable;
 
-(e) 
+
+### (e)
 
 the EU declaration of conformity referred to in Article 47.
 
-**2\.**
+
+## 2
+
 Each Member State shall determine conditions under which the documentation referred to in paragraph 1 remains at the disposal of the national competent authorities for the period indicated in that paragraph for the cases when a provider or its authorised representative established on its territory goes bankrupt or ceases its activity prior to the end of that period.
 
-**3\.**
+
+## 3
+
 Providers that are financial institutions subject to requirements regarding their internal governance, arrangements or processes under Union financial services law shall maintain the technical documentation as part of the documentation kept under the relevant Union financial services law.

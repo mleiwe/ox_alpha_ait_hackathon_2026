@@ -6,9 +6,8 @@ source_url: http://publications.europa.eu/resource/celex/02024R1689-20260727
 retrieved: 2026-09-12
 attribution: "© European Union, http://eur-lex.europa.eu"
 ---
-Article 102
 
-Amendment to Regulation (EC) No 300/2008
+# Article 102 — Amendment to Regulation (EC) No 300/2008
 
 In Article 4(3) of Regulation (EC) No 300/2008, the following subparagraph is added:
 

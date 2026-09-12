@@ -6,24 +6,30 @@ source_url: http://publications.europa.eu/resource/celex/02024R1689-20260727
 retrieved: 2026-09-12
 attribution: "© European Union, http://eur-lex.europa.eu"
 ---
-Article 89
 
-Monitoring actions
+# Article 89 — Monitoring actions
 
-**1\.**
+
+## 1
+
 For the purpose of carrying out the tasks assigned to it under this Section, the AI Office may take the necessary actions to monitor the effective implementation and compliance with this Regulation by providers of general-purpose AI models, including their adherence to approved codes of practice.
 
-**2\.**
+
+## 2
+
 Downstream providers shall have the right to lodge a complaint alleging an infringement of this Regulation. A complaint shall be duly reasoned and indicate at least:
 
-(a) 
+
+### (a)
 
 the point of contact of the provider of the general-purpose AI model concerned;
 
-(b) 
+
+### (b)
 
 a description of the relevant facts, the provisions of this Regulation concerned, and the reason why the downstream provider considers that the provider of the general-purpose AI model concerned infringed this Regulation;
 
-(c) 
+
+### (c)
 
 any other information that the downstream provider that sent the request considers relevant, including, where appropriate, information gathered on its own initiative.
