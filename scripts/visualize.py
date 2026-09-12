@@ -243,7 +243,7 @@ def heatmap_chart(g, out_dir: Path, level: str = "article") -> None:
     mat_ordered = mat[np.ix_(leaves, leaves)]
     ordered_ids = [unit_ids[i] for i in leaves]
 
-    im = ax_heat.imshow(np.log1p(mat_ordered), cmap="YlOrRd", aspect="auto", interpolation="nearest")
+    im = ax_heat.imshow(np.log1p(mat_ordered), cmap="magma", aspect="auto", interpolation="nearest")
 
     step = max(1, n // 60)
     ticks = list(range(0, n, step))
@@ -252,6 +252,20 @@ def heatmap_chart(g, out_dir: Path, level: str = "article") -> None:
     ax_heat.set_xticklabels([short(ordered_ids[i]) for i in ticks], rotation=90, fontsize=6)
     ax_heat.set_yticklabels([short(ordered_ids[i]) for i in ticks], fontsize=6)
     ax_heat.set_xlabel("Cited unit")
+    ax_heat.set_ylabel("Citing unit")
+    ax_heat.set_title(f"{title} ({n}×{n}, log-scaled, dendrogram-grouped)")
+
+    # Colourbar
+    cbar = fig.colorbar(im, ax=ax_heat, label="log(1 + citation count)", shrink=0.6, pad=0.02)
+
+    # Legend: colourbar meaning + dendrogram colour coding
+    handles = [
+        Line2D([0], [0], color="#4C72B0", lw=2, label="dendrogram: cluster merge distance"),
+        Line2D([0], [0], marker="s", color="w", markerfacecolor="#000000", markersize=10, label="dark cell = many citations"),
+        Line2D([0], [0], marker="s", color="w", markerfacecolor="#fcfdbf", markersize=10, label="light cell = few/none", markeredgecolor="#ccc"),
+    ]
+    ax_dend_left.legend(handles=handles, loc="upper left", fontsize=8, framealpha=0.9, title="Legend")
+
     fig.savefig(out_dir / fname, dpi=150, bbox_inches="tight")
     plt.close(fig)
     print(f"  heatmap ({level}): {n}×{n}, dendrogram-grouped")
