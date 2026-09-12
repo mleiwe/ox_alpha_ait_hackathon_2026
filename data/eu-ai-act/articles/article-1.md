@@ -6,40 +6,50 @@ source_url: http://publications.europa.eu/resource/celex/02024R1689-20260727
 retrieved: 2026-09-12
 attribution: "© European Union, http://eur-lex.europa.eu"
 ---
-Article 1
 
-Subject matter'
+# Article 1 — Subject matter'
 
-**1\.**
+
+## 1
+
 The purpose of this Regulation is to improve the functioning of the internal market and promote the uptake of human-centric and trustworthy artificial intelligence (AI), while ensuring a high level of protection of health, safety, fundamental rights enshrined in the Charter, including democracy, the rule of law and environmental protection, against the harmful effects of AI systems in the Union and supporting innovation.
 
-**2\.**
+
+## 2
+
 This Regulation lays down:
 
-(a) 
+
+### (a)
 
 harmonised rules for the placing on the market, the putting into service, and the use of AI systems in the Union;
 
-(b) 
+
+### (b)
 
 prohibitions of certain AI practices;
 
-(c) 
+
+### (c)
 
 specific requirements for high-risk AI systems and obligations for operators of such systems;
 
-(d) 
+
+### (d)
 
 harmonised transparency rules for certain AI systems;
 
-(e) 
+
+### (e)
 
 harmonised rules for the placing on the market of general-purpose AI models;
 
-(f) 
+
+### (f)
 
 rules on market monitoring, market surveillance, governance and enforcement;
 
-(g) 
+
+### (g)
 
 measures to support innovation, with a particular focus on small mid-cap enterprises (SMCs) and small and medium-sized enterprises (SMEs), including start-ups.

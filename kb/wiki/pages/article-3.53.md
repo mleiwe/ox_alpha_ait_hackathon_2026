@@ -1,0 +1,9 @@
+# article-3.53
+
+**(53)**
+
+‘real-world testing plan’ means a document that describes the objectives, methodology, geographical, population and temporal scope, monitoring, organisation and conduct of testing in real-world conditions;
+
+## Links
+
+- HAS_SUBUNIT: [[article-3.54]]

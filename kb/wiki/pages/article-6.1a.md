@@ -1,0 +1,9 @@
+# article-6.1a
+
+**1a**
+
+For the purposes of this Regulation, including paragraph 1 of this Article, AI systems that are solely used for non-safety related aspects of user assistance, performance optimisation, service efficiency, automation or convenience or quality control shall not qualify as safety components.
+
+## Links
+
+- HAS_SUBUNIT: [[article-6.1b]]

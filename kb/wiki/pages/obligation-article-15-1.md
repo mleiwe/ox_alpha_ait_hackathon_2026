@@ -1,0 +1,5 @@
+# obligation-article-15-1
+
+**2 To address the technical aspects of how to measure the appropriate levels of a**
+
+2 To address the technical aspects of how to measure the appropriate levels of accuracy and robustness set out in paragraph 1 and any other relevant performance metrics, the Commission shall, in cooperation with relevant stakeholders and organisations such as metrology and benchmarking authorities, encourage, as appropriate, the development of benchmarks and measurement methodologies.

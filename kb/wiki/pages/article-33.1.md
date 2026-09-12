@@ -1,0 +1,9 @@
+# article-33.1
+
+**1**
+
+Where a notified body subcontracts specific tasks connected with the conformity assessment or has recourse to a subsidiary, it shall ensure that the subcontractor or the subsidiary meets the requirements laid down in Article 31, and shall inform the notifying authority accordingly.
+
+## Links
+
+- HAS_SUBUNIT: [[article-33.2]]

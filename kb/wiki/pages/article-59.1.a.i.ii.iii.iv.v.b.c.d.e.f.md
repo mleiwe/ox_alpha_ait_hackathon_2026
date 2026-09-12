@@ -1,0 +1,9 @@
+# article-59.1.a.i.ii.iii.iv.v.b.c.d.e.f
+
+**(f)**
+
+any processing of personal data in the context of the sandbox neither leads to measures or decisions affecting the data subjects nor does it affect the application of their rights laid down in Union law on the protection of personal data;
+
+## Links
+
+- HAS_SUBUNIT: [[article-59.1.a.i.ii.iii.iv.v.b.c.d.e.f.g]]

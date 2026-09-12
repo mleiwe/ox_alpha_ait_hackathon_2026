@@ -1,0 +1,5 @@
+# obligation-article-42-0
+
+**Article 42 — Presumption of conformity with certain requirements ## 1 High-risk **
+
+Article 42 — Presumption of conformity with certain requirements ## 1 High-risk AI systems that have been trained and tested on data reflecting the specific geographical, behavioural, contextual or functional setting within which they are intended to be used shall be presumed to comply with the relevant requirements laid down in Article 10(4).

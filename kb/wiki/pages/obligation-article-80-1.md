@@ -1,0 +1,9 @@
+# obligation-article-80-1
+
+**2 Where, in the course of that evaluation, the market surveillance authority fin**
+
+2 Where, in the course of that evaluation, the market surveillance authority finds that the AI system concerned is high-risk, it shall without undue delay require the relevant provider to take all necessary actions to bring the AI system into compliance with the requirements and obligations laid down in this Regulation, as well as take appropriate corrective action within a period the market surveillance authority may prescribe.
+
+## Links
+
+- IMPOSES_ON: [[actor-provider]]

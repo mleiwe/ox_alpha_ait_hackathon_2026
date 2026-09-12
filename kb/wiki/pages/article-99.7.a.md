@@ -1,0 +1,9 @@
+# article-99.7.a
+
+**(a)**
+
+the nature, gravity and duration of the infringement and of its consequences, taking into account the purpose of the AI system, as well as, where appropriate, the number of affected persons and the level of damage suffered by them;
+
+## Links
+
+- HAS_SUBUNIT: [[article-99.7.a.b]]

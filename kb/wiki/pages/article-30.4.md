@@ -1,0 +1,9 @@
+# article-30.4
+
+**4**
+
+The conformity assessment body concerned may perform the activities of a notified body only where no objections are raised by the Commission or the other Member States within two weeks of a notification by a notifying authority where it includes an accreditation certificate referred to in Article 29(2), or within two months of a notification by the notifying authority where it includes documentary evidence referred to in Article 29(3).
+
+## Links
+
+- HAS_SUBUNIT: [[article-30.5]]

@@ -1,0 +1,9 @@
+# obligation-article-49-2
+
+**3 Before putting into service or using a high-risk AI system listed in Annex III**
+
+3 Before putting into service or using a high-risk AI system listed in Annex III, with the exception of high-risk AI systems listed in point 2 of Annex III, deployers that are public authorities, Union institutions, bodies, offices or agencies or persons acting on their behalf shall register themselves, select the system and register its use in the EU database referred to in Article 71.
+
+## Links
+
+- IMPOSES_ON: [[actor-deployer]]

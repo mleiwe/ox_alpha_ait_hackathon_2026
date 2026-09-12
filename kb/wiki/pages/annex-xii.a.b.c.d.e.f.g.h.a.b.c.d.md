@@ -1,0 +1,11 @@
+# annex-xii.a.b.c.d.e.f.g.h.a.b.c.d
+
+**(d)**
+
+how the model interacts, or can be used to interact, with hardware or software that is not part of the model itself, where applicable;
+
+how the model interacts, or can be used to interact, with hardware or software that is not part of the model itself, where applicable;
+
+## Links
+
+- HAS_SUBUNIT: [[annex-xii.a.b.c.d.e.f.g.h.a.b.c.d.e]]

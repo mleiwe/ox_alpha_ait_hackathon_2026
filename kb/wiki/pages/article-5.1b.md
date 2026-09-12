@@ -1,0 +1,9 @@
+# article-5.1b
+
+**1b**
+
+For the purposes of paragraph 1, first subparagraph, point (ba), an AI system that manipulates material in a way that does not increase the exposure of any depicted intimate parts or alter the nature of any depicted sexually explicit activities shall not constitute manipulation.
+
+## Links
+
+- HAS_SUBUNIT: [[article-5.2]]

@@ -1,0 +1,5 @@
+# obligation-article-91-0
+
+**4 The request for information shall state the legal basis and the purpose of the**
+
+4 The request for information shall state the legal basis and the purpose of the request, specify what information is required, set a period within which the information is to be provided, and indicate the fines provided for in Article 101 for supplying incorrect, incomplete or misleading information.

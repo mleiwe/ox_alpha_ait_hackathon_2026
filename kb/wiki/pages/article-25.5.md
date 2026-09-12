@@ -1,0 +1,5 @@
+# article-25.5
+
+**5**
+
+Paragraphs 2 and 3 are without prejudice to the need to observe and protect intellectual property rights, confidential business information and trade secrets in accordance with Union and national law.

@@ -1,0 +1,9 @@
+# article-66.g
+
+**(g)**
+
+facilitate the development of common criteria and a shared understanding among market operators and competent authorities of the relevant concepts provided for in this Regulation, including by contributing to the development of benchmarks;
+
+## Links
+
+- HAS_SUBUNIT: [[article-66.h]]

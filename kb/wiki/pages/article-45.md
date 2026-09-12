@@ -1,0 +1,71 @@
+# article-45
+
+**Article 45 — Information obligations of notified bodies**
+
+# Article 45 — Information obligations of notified bodies
+
+
+## 1
+
+Notified bodies shall inform the notifying authority of the following:
+
+
+### (a)
+
+any Union technical documentation assessment certificates, any supplements to those certificates, and any quality management system approvals issued in accordance with the requirements of Annex VII;
+
+
+### (b)
+
+any refusal, restriction, suspension or withdrawal of a Union technical documentation assessment certificate or a quality management system approval issued in accordance with the requirements of Annex VII;
+
+
+### (c)
+
+any circumstances affecting the scope of or conditions for notification;
+
+
+### (d)
+
+any request for information which they have received from market surveillance authorities regarding conformity assessment activities;
+
+
+### (e)
+
+on request, conformity assessment activities performed within the scope of their notification and any other activity performed, including cross-border activities and subcontracting.
+
+
+## 2
+
+Each notified body shall inform the other notified bodies of:
+
+
+### (a)
+
+quality management system approvals which it has refused, suspended or withdrawn, and, upon request, of quality system approvals which it has issued;
+
+
+### (b)
+
+Union technical documentation assessment certificates or any supplements thereto which it has refused, withdrawn, suspended or otherwise restricted, and, upon request, of the certificates and/or supplements thereto which it has issued.
+
+
+## 3
+
+Each notified body shall provide the other notified bodies carrying out similar conformity assessment activities covering the same types of AI systems with relevant information on issues relating to negative and, on request, positive conformity assessment results.
+
+
+## 4
+
+Notified bodies shall safeguard the confidentiality of the information that they obtain, in accordance with Article 78.
+
+## Links
+
+- HAS_SUBUNIT: [[article-45.1]]
+- REFERENCES: [[article-78]]
+- REFERENCES: [[annex-vii]]
+- REFERENCES: [[annex-vii]]
+- HAS_OBLIGATION: [[obligation-article-45-0]]
+- HAS_OBLIGATION: [[obligation-article-45-1]]
+- HAS_OBLIGATION: [[obligation-article-45-2]]
+- HAS_OBLIGATION: [[obligation-article-45-3]]

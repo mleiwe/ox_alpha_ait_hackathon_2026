@@ -1,0 +1,9 @@
+# article-60.5
+
+**5**
+
+Any subjects of the testing in real world conditions, or their legally designated representative, as appropriate, may, without any resulting detriment and without having to provide any justification, withdraw from the testing at any time by revoking their informed consent and may request the immediate and permanent deletion of their personal data. The withdrawal of the informed consent shall not affect the activities already carried out.
+
+## Links
+
+- HAS_SUBUNIT: [[article-60.6]]

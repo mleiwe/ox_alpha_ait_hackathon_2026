@@ -1,0 +1,9 @@
+# article-71.3
+
+**3**
+
+The data listed in Section C of Annex VIII shall be entered into the EU database by the deployer who is, or who acts on behalf of, a public authority, agency or body, in accordance with Article 49(3) and (4).
+
+## Links
+
+- HAS_SUBUNIT: [[article-71.4]]

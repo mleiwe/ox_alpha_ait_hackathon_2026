@@ -1,0 +1,5 @@
+# obligation-article-100-2
+
+**3 The non-compliance of the AI system with any requirements or obligations under**
+
+3 The non-compliance of the AI system with any requirements or obligations under this Regulation, other than those laid down in Article 5, shall be subject to administrative fines of up to EUR 750 000 .

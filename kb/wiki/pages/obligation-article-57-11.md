@@ -1,0 +1,5 @@
+# obligation-article-57-11
+
+**6 Competent authorities shall provide, as appropriate, guidance, supervision and**
+
+6 Competent authorities shall provide, as appropriate, guidance, supervision and support within the AI regulatory sandbox with a view to identifying risks, in particular to fundamental rights, health and safety, testing, mitigation measures, and their effectiveness in relation to the obligations and requirements of this Regulation and, where relevant, other Union and national law supervised within the sandbox.

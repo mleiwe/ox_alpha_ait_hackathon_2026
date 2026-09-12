@@ -1,0 +1,5 @@
+# article-66.o
+
+**(o)**
+
+receive opinions by the Member States on qualified alerts regarding general-purpose AI models, and on national experiences and practices on the monitoring and enforcement of AI systems, in particular systems integrating the general-purpose AI models.

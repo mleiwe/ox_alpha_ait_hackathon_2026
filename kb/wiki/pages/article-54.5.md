@@ -1,0 +1,9 @@
+# article-54.5
+
+**5**
+
+The authorised representative shall terminate the mandate if it considers or has reason to consider the provider to be acting contrary to its obligations pursuant to this Regulation. In such a case, it shall also immediately inform the AI Office about the termination of the mandate and the reasons therefor.
+
+## Links
+
+- HAS_SUBUNIT: [[article-54.6]]

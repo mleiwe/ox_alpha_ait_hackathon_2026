@@ -1,0 +1,9 @@
+# article-2.8
+
+**8**
+
+This Regulation does not apply to any research, testing or development activity regarding AI systems or AI models prior to their being placed on the market or put into service. Such activities shall be conducted in accordance with applicable Union law. Testing in real world conditions shall not be covered by that exclusion.
+
+## Links
+
+- HAS_SUBUNIT: [[article-2.9]]

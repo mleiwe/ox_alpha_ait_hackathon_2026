@@ -1,0 +1,9 @@
+# obligation-article-24-7
+
+**6 Distributors shall cooperate with the relevant competent authorities in any ac**
+
+6 Distributors shall cooperate with the relevant competent authorities in any action those authorities take in relation to a high-risk AI system made available on the market by the distributors, in particular to reduce or mitigate the risk posed by it.
+
+## Links
+
+- IMPOSES_ON: [[actor-distributor]]

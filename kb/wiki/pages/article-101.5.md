@@ -1,0 +1,9 @@
+# article-101.5
+
+**5**
+
+The Court of Justice of the European Union shall have unlimited jurisdiction to review decisions of the Commission fixing a fine under this Article. It may cancel, reduce or increase the fine imposed.
+
+## Links
+
+- HAS_SUBUNIT: [[article-101.6]]

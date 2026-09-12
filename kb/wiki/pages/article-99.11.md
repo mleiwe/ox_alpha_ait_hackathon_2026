@@ -1,0 +1,5 @@
+# article-99.11
+
+**11**
+
+Member States shall, on an annual basis, report to the Commission about the administrative fines they have issued during that year, in accordance with this Article, and about any related litigation or judicial proceedings.

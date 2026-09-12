@@ -1,0 +1,11 @@
+# article-10.4
+
+**4**
+
+Data sets shall take into account, to the extent required by the intended purpose, the characteristics or elements that are particular to the specific geographical, contextual, behavioural or functional setting within which the high-risk AI system is intended to be used.
+
+—————
+
+## Links
+
+- HAS_SUBUNIT: [[article-10.6]]

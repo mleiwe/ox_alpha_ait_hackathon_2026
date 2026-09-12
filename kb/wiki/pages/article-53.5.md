@@ -1,0 +1,9 @@
+# article-53.5
+
+**5**
+
+For the purpose of facilitating compliance with Annex XI, in particular points 2 (d) and (e) thereof, the Commission is empowered to adopt delegated acts in accordance with Article 97 to detail measurement and calculation methodologies with a view to allowing for comparable and verifiable documentation.
+
+## Links
+
+- HAS_SUBUNIT: [[article-53.6]]

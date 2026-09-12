@@ -1,0 +1,9 @@
+# article-45.1.a
+
+**(a)**
+
+any Union technical documentation assessment certificates, any supplements to those certificates, and any quality management system approvals issued in accordance with the requirements of Annex VII;
+
+## Links
+
+- HAS_SUBUNIT: [[article-45.1.a.b]]

@@ -1,0 +1,9 @@
+# obligation-article-25-6
+
+**4 The provider of a high-risk AI system and the third party that supplies an AI **
+
+4 The provider of a high-risk AI system and the third party that supplies an AI system, AI model, tools, services, components, or processes that are used or integrated in a high-risk AI system shall, by written agreement, specify the necessary information, capabilities, technical access and other assistance based on the generally acknowledged state of the art, in order to enable the provider of the high-risk AI system to fully comply with the obligations set out in this Regulation.
+
+## Links
+
+- IMPOSES_ON: [[actor-provider]]

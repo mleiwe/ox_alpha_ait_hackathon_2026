@@ -1,0 +1,5 @@
+# obligation-article-57-27
+
+**14 National competent authorities, the European Data Protection Supervisor and t**
+
+14 National competent authorities, the European Data Protection Supervisor and the AI Office, shall, as appropriate and within their respective competences, coordinate their activities and cooperate within the framework of the Board.

@@ -1,0 +1,9 @@
+# article-92.4
+
+**4**
+
+The request for access shall state the legal basis, the purpose and reasons of the request and set the period within which the access is to be provided, and the fines provided for in Article 101 for failure to provide access.
+
+## Links
+
+- HAS_SUBUNIT: [[article-92.5]]

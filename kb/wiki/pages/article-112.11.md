@@ -1,0 +1,9 @@
+# article-112.11
+
+**11**
+
+To guide the evaluations and reviews referred to in paragraphs 1 to 7 of this Article, the AI Office shall undertake to develop an objective and participative methodology for the evaluation of risk levels based on the criteria outlined in the relevant Articles and the inclusion of new systems in:
+
+## Links
+
+- HAS_SUBUNIT: [[article-112.11.a]]

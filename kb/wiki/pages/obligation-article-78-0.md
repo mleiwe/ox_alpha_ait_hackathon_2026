@@ -1,0 +1,5 @@
+# obligation-article-78-0
+
+**Article 78 — Confidentiality ## 1 The Commission, market surveillance authoritie**
+
+Article 78 — Confidentiality ## 1 The Commission, market surveillance authorities and notified bodies and any other natural or legal person involved in the application of this Regulation shall, in accordance with Union or national law, respect the confidentiality of information and data obtained in carrying out their tasks and activities in such a manner as to protect, in particular: ### (a) the intellectual property rights and confidential business information or trade secrets of a natural or legal person, including source code, except in the cases referred to in Article 5 of Directive (EU) 2016/943 of the European Parliament and of the Council ( 2 ); ### (b) the effective implementation of this Regulation, in particular for the purposes of inspections, investigations or audits; ### (c) public and national security interests; ### (d) the conduct of criminal or administrative proceedings; ### (e) information classified pursuant to Union or national law.

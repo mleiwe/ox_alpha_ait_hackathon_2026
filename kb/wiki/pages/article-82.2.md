@@ -1,0 +1,9 @@
+# article-82.2
+
+**2**
+
+The provider or other relevant operator shall ensure that corrective action is taken in respect of all the AI systems concerned that it has made available on the Union market within the timeline prescribed by the market surveillance authority of the Member State referred to in paragraph 1.
+
+## Links
+
+- HAS_SUBUNIT: [[article-82.3]]

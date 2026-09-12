@@ -1,0 +1,9 @@
+# article-3.14
+
+**(14)**
+
+‘safety component’ means a component of a product or of an AI system which fulfils a safety function for that product or AI system, or the failure or malfunctioning of which endangers the health and safety of persons or property; for the purposes of this definition, a component fulfils a safety function where its intended purpose is to prevent or mitigate risks to health and safety of persons or property;
+
+## Links
+
+- HAS_SUBUNIT: [[article-3.14a]]

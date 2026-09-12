@@ -1,0 +1,5 @@
+# obligation-article-66-0
+
+**Article 66 — Tasks of the Board The Board shall advise and assist the Commission**
+
+Article 66 — Tasks of the Board The Board shall advise and assist the Commission and the Member States in order to facilitate the consistent and effective application of this Regulation.

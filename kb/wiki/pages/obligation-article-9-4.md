@@ -1,0 +1,5 @@
+# obligation-article-9-4
+
+**4 The risk management measures referred to in paragraph 2, point (d), shall give**
+
+4 The risk management measures referred to in paragraph 2, point (d), shall give due consideration to the effects and possible interaction resulting from the combined application of the requirements set out in this Section, with a view to minimising risks more effectively while achieving an appropriate balance in implementing the measures to fulfil those requirements.

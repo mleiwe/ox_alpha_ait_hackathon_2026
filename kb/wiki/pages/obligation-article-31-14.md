@@ -1,0 +1,5 @@
+# obligation-article-31-14
+
+**9 Notified bodies shall take out appropriate liability insurance for their confo**
+
+9 Notified bodies shall take out appropriate liability insurance for their conformity assessment activities, unless liability is assumed by the Member State in which they are established in accordance with national law or that Member State is itself directly responsible for the conformity assessment.

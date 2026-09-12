@@ -1,0 +1,5 @@
+# obligation-article-36-0
+
+**Article 36 — Changes to notifications ## 1 The notifying authority shall notify **
+
+Article 36 — Changes to notifications ## 1 The notifying authority shall notify the Commission and the other Member States of any relevant changes to the notification of a notified body via the electronic notification tool referred to in Article 30(2).

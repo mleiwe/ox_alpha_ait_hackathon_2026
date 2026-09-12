@@ -1,0 +1,9 @@
+# article-13.1
+
+**1**
+
+High-risk AI systems shall be designed and developed in such a way as to ensure that their operation is sufficiently transparent to enable deployers to interpret a system’s output and use it appropriately. An appropriate type and degree of transparency shall be ensured with a view to achieving compliance with the relevant obligations of the provider and deployer set out in Section 3.
+
+## Links
+
+- HAS_SUBUNIT: [[article-13.2]]

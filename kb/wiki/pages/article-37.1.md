@@ -1,0 +1,9 @@
+# article-37.1
+
+**1**
+
+The Commission shall, where necessary, investigate all cases where there are reasons to doubt the competence of a notified body or the continued fulfilment by a notified body of the requirements laid down in Article 31 and of its applicable responsibilities.
+
+## Links
+
+- HAS_SUBUNIT: [[article-37.2]]

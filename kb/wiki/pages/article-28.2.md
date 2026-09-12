@@ -1,0 +1,9 @@
+# article-28.2
+
+**2**
+
+Member States may decide that the assessment and monitoring referred to in paragraph 1 is to be carried out by a national accreditation body within the meaning of, and in accordance with, Regulation (EC) No 765/2008.
+
+## Links
+
+- HAS_SUBUNIT: [[article-28.3]]

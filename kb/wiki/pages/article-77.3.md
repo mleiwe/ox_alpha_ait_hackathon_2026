@@ -1,0 +1,9 @@
+# article-77.3
+
+**3**
+
+Where the documentation referred to in paragraph 1 is insufficient to ascertain whether an infringement of obligations under Union law protecting fundamental rights has occurred, the public authority or body referred to in paragraph 1 may make a reasoned request to the market surveillance authority, to organise testing of the high-risk AI system through technical means. The market surveillance authority shall organise the testing with the close involvement of the requesting public authority or body within a reasonable time following the request.
+
+## Links
+
+- HAS_SUBUNIT: [[article-77.4]]

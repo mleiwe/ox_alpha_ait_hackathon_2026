@@ -6,9 +6,8 @@ source_url: http://publications.europa.eu/resource/celex/02024R1689-20260727
 retrieved: 2026-09-12
 attribution: "© European Union, http://eur-lex.europa.eu"
 ---
-ANNEX VI
 
-Conformity assessment procedure based on internal control
+**Conformity assessment procedure based on internal control**
 
 1. The conformity assessment procedure based on internal control is the conformity assessment procedure based on points 2, 3 and 4.
 

@@ -1,0 +1,9 @@
+# article-59.1.a.i.ii.iii.iv.v.b.c.d.e.f.g
+
+**(g)**
+
+any personal data processed in the context of the sandbox are protected by means of appropriate technical and organisational measures and deleted once the participation in the sandbox has terminated or the personal data has reached the end of its retention period;
+
+## Links
+
+- HAS_SUBUNIT: [[article-59.1.a.i.ii.iii.iv.v.b.c.d.e.f.g.h]]

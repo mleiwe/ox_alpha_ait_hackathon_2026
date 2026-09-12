@@ -1,0 +1,9 @@
+# article-22.3.a.b.c.d
+
+**(d)**
+
+cooperate with competent authorities, upon a reasoned request, in any action the latter take in relation to the high-risk AI system, in particular to reduce and mitigate the risks posed by the high-risk AI system;
+
+## Links
+
+- HAS_SUBUNIT: [[article-22.3.a.b.c.d.e]]

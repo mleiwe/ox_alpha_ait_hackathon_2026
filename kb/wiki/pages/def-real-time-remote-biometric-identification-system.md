@@ -1,0 +1,5 @@
+# def-real-time-remote-biometric-identification-system
+
+**real-time remote biometric identification system**
+
+a remote biometric identification system, whereby the capturing of biometric data, the comparison and the identification all occur without a significant delay, comprising not only instant identification, but also limited short delays in order to avoid circumvention

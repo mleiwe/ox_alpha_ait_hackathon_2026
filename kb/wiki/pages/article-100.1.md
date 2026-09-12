@@ -1,0 +1,9 @@
+# article-100.1
+
+**1**
+
+The European Data Protection Supervisor may impose administrative fines on Union institutions, bodies, offices and agencies falling within the scope of this Regulation. When deciding whether to impose an administrative fine and when deciding on the amount of the administrative fine in each individual case, all relevant circumstances of the specific situation shall be taken into account and due regard shall be given to the following:
+
+## Links
+
+- HAS_SUBUNIT: [[article-100.1.a]]

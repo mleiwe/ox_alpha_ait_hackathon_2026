@@ -1,0 +1,5 @@
+# article-76.5
+
+**5**
+
+Where applicable, where a market surveillance authority has taken a decision referred to in paragraph 3, it shall communicate the grounds therefor to the market surveillance authorities of other Member States in which the AI system has been tested in accordance with the testing plan.

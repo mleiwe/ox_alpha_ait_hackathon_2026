@@ -1,0 +1,9 @@
+# article-5.1.a.b.ba.bb.c
+
+**(c)**
+
+the placing on the market, the putting into service or the use of AI systems for the evaluation or classification of natural persons or groups of persons over a certain period of time based on their social behaviour or known, inferred or predicted personal or personality characteristics, with the social score leading to either or both of the following:
+
+## Links
+
+- HAS_SUBUNIT: [[article-5.1.a.b.ba.bb.c.i]]

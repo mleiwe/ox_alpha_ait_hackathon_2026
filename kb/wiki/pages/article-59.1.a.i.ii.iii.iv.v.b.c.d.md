@@ -1,0 +1,9 @@
+# article-59.1.a.i.ii.iii.iv.v.b.c.d
+
+**(d)**
+
+any personal data to be processed in the context of the sandbox are in a functionally separate, isolated and protected data processing environment under the control of the prospective provider and only authorised persons have access to those data;
+
+## Links
+
+- HAS_SUBUNIT: [[article-59.1.a.i.ii.iii.iv.v.b.c.d.e]]

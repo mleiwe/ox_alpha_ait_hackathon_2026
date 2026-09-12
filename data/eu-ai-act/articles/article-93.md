@@ -6,27 +6,35 @@ source_url: http://publications.europa.eu/resource/celex/02024R1689-20260727
 retrieved: 2026-09-12
 attribution: "© European Union, http://eur-lex.europa.eu"
 ---
-Article 93
 
-Power to request measures
+# Article 93 — Power to request measures
 
-**1\.**
+
+## 1
+
 Where necessary and appropriate, the Commission may request providers to:
 
-(a) 
+
+### (a)
 
 take appropriate measures to comply with the obligations set out in Articles 53 and 54;
 
-(b) 
+
+### (b)
 
 implement mitigation measures, where the evaluation carried out in accordance with Article 92 has given rise to serious and substantiated concern of a systemic risk at Union level;
 
-(c) 
+
+### (c)
 
 restrict the making available on the market, withdraw or recall the model.
 
-**2\.**
+
+## 2
+
 Before a measure is requested, the AI Office may initiate a structured dialogue with the provider of the general-purpose AI model.
 
-**3\.**
+
+## 3
+
 If, during the structured dialogue referred to in paragraph 2, the provider of the general-purpose AI model with systemic risk offers commitments to implement mitigation measures to address a systemic risk at Union level, the Commission may, by decision, make those commitments binding and declare that there are no further grounds for action.

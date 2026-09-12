@@ -1,0 +1,9 @@
+# article-3.56
+
+**(56)**
+
+‘AI literacy’ means skills, knowledge and understanding that allow providers, deployers and affected persons, taking into account their respective rights and obligations in the context of this Regulation, to make an informed deployment of AI systems, as well as to gain awareness about the opportunities and risks of AI and possible harm it can cause;
+
+## Links
+
+- HAS_SUBUNIT: [[article-3.57]]

@@ -1,0 +1,5 @@
+# obligation-article-4-3
+
+**3 The Board shall adopt recommendations, taking into account European competence**
+
+3 The Board shall adopt recommendations, taking into account European competence frameworks, to support the Commission and Member States in the promotion of AI literacy required under paragraph 1, including by setting out common objectives.

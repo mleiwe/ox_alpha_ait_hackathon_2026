@@ -1,0 +1,9 @@
+# article-50.5
+
+**5**
+
+The information referred to in paragraphs 1 to 4 shall be provided to the natural persons concerned in a clear and distinguishable manner at the latest at the time of the first interaction or exposure. The information shall conform to the applicable accessibility requirements.
+
+## Links
+
+- HAS_SUBUNIT: [[article-50.6]]

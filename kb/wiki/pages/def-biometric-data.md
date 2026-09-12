@@ -1,0 +1,5 @@
+# def-biometric-data
+
+**biometric data**
+
+personal data resulting from specific technical processing relating to the physical, physiological or behavioural characteristics of a natural person, such as facial images or dactyloscopic data

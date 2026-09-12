@@ -6,9 +6,8 @@ source_url: http://publications.europa.eu/resource/celex/02024R1689-20260727
 retrieved: 2026-09-12
 attribution: "© European Union, http://eur-lex.europa.eu"
 ---
-Article 104
 
-Amendment to Regulation (EU) No 168/2013
+# Article 104 — Amendment to Regulation (EU) No 168/2013
 
 In Article 22(5) of Regulation (EU) No 168/2013, the following subparagraph is added:
 

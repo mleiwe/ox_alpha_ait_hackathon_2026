@@ -1,0 +1,9 @@
+# article-73.9
+
+**9**
+
+For high-risk AI systems referred to in Annex III that are placed on the market or put into service by providers that are subject to Union legislative instruments laying down reporting obligations equivalent to those set out in this Regulation, the notification of serious incidents shall be limited to those referred to in Article 3, point (49)(c).
+
+## Links
+
+- HAS_SUBUNIT: [[article-73.10]]

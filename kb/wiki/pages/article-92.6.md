@@ -1,0 +1,9 @@
+# article-92.6
+
+**6**
+
+The Commission shall adopt implementing acts setting out the detailed arrangements and the conditions for the evaluations, including the detailed arrangements for involving independent experts, and the procedure for the selection thereof. Those implementing acts shall be adopted in accordance with the examination procedure referred to in Article 98(2).
+
+## Links
+
+- HAS_SUBUNIT: [[article-92.7]]

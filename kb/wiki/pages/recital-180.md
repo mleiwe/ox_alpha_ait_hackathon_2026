@@ -1,0 +1,12 @@
+# recital-180
+
+**Recital 180**
+
+# Recital 180
+
+The European Data Protection Supervisor and the European Data Protection Board were consulted in accordance with Article 42(1) and (2) of Regulation (EU) 2018/1725 and delivered their joint opinion on 18 June 2021,
+
+## Links
+
+- REFERENCES: [[article-42]]
+- INTERPRETS: [[article-42]]

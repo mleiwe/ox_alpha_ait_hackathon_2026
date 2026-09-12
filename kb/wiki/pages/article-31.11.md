@@ -1,0 +1,9 @@
+# article-31.11
+
+**11**
+
+Notified bodies shall have sufficient internal competences to be able effectively to evaluate the tasks conducted by external parties on their behalf. The notified body shall have permanent availability of sufficient administrative, technical, legal and scientific personnel who possess experience and knowledge relating to the relevant types of AI systems, data and data computing, and relating to the requirements set out in Section 2.
+
+## Links
+
+- HAS_SUBUNIT: [[article-31.12]]

@@ -1,0 +1,9 @@
+# article-2.13.a
+
+**(a)**
+
+Union harmonisation legislation listed in Section A of Annex I lays down requirements or obligations providing an equivalent or higher level of protection of health, safety or fundamental rights as the requirement or obligation concerned; and
+
+## Links
+
+- HAS_SUBUNIT: [[article-2.13.a.b]]

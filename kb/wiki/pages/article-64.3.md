@@ -1,0 +1,5 @@
+# article-64.3
+
+**3**
+
+Without prejudice to the budgetary procedure, the AI Office shall be allocated adequate resources to effectively perform its duties and exercise its powers in relation to the enforcement of this Regulation.

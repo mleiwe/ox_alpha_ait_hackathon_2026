@@ -1,0 +1,9 @@
+# article-22.3.a.b
+
+**(b)**
+
+keep at the disposal of the competent authorities and national authorities or bodies referred to in Article 74(10), for a period of 10 years after the high-risk AI system has been placed on the market or put into service, the contact details of the provider that appointed the authorised representative, a copy of the EU declaration of conformity referred to in Article 47, the technical documentation and, if applicable, the certificate issued by the notified body;
+
+## Links
+
+- HAS_SUBUNIT: [[article-22.3.a.b.c]]

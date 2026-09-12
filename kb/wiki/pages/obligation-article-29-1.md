@@ -1,0 +1,5 @@
+# obligation-article-29-1
+
+**2 The application for notification shall be accompanied by a description of the **
+
+2 The application for notification shall be accompanied by a description of the conformity assessment activities, the conformity assessment module or modules and the types of AI systems for which the conformity assessment body claims to be competent, as well as by an accreditation certificate, where one exists, issued by a national accreditation body attesting that the conformity assessment body fulfils the requirements laid down in Article 31.

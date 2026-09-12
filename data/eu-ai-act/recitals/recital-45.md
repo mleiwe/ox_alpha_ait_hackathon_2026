@@ -6,5 +6,7 @@ source_url: http://publications.europa.eu/resource/celex/32024R1689
 retrieved: 2026-09-12
 attribution: "© European Union, http://eur-lex.europa.eu"
 ---
-(45) |  Practices that are prohibited by Union law, including data protection law, non-discrimination law, consumer protection law, and competition law, should not be affected by this Regulation.  
----|---
+
+# Recital 45
+
+Practices that are prohibited by Union law, including data protection law, non-discrimination law, consumer protection law, and competition law, should not be affected by this Regulation.
