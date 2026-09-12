@@ -33,6 +33,29 @@ class NetworkXKB(KBBackend):
         refs = {dst for _, dst, d in self.g.out_edges(unit_id, data=True) if d.get("kind") == "REFERENCES"}
         return sorted(refs)
 
+    def edges(
+        self,
+        unit_id: str,
+        direction: str = "out",
+        kinds: tuple[str, ...] | None = None,
+    ) -> list[tuple[str, str, str]]:
+        from . import _match_kinds
+
+        results: list[tuple[str, str, str]] = []
+        if direction in ("out", "both"):
+            results += [
+                (src, dst, d.get("kind", ""))
+                for src, dst, d in self.g.out_edges(unit_id, data=True)
+                if _match_kinds(d.get("kind", ""), kinds)
+            ]
+        if direction in ("in", "both"):
+            results += [
+                (src, dst, d.get("kind", ""))
+                for src, dst, d in self.g.in_edges(unit_id, data=True)
+                if _match_kinds(d.get("kind", ""), kinds)
+            ]
+        return results
+
     def obligations_for(self, actor_id: str) -> list[Node]:
         results = []
         for src, _dst, d in self.g.in_edges(actor_id, data=True):

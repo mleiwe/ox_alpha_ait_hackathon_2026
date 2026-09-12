@@ -1,0 +1,186 @@
+[
+  {
+    "strategy": "0-substring",
+    "backend": "NetworkXKB",
+    "k": 5,
+    "n_items": 35,
+    "hop_coverage": 0.0,
+    "unanswerable_no_hook_rate": 1.0,
+    "per_category": {
+      "actor-binding": {
+        "n": 5,
+        "hop_coverage": 0.0,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      },
+      "definition-resolution": {
+        "n": 5,
+        "hop_coverage": 0.0,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      },
+      "exception-application": {
+        "n": 5,
+        "hop_coverage": 0.0,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      },
+      "precedence-ordering": {
+        "n": 5,
+        "hop_coverage": 0.0,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      },
+      "scope-composition": {
+        "n": 5,
+        "hop_coverage": 0.0,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      },
+      "temporal-composition": {
+        "n": 5,
+        "hop_coverage": 0.0,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      }
+    }
+  },
+  {
+    "strategy": "1-bm25",
+    "backend": "NetworkXKB",
+    "k": 5,
+    "n_items": 35,
+    "hop_coverage": 0.23333333333333334,
+    "unanswerable_no_hook_rate": 1.0,
+    "per_category": {
+      "actor-binding": {
+        "n": 5,
+        "hop_coverage": 0.21666666666666665,
+        "distractor_resistance": 0.8,
+        "trace_validity": 1.0
+      },
+      "definition-resolution": {
+        "n": 5,
+        "hop_coverage": 0.15,
+        "distractor_resistance": 0.9,
+        "trace_validity": 1.0
+      },
+      "exception-application": {
+        "n": 5,
+        "hop_coverage": 0.13333333333333333,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      },
+      "precedence-ordering": {
+        "n": 5,
+        "hop_coverage": 0.4,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      },
+      "scope-composition": {
+        "n": 5,
+        "hop_coverage": 0.06666666666666667,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      },
+      "temporal-composition": {
+        "n": 5,
+        "hop_coverage": 0.4333333333333333,
+        "distractor_resistance": 0.9,
+        "trace_validity": 1.0
+      }
+    }
+  },
+  {
+    "strategy": "2-tfidf",
+    "backend": "NetworkXKB",
+    "k": 5,
+    "n_items": 35,
+    "hop_coverage": 0.28055555555555556,
+    "unanswerable_no_hook_rate": 1.0,
+    "per_category": {
+      "actor-binding": {
+        "n": 5,
+        "hop_coverage": 0.21666666666666665,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      },
+      "definition-resolution": {
+        "n": 5,
+        "hop_coverage": 0.05,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      },
+      "exception-application": {
+        "n": 5,
+        "hop_coverage": 0.3,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      },
+      "precedence-ordering": {
+        "n": 5,
+        "hop_coverage": 0.5,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      },
+      "scope-composition": {
+        "n": 5,
+        "hop_coverage": 0.18333333333333332,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      },
+      "temporal-composition": {
+        "n": 5,
+        "hop_coverage": 0.4333333333333333,
+        "distractor_resistance": 0.9,
+        "trace_validity": 1.0
+      }
+    }
+  },
+  {
+    "strategy": "4-graphrag",
+    "backend": "NetworkXKB",
+    "k": 5,
+    "n_items": 35,
+    "hop_coverage": 0.3,
+    "unanswerable_no_hook_rate": 1.0,
+    "per_category": {
+      "actor-binding": {
+        "n": 5,
+        "hop_coverage": 0.21666666666666665,
+        "distractor_resistance": 0.8,
+        "trace_validity": 1.0
+      },
+      "definition-resolution": {
+        "n": 5,
+        "hop_coverage": 0.3,
+        "distractor_resistance": 0.9,
+        "trace_validity": 1.0
+      },
+      "exception-application": {
+        "n": 5,
+        "hop_coverage": 0.26666666666666666,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      },
+      "precedence-ordering": {
+        "n": 5,
+        "hop_coverage": 0.45,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      },
+      "scope-composition": {
+        "n": 5,
+        "hop_coverage": 0.13333333333333333,
+        "distractor_resistance": 1.0,
+        "trace_validity": 1.0
+      },
+      "temporal-composition": {
+        "n": 5,
+        "hop_coverage": 0.4333333333333333,
+        "distractor_resistance": 0.9,
+        "trace_validity": 1.0
+      }
+    }
+  }
+]

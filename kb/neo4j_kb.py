@@ -74,6 +74,23 @@ class Neo4jKB(KBBackend):
         )
         return [r["id"] for r in rows]
 
+    def edges(
+        self,
+        unit_id: str,
+        direction: str = "out",
+        kinds: tuple[str, ...] | None = None,
+    ) -> list[tuple[str, str, str]]:
+        if direction == "out":
+            match = f"MATCH (a:Entity {{id: $id}})-[r:REL]->(b)"
+        elif direction == "in":
+            match = f"MATCH (a:Entity)-[r:REL]->(b:Entity {{id: $id}})"
+        else:
+            match = f"MATCH (a:Entity)-[r:REL]-(b:Entity {{id: $id}})"
+        if kinds:
+            match += " WHERE r.kind IN $kinds"
+        rows = self._run(match + " RETURN a.id AS src, b.id AS dst, r.kind AS kind", id=unit_id, kinds=list(kinds or ()))
+        return [(r["src"], r["dst"], r["kind"]) for r in rows]
+
     def obligations_for(self, actor_id: str) -> list[Node]:
         rows = self._run(
             "MATCH (a:Entity)-[:REL {kind: 'IMPOSES_ON'}]->(b:Entity {id: $id}) RETURN a.id AS id",

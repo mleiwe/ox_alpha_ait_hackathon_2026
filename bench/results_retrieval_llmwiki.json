@@ -1,0 +1,166 @@
+[
+  {
+    "strategy": "0-substring",
+    "backend": "LLMwikiKB",
+    "k": 5,
+    "n_items": 40,
+    "mrr_at_k": 0.0,
+    "recall_at_k": 0.0,
+    "latency_mean_s": 0.007153095874764403,
+    "latency_p95_s": 0.009052484998392174,
+    "unanswerable_no_hit_rate": 1.0,
+    "per_category": {
+      "multi-hop": {
+        "n": 10,
+        "precision": 0.0,
+        "recall": 0.0,
+        "mrr": 0.0,
+        "chain_recall": 0.0
+      },
+      "scenario": {
+        "n": 8,
+        "precision": 0.0,
+        "recall": 0.0,
+        "mrr": 0.0,
+        "chain_recall": 0.0
+      },
+      "single-hop": {
+        "n": 10,
+        "precision": 0.0,
+        "recall": 0.0,
+        "mrr": 0.0,
+        "chain_recall": 0.0
+      },
+      "temporal": {
+        "n": 7,
+        "precision": 0.0,
+        "recall": 0.0,
+        "mrr": 0.0,
+        "chain_recall": 0.0
+      }
+    }
+  },
+  {
+    "strategy": "1-bm25",
+    "backend": "LLMwikiKB",
+    "k": 5,
+    "n_items": 40,
+    "mrr_at_k": 0.22714285714285715,
+    "recall_at_k": 0.3,
+    "latency_mean_s": 0.005846251674756786,
+    "latency_p95_s": 0.009517344999039778,
+    "unanswerable_no_hit_rate": 1.0,
+    "per_category": {
+      "multi-hop": {
+        "n": 10,
+        "precision": 0.06000000000000001,
+        "recall": 0.15,
+        "mrr": 0.16999999999999998,
+        "chain_recall": 0.0
+      },
+      "scenario": {
+        "n": 8,
+        "precision": 0.025,
+        "recall": 0.125,
+        "mrr": 0.041666666666666664,
+        "chain_recall": 0.125
+      },
+      "single-hop": {
+        "n": 10,
+        "precision": 0.08,
+        "recall": 0.4,
+        "mrr": 0.20833333333333334,
+        "chain_recall": 0.4
+      },
+      "temporal": {
+        "n": 7,
+        "precision": 0.14285714285714285,
+        "recall": 0.5714285714285714,
+        "mrr": 0.5476190476190477,
+        "chain_recall": 0.42857142857142855
+      }
+    }
+  },
+  {
+    "strategy": "2-tfidf",
+    "backend": "LLMwikiKB",
+    "k": 5,
+    "n_items": 40,
+    "mrr_at_k": 0.19238095238095237,
+    "recall_at_k": 0.2714285714285714,
+    "latency_mean_s": 0.0022963676501603913,
+    "latency_p95_s": 0.0031341339999926277,
+    "unanswerable_no_hit_rate": 1.0,
+    "per_category": {
+      "multi-hop": {
+        "n": 10,
+        "precision": 0.1,
+        "recall": 0.25,
+        "mrr": 0.2033333333333333,
+        "chain_recall": 0.0
+      },
+      "scenario": {
+        "n": 8,
+        "precision": 0.025,
+        "recall": 0.125,
+        "mrr": 0.0625,
+        "chain_recall": 0.125
+      },
+      "single-hop": {
+        "n": 10,
+        "precision": 0.1,
+        "recall": 0.45,
+        "mrr": 0.22000000000000003,
+        "chain_recall": 0.4
+      },
+      "temporal": {
+        "n": 7,
+        "precision": 0.05714285714285715,
+        "recall": 0.21428571428571427,
+        "mrr": 0.2857142857142857,
+        "chain_recall": 0.14285714285714285
+      }
+    }
+  },
+  {
+    "strategy": "4-graphrag",
+    "backend": "LLMwikiKB",
+    "k": 5,
+    "n_items": 40,
+    "mrr_at_k": 0.20095238095238094,
+    "recall_at_k": 0.3,
+    "latency_mean_s": 0.0181351100251959,
+    "latency_p95_s": 0.03262055300001521,
+    "unanswerable_no_hit_rate": 1.0,
+    "per_category": {
+      "multi-hop": {
+        "n": 10,
+        "precision": 0.06000000000000001,
+        "recall": 0.15,
+        "mrr": 0.145,
+        "chain_recall": 0.2
+      },
+      "scenario": {
+        "n": 8,
+        "precision": 0.025,
+        "recall": 0.125,
+        "mrr": 0.041666666666666664,
+        "chain_recall": 0.125
+      },
+      "single-hop": {
+        "n": 10,
+        "precision": 0.08,
+        "recall": 0.4,
+        "mrr": 0.20833333333333334,
+        "chain_recall": 0.5
+      },
+      "temporal": {
+        "n": 7,
+        "precision": 0.14285714285714285,
+        "recall": 0.5714285714285714,
+        "mrr": 0.4523809523809524,
+        "chain_recall": 0.5714285714285714
+      }
+    }
+  }
+]

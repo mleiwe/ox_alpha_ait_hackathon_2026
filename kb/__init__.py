@@ -25,6 +25,22 @@ class KBBackend(abc.ABC):
     def references(self, unit_id: str) -> list[str]:
         """Outgoing REFERENCES targets (cross-reference traversal)."""
 
+    def edges(
+        self,
+        unit_id: str,
+        direction: str = "out",
+        kinds: tuple[str, ...] | None = None,
+    ) -> list[tuple[str, str, str]]:
+        """Edges touching `unit_id` as (src, dst, kind) tuples.
+
+        direction: "out" (unit is src), "in" (unit is dst), "both".
+        kinds: optional filter, e.g. ("REFERENCES", "IMPOSES_ON").
+        Default implementation walks `references()`-style surfaces; concrete
+        backends override for efficiency. Excludes HAS_SUBUNIT noise when
+        kinds is None? No — returns everything; callers filter.
+        """
+        raise NotImplementedError
+
     @abc.abstractmethod
     def obligations_for(self, actor_id: str) -> list[Node]:
         """Obligations imposed on an actor (e.g. actor-provider)."""
@@ -40,6 +56,10 @@ class KBBackend(abc.ABC):
     @abc.abstractmethod
     def stats(self) -> dict[str, int]:
         """Node counts by type + edges."""
+
+
+def _match_kinds(kind: str, kinds: tuple[str, ...] | None) -> bool:
+    return kinds is None or kind in kinds
 
 
 def get_kb(backend: str, corpus_dir: Path | None = None, directed: bool = True) -> KBBackend:
