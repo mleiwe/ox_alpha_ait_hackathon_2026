@@ -52,7 +52,9 @@
 
 ### Definition-usage edges
 
-Every clause/sub-clause that uses a term defined in Article 3 gets a `USES_DEFINITION` edge to the `Definition` node (2,174 edges). Terms are matched as word-boundary phrases (quoted `'AI system'` or unquoted). This is the grounding layer for IDE agents: a PRD mentioning "deployer" resolves via `def-deployer` → `actor-deployer` → all `IMPOSES_ON` obligations.
+Every clause/sub-clause **and recital** that uses a term defined in Article 3 gets a `USES_DEFINITION` edge to the `Definition` node. Terms are matched as word-boundary phrases (quoted `'AI system'` or unquoted). This is the grounding layer for IDE agents: a PRD mentioning "deployer" resolves via `def-deployer` → `actor-deployer` → all `IMPOSES_ON` obligations.
+
+Recitals benefit most: before this, 86 of 180 recitals were isolated nodes (recitals rarely cite articles by number — they interpret by *using defined terms*). After adding recital `USES_DEFINITION` edges, only 12 remain isolated (genuinely self-contained recitals, e.g. recital 1's purpose statement). Example: recital 19 (the 'publicly accessible space' scope definition) now links to `def-publicly-accessible-space` and `def-provider`.
 
 ## Generated visuals
 

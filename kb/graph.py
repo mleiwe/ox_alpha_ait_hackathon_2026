@@ -261,7 +261,11 @@ def build_graph(corpus_dir: Path) -> Graph:
             g.add_node(Node(id="risk-high", type="RiskTier", title="high risk"))
             g.add_edge(uid, "risk-high", "CLASSIFIES_AS")
 
-    # Pass 4: recital interpretation links (recital cites article)
+    # Pass 4: recital links — INTERPRETS (explicit article citations) and
+    # USES_DEFINITION (recitals use Art 3 terms heavily, e.g. recital 19
+    # defines the scope of 'publicly accessible space').
+    defs_text = next((n.content for n in g.nodes.values() if n.id == "article-3"), "")
+    defined_terms = [t.strip().lower() for t, _d in DEFINITION_RE.findall(defs_text)]
     for meta, body, path in units:
         uid = meta.get("id")
         if not uid or not uid.startswith("recital-"):
@@ -270,6 +274,12 @@ def build_graph(corpus_dir: Path) -> Graph:
             ref_id = _norm_article(num, letter)
             if ref_id in g.nodes:
                 g.add_edge(uid, ref_id, "INTERPRETS")
+        for term in defined_terms:
+            pattern = re.compile(r"['\u2018\u2019\"]?" + re.escape(term) + r"['\u2018\u2019\"]?", re.IGNORECASE)
+            if pattern.search(body):
+                def_id = f"def-{_slug(term)}"
+                if def_id in g.nodes:
+                    g.add_edge(uid, def_id, "USES_DEFINITION")
 
     apply_edge_weights(g)
     return g
