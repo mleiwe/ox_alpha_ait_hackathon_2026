@@ -1,0 +1,497 @@
+#!/usr/bin/env python3
+"""compliance-check — the compliance middleware CLI.
+
+One binary, several entry points; every run appends to the ledger:
+
+  --fast    Tier 1 deterministic scan of one file (regex, line-scoped). ms.
+            exit 0 clean / 1 warn / 2 block. Used by OpenCode gate + Hermes hook.
+  --llm     Tier 1 + KB excerpt enrichment (+ LLM adjudication when
+            config.llm_command is set). Used by background review + explicit review.
+  --report  Aggregate one session's ledger entries. Used on session.idle.
+  --scan    Scan files changed vs --base (or --files list); write PR report.
+  --ledger  Render recent ledger entries as a table.
+
+Design invariants:
+  - The CLI is the only writer (ledger + reports). Callers only invoke.
+  - Stage comes from artifact path (config.stage_globs, first match wins),
+    never from inference. Gate decisions stay reproducible.
+  - Verdicts on stdout stay short (~300 chars); full detail goes to reports dir.
+"""
+
+import argparse
+import fnmatch
+import json
+import os
+import re
+import subprocess
+import sys
+import time
+from datetime import datetime, timezone
+from pathlib import Path
+
+EXIT_CLEAN, EXIT_WARN, EXIT_BLOCK = 0, 1, 2
+
+REPO_ROOT = Path(subprocess.run(
+    ["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True
+).stdout.strip() or Path(__file__).resolve().parent.parent)
+
+CFG_PATH = REPO_ROOT / "compliance" / "config.json"
+
+
+def load_config():
+    cfg = json.loads(CFG_PATH.read_text(encoding="utf-8"))
+    # resolve kb/ledger/report paths relative to repo root
+    for key in ("ledger", "reports_dir"):
+        cfg[key] = (REPO_ROOT / cfg[key]).resolve()
+    return cfg
+
+
+def glob_match(rel_l: str, g: str) -> bool:
+    """fnmatch with standard-glob semantics: a leading '**/' also matches root-level paths."""
+    gl = g.lower()
+    if fnmatch.fnmatch(rel_l, gl) or fnmatch.fnmatch(rel_l, gl.rstrip("/") + "/*"):
+        return True
+    if gl.startswith("**/"):
+        return fnmatch.fnmatch(rel_l, gl[3:])
+    return False
+
+
+def stage_for(path: str, cfg: dict) -> str:
+    rel = os.path.relpath(path, REPO_ROOT)
+    rel_l = rel.lower()
+    for stage, globs in cfg["stage_globs"].items():
+        for g in globs:
+            if glob_match(rel_l, g):
+                return stage
+    return cfg.get("default_stage", "other")
+
+
+def load_rules():
+    return json.loads((REPO_ROOT / "compliance" / "rules.json").read_text(encoding="utf-8"))["rules"]
+
+
+def rule_applies_to_stage(rule: dict, stage: str) -> bool:
+    rs = rule.get("stage") or []
+    return not rs or stage in rs
+
+
+def scan_pattern_rule(rule: dict, lines: list[str]):
+    """Line-scoped: every regex in a group must match within the same line."""
+    findings = []
+    for gi, group in enumerate(rule.get("patterns", [])):
+        regexes = [re.compile(p, re.I) for p in group["all"]]
+        for ln, line in enumerate(lines, 1):
+            if all(r.search(line) for r in regexes):
+                findings.append({
+                    "rule": rule["id"], "line": ln, "snippet": line.strip()[:200],
+                    "title": rule["title"], "citations": rule["citations"],
+                    "severity": rule["severity"], "group": gi,
+                })
+    return findings
+
+
+def scan_disclosure_rule(rule: dict, path: str, lines: list[str], cfg: dict):
+    """AI mentioned in a UI-surface file without the required disclosure string."""
+    rel = os.path.relpath(path, REPO_ROOT).lower()
+    globs = rule.get("applies_globs") or []
+    if not any(glob_match(rel, g) for g in globs):
+        return []
+    mention = [re.compile(p, re.I) for p in rule.get("mention", [])]
+    required = [re.compile(p, re.I) for p in rule.get("required", [])]
+    mentioned_lines = [ln for ln, line in enumerate(lines, 1)
+                       if any(r.search(line) for r in mention)]
+    if not mentioned_lines:
+        return []
+    if any(r.search(line) for line in lines for r in required):
+        return []
+    ln = mentioned_lines[0]
+    return [{
+        "rule": rule["id"], "line": ln, "snippet": lines[ln - 1].strip()[:200],
+        "title": rule["title"], "citations": rule["citations"],
+        "severity": rule["severity"],
+    }]
+
+
+def scan_file(path: str, content: str, cfg: dict, rules: list[dict]):
+    lines = content.splitlines()
+    stage = stage_for(path, cfg)
+    findings = []
+    for rule in rules:
+        if not rule_applies_to_stage(rule, stage):
+            continue
+        if rule.get("type") == "pattern":
+            findings += scan_pattern_rule(rule, lines)
+        elif rule.get("type") == "disclosure":
+            findings += scan_disclosure_rule(rule, path, lines, cfg)
+    return stage, findings
+
+
+def verdict_of(findings: list[dict]) -> int:
+    sev = {f["severity"] for f in findings}
+    if "block" in sev:
+        return EXIT_BLOCK
+    if "warn" in sev:
+        return EXIT_WARN
+    return EXIT_CLEAN
+
+
+def ledger_append(cfg: dict, record: dict):
+    cfg["ledger"].parent.mkdir(parents=True, exist_ok=True)
+    with cfg["ledger"].open("a", encoding="utf-8") as f:
+        f.write(json.dumps(record) + "\n")
+
+
+def write_report(cfg: dict, path: str, mode: str, stage: str, findings: list[dict], kb: dict | None = None) -> str:
+    cfg["reports_dir"].mkdir(parents=True, exist_ok=True)
+    ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S")
+    name = f"{ts}-{Path(path).name}-{mode}.md"
+    rp = cfg["reports_dir"] / name
+    lines_out = [
+        f"# Compliance report — {Path(path).name}",
+        f"- stage: {stage}  |  mode: {mode}  |  verdict: {verdict_of(findings)}",
+        f"- generated: {datetime.now(timezone.utc).isoformat()}",
+        "",
+    ]
+    if kb:
+        lines_out += ["## Relevant obligations (from the knowledge graph)"]
+        for uid, u in kb.items():
+            src = u.get("source", "kb")
+            first = (u.get("text") or "").strip().splitlines()
+            title = first[0][:120] if first else ""
+            lines_out += [f"### {uid}  ({src})", title, ""]
+        lines_out.append("Assessment: obligations above were checked against the artifact "
+                         "before this verdict; applicability judgements are the adjudicator's "
+                         "when llm_command is configured.")
+        lines_out.append("")
+    if findings:
+        lines_out.append("## Findings")
+        for f_ in findings:
+            lines_out += [
+                f"### [{f_['severity'].upper()}] {f_['rule']} — line {f_['line']} — {'Art cites: ' + ', '.join(f_['citations']) if f_['citations'] else 'no citation'}",
+                f"> {f_['snippet']}",
+                f"{f_['title']}",
+                "",
+            ]
+    else:
+        lines_out.append("No findings.")
+    rp.write_text("\n".join(lines_out), encoding="utf-8")
+    return str(rp)
+
+
+def kb_available(cfg: dict) -> bool:
+    """KB layer present (kb/ package + corpus). True once PR #1/#2 merge or a KB checkout is used."""
+    return (REPO_ROOT / "kb").is_dir() and (REPO_ROOT / cfg["kb"].get("corpus", "data/eu-ai-act")).is_dir()
+
+
+def kb_query_cli(cfg: dict, kb_args: list[str]) -> str:
+    """Run kb.query from the KB layer (uses the repo's own uv env)."""
+    cmd = ["uv", "run", "python", "-m", "kb.query",
+           "--backend", cfg["kb"].get("backend", "networkx")] + kb_args
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=60, cwd=REPO_ROOT)
+        return r.stdout.strip()
+    except Exception:  # noqa: BLE001 — KB unavailability must degrade, not crash
+        return ""
+
+
+# Relevance signals per stage: which parts of the Act to query the graph for.
+DOMAIN_SIGNALS = {
+    "planning": ["provider", "deployer", "high-risk", "prohibited", "transparency", "risk management"],
+    "implementation": ["transparency", "logging", "human oversight", "personal data", "automated decision"],
+    "documentation": ["technical documentation", "instructions for use", "transparency", "accuracy"],
+    "other": ["prohibited", "transparency"],
+}
+
+
+def kb_retrieve(cfg: dict, citations: list[str], stage: str, cap: int = 700) -> dict:
+    """KB-first retrieval: query the knowledge graph for obligations relevant
+    to the artifact (citation-derived unit ids + stage domain signals), then
+    fetch each unit's text. Falls back to raw article files when the kb/ layer
+    is absent."""
+    units: dict[str, dict] = {}
+    unit_ids: list[str] = []
+    for c in citations:
+        m = re.match(r"Art\.\s*(\d+)", c)
+        if m and f"article-{m.group(1)}" not in unit_ids:
+            unit_ids.append(f"article-{m.group(1)}")
+    if kb_available(cfg):
+        for term in DOMAIN_SIGNALS.get(stage, []):
+            out = kb_query_cli(cfg, ["--search", term])
+            unit_ids += [l.strip() for l in out.splitlines() if l.strip()][:5]
+        seen: set[str] = set()
+        for uid in unit_ids:
+            if uid in seen or len(seen) >= 8:
+                continue
+            seen.add(uid)
+            text = kb_query_cli(cfg, ["--unit", uid])
+            if text and not text.startswith("not found"):
+                units[uid] = {"source": "kb", "text": text[:cap]}
+        return units
+    # fallback: raw markdown articles (PR #1 layout), no kb/ package
+    arts_dir = REPO_ROOT / cfg["kb"].get("articles", "data/eu-ai-act/articles")
+    if not arts_dir.is_dir():
+        return units
+    for c in citations:
+        m = re.match(r"Art\.\s*(\d+)", c)
+        if not m:
+            continue
+        num = m.group(1)
+        for cand in sorted(arts_dir.glob(f"*{num}*.md"))[:1]:
+            text = cand.read_text(encoding="utf-8", errors="replace")
+            idx = text.lower().find(f"article {num}")
+            units[c] = {"source": str(cand.relative_to(REPO_ROOT)),
+                        "text": (text[idx:idx + cap] if idx >= 0 else text[:cap])}
+    return units
+
+
+def short_verdict(path: str, stage: str, findings: list[dict], report_path: str | None) -> str:
+    v = {EXIT_CLEAN: "clean", EXIT_WARN: "warn", EXIT_BLOCK: "block"}[verdict_of(findings)]
+    if not findings:
+        return f"COMPLIANCE_CLEAN ({stage}: {os.path.relpath(path, REPO_ROOT)})"
+    # Map rule -> citations from the findings. Never zip rules against the
+    # deduped citation set: both are independently sorted, so zip mispairs
+    # (SOC-01 got MANIP-01's 5(1)(b) and dropped its own 5(1)(c)).
+    rule_cites: dict[str, set[str]] = {}
+    for f_ in findings:
+        rule_cites.setdefault(f_["rule"], set()).update(f_["citations"])
+    out = [f"COMPLIANCE_{v.upper()} ({len(findings)} finding(s) | {stage}: {os.path.relpath(path, REPO_ROOT)})"]
+    for r in sorted(rule_cites):
+        out.append(f"[{r} | {', '.join(sorted(rule_cites[r]))}]")
+    if report_path:
+        out.append(f"Full report: {os.path.relpath(report_path, REPO_ROOT)}")
+    out.append("Fix the flagged lines or run compliance_review.")
+    return "\n".join(out)[:600]
+
+
+def read_content(args) -> str:
+    if args.content is not None:
+        return args.content
+    if args.file and Path(args.file).exists():
+        return Path(args.file).read_text(encoding="utf-8", errors="replace")
+    return ""
+
+
+def cmd_fast(args, cfg, rules) -> int:
+    t0 = time.time()
+    if not args.file:
+        print("error: --file required", file=sys.stderr)
+        return EXIT_CLEAN
+    stage, findings = scan_file(args.file, read_content(args), cfg, rules)
+    exit_code = verdict_of(findings)
+    report = write_report(cfg, args.file, "fast", stage, findings) if findings else None
+    ledger_append(cfg, {
+        "ts": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "session": args.session or "",
+        "stage": stage, "file": os.path.relpath(args.file, REPO_ROOT),
+        "mode": "fast", "exit": exit_code,
+        "rules": sorted({f_["rule"] for f_ in findings}),
+        "citations": sorted({c for f_ in findings for c in f_["citations"]}),
+        "verdict": {0: "clean", 1: "warn", 2: "block"}[exit_code],
+        "latency_ms": round((time.time() - t0) * 1000, 1),
+    })
+    if args.json:
+        print(json.dumps({"exit": exit_code, "stage": stage, "findings": findings,
+                          "report": report}, ensure_ascii=False))
+    else:
+        print(short_verdict(args.file, stage, findings, report))
+    return exit_code
+
+
+def adjudicate(cfg: dict, payload: dict) -> str:
+    """Tier 2 applicability judgement. External script (llm_command) overrides;
+    otherwise built-in OpenAI-compatible call per config.llm."""
+    if cfg.get("llm_command"):
+        try:
+            r = subprocess.run([cfg["llm_command"]], input=json.dumps(payload),
+                               capture_output=True, text=True,
+                               timeout=cfg.get("llm_timeout_s", 240))
+            return r.stdout.strip()
+        except Exception as e:  # noqa: BLE001 — hook context must never crash the agent
+            return f"(adjudicator error: {e})"
+    llm = cfg.get("llm") or {}
+    if not llm.get("enabled"):
+        return ""
+    import urllib.request
+    sys_prompt = (
+        "You are an EU AI Act compliance adjudicator. You receive a development "
+        "artifact (stage, flagged findings, and obligations retrieved from a "
+        "knowledge graph of the Act). For each retrieved obligation, state in one "
+        "line whether it applies to the artifact and why. Then a final line: "
+        "VERDICT: <pass|violation> — <citation or 'none'>. Be concrete; quote the "
+        "artifact when judging. Max 12 lines."
+    )
+    user = json.dumps(payload, ensure_ascii=False)[:12000]
+    body = {
+        "model": llm.get("model", ""),
+        "messages": [{"role": "system", "content": sys_prompt},
+                     {"role": "user", "content": user}],
+        "max_tokens": llm.get("max_tokens", 1500),
+        "temperature": llm.get("temperature", 0),
+    }
+    headers = {"Content-Type": "application/json"}
+    key_env = llm.get("api_key_env") or ""
+    if key_env and os.environ.get(key_env):
+        headers["Authorization"] = f"Bearer {os.environ[key_env]}"
+    req = urllib.request.Request(
+        llm.get("base_url", "").rstrip("/") + "/chat/completions",
+        data=json.dumps(body).encode(), headers=headers, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=cfg.get("llm_timeout_s", 240)) as resp:
+            data = json.loads(resp.read())
+        return (data["choices"][0]["message"].get("content") or "").strip()
+    except Exception as e:  # noqa: BLE001 — adjudicator unavailability must degrade
+        return f"(adjudicator error: {e})"
+
+
+def cmd_llm(args, cfg, rules) -> int:
+    t0 = time.time()
+    stage, findings = scan_file(args.file, read_content(args), cfg, rules)
+    exit_code = verdict_of(findings)
+    kb = kb_retrieve(cfg, sorted({c for f_ in findings for c in f_["citations"]}), stage)
+    adjudication = adjudicate(cfg, {"file": args.file, "stage": stage,
+                                    "findings": findings, "kb": kb})
+    report = write_report(cfg, args.file, "llm", stage, findings, kb=kb) if (findings or adjudication) else None
+    ledger_append(cfg, {
+        "ts": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "session": args.session or "",
+        "stage": stage, "file": os.path.relpath(args.file, REPO_ROOT),
+        "mode": "llm", "exit": exit_code,
+        "rules": sorted({f_["rule"] for f_ in findings}),
+        "citations": sorted({c for f_ in findings for c in f_["citations"]}),
+        "verdict": {0: "clean", 1: "warn", 2: "block"}[exit_code],
+        "latency_ms": round((time.time() - t0) * 1000, 1),
+    })
+    if args.json:
+        print(json.dumps({"exit": exit_code, "stage": stage, "findings": findings,
+                          "kb": kb, "adjudication": adjudication, "report": report},
+                         ensure_ascii=False))
+    else:
+        head = short_verdict(args.file, stage, findings, report)
+        if adjudication:
+            head += "\nAdjudication: " + adjudication[:400]
+        print(head)
+    return exit_code
+
+
+def cmd_report(args, cfg, rules) -> int:
+    ledger = cfg["ledger"]
+    if not ledger.exists():
+        print("No ledger yet — nothing recorded.")
+        return EXIT_CLEAN
+    entries = [json.loads(l) for l in ledger.read_text().splitlines() if l.strip()]
+    if args.session:
+        entries = [e for e in entries if e.get("session") == args.session]
+    if not entries:
+        print("No entries for this session.")
+        return EXIT_CLEAN
+    by_stage = {}
+    for e in entries:
+        by_stage.setdefault(e["stage"], []).append(e)
+    blocks = [e for e in entries if e["verdict"] == "block"]
+    warns = [e for e in entries if e["verdict"] == "warn"]
+    stage_mix = ", ".join(f"{len(v)} {k}" for k, v in by_stage.items())
+    lines = [f"Session report ({len(entries)} review(s): {stage_mix})"]
+    if blocks:
+        lines.append(f"Blocks: {len(blocks)} — " + "; ".join(
+            f"{e['file']} [{' | '.join(e['citations'])}]" for e in blocks))
+    if warns:
+        lines.append(f"Warnings: {len(warns)} — " + "; ".join(
+            f"{e['file']} [{' | '.join(e['citations'])}]" for e in warns))
+    lines.append(f"Ledger: {ledger}")
+    print("\n".join(lines))
+    return EXIT_CLEAN
+
+
+def cmd_scan(args, cfg, rules) -> int:
+    if args.files:
+        files = [f for f in args.files.split(",") if f]
+    else:
+        base = args.base or "origin/main"
+        r = subprocess.run(["git", "diff", "--name-only", "--diff-filter=ACM", base],
+                           capture_output=True, text=True, cwd=REPO_ROOT)
+        files = [f for f in r.stdout.splitlines() if f]
+    added = set()
+    if not args.files:
+        base = args.base or "origin/main"
+        r = subprocess.run(["git", "diff", "--name-only", "--diff-filter=A", base],
+                           capture_output=True, text=True, cwd=REPO_ROOT)
+        added = set(r.stdout.splitlines())
+    rows, any_block = [], False
+    for f in files:
+        p = REPO_ROOT / f
+        if not p.is_file():
+            continue
+        stage, findings = scan_file(str(p), p.read_text(encoding="utf-8", errors="replace"), cfg, rules)
+        v = verdict_of(findings)
+        any_block = any_block or v == EXIT_BLOCK
+        drift = f in added and stage == "implementation" and not any(
+            e.get("stage") == "planning" for e in _ledger_entries(cfg))
+        rows.append((f, stage, v, findings, drift))
+    lines = ["# Compliance scan report", ""]
+    for f, stage, v, findings, drift in rows:
+        badge = {0: "clean", 1: "warn", 2: "BLOCK"}[v]
+        line = f"- `{f}` — {stage} — {badge}"
+        if drift:
+            line += " — DRIFT: new implementation file with no planning-stage ledger coverage"
+        lines.append(line)
+        for f_ in findings:
+            lines.append(f"  - [{f_['severity'].upper()}] {f_['rule']} line {f_['line']}: {' | '.join(f_['citations'])}")
+    out = "\n".join(lines) + "\n"
+    cfg["reports_dir"].mkdir(parents=True, exist_ok=True)
+    rp = cfg["reports_dir"] / "scan-report.md"
+    rp.write_text(out, encoding="utf-8")
+    print(out)
+    print(f"Report: {rp}")
+    return EXIT_BLOCK if any_block else (EXIT_WARN if any(v == EXIT_WARN for _, _, v, _, _ in rows) else EXIT_CLEAN)
+
+
+def _ledger_entries(cfg) -> list[dict]:
+    ledger = cfg["ledger"]
+    if not ledger.exists():
+        return []
+    return [json.loads(l) for l in ledger.read_text().splitlines() if l.strip()]
+
+
+def cmd_ledger(args, cfg, rules) -> int:
+    entries = _ledger_entries(cfg)[-args.tail:]
+    if not entries:
+        print("Ledger empty.")
+        return EXIT_CLEAN
+    print(f"{'ts':<21} {'stage':<15} {'mode':<5} {'verdict':<8} {'rules':<22} citations")
+    for e in entries:
+        print(f"{e['ts']:<21} {e['stage']:<15} {e['mode']:<5} {e['verdict']:<8} "
+              f"{','.join(e['rules']):<22} {', '.join(e['citations'])}")
+    return EXIT_CLEAN
+
+
+def main():
+    ap = argparse.ArgumentParser(prog="compliance-check")
+    ap.add_argument("--fast", action="store_true")
+    ap.add_argument("--llm", action="store_true")
+    ap.add_argument("--report", action="store_true")
+    ap.add_argument("--scan", action="store_true")
+    ap.add_argument("--ledger", action="store_true", dest="ledger_flag")
+    ap.add_argument("--file")
+    ap.add_argument("--content")
+    ap.add_argument("--session")
+    ap.add_argument("--base")
+    ap.add_argument("--files", help="comma-separated file list for --scan (testing/CI override)")
+    ap.add_argument("--tail", type=int, default=20)
+    ap.add_argument("--json", action="store_true")
+    args = ap.parse_args()
+    cfg, rules = load_config(), load_rules()
+    if args.fast:
+        sys.exit(cmd_fast(args, cfg, rules))
+    if args.llm:
+        sys.exit(cmd_llm(args, cfg, rules))
+    if args.report:
+        sys.exit(cmd_report(args, cfg, rules))
+    if args.scan:
+        sys.exit(cmd_scan(args, cfg, rules))
+    if args.ledger_flag:
+        sys.exit(cmd_ledger(args, cfg, rules))
+    ap.print_help()
+
+
+if __name__ == "__main__":
+    main()

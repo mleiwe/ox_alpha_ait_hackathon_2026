@@ -1,0 +1,49 @@
+name: compliance-scan
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  compliance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run compliance scan (changed files vs base)
+        id: scan
+        if: github.event_name == 'pull_request'
+        run: |
+          compliance/compliance-check --scan --base "origin/${{ github.base_ref }}" | tee "${GITHUB_STEP_SUMMARY}"
+        continue-on-error: true
+
+      - name: Run compliance scan (push to main)
+        if: github.event_name != 'pull_request'
+        run: |
+          compliance/compliance-check --scan --base "origin/${{ github.event.before }}" | tee "${GITHUB_STEP_SUMMARY}"
+        continue-on-error: true
+
+      - name: Upload compliance report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: compliance-report
+          path: .compliance/
+
+      - name: Enforce block verdicts
+        if: github.event_name == 'pull_request'
+        run: |
+          set +e
+          compliance/compliance-check --scan --base "origin/${{ github.base_ref }}" > /dev/null
+          code=$?
+          if [ "$code" -eq 2 ]; then
+            echo "::error::Compliance block verdict — see the compliance-report artifact"
+            exit 2
+          fi

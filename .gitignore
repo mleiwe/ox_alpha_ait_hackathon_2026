@@ -11,3 +11,10 @@ __pycache__/
 # OS / editor
 .DS_Store
 .idea/
+
+# compliance middleware runtime artifacts
+.compliance/
+node_modules/
+
+# swarm-lane leftovers
+.gitignore.local-backup
