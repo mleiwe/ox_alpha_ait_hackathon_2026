@@ -96,6 +96,38 @@ def scan_pattern_rule(rule: dict, lines: list[str]):
     return findings
 
 
+def scan_pattern_rule_filescope(rule: dict, lines: list[str]):
+    """File-scoped matching for code: a rule group fires when every regex in a
+    group matches somewhere in the file (any line). Catches designs whose
+    phrasing spreads the pattern across lines (scoreSignup + restricted +
+    RESTRICTION_THRESHOLD on separate lines). Precision comes from tighter
+    term pairs: a person-scoring term AND a detrimental-treatment term must
+    both appear, in patterns designed for code (auto-restriction on a
+    person-level score)."""
+    findings = []
+    for gi, group in enumerate(rule.get("patterns", [])):
+        if not group.get("file_scope"):
+            continue
+        regexes = [re.compile(p, re.I) for p in group["all"]]
+        for r in regexes:
+            if not any(r.search(line) for line in lines):
+                break
+        else:
+            # all terms present somewhere in the file: report the first line
+            # that matches the FIRST regex (the person-scoring anchor)
+            anchor = regexes[0]
+            for ln, line in enumerate(lines, 1):
+                if anchor.search(line):
+                    findings.append({
+                        "rule": rule["id"], "line": ln,
+                        "snippet": line.strip()[:200],
+                        "title": rule["title"], "citations": rule["citations"],
+                        "severity": rule["severity"], "group": gi,
+                    })
+                    break
+    return findings
+
+
 def scan_disclosure_rule(rule: dict, path: str, lines: list[str], cfg: dict):
     """AI mentioned in a UI-surface file without the required disclosure string."""
     rel = os.path.relpath(path, REPO_ROOT).lower()
@@ -127,6 +159,7 @@ def scan_file(path: str, content: str, cfg: dict, rules: list[dict]):
             continue
         if rule.get("type") == "pattern":
             findings += scan_pattern_rule(rule, lines)
+            findings += scan_pattern_rule_filescope(rule, lines)
         elif rule.get("type") == "disclosure":
             findings += scan_disclosure_rule(rule, path, lines, cfg)
     return stage, findings

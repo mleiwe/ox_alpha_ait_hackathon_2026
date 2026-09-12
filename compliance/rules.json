@@ -13,7 +13,8 @@
         {"all": ["scor(e|ing|es)", "access", "restrict|suspend|ban|limit|deny|revoke"]},
         {"all": ["scor(e|ing|es)", "reliability|trustworthiness|creditworthiness", "account|user|person|applicant"]},
         {"all": ["rank(s|ing)? (user|person|customer)", "restrict|suspend|ban|limit|deny"]},
-        {"all": ["scor(e|ing|es)", "suspend|restrict|ban|revoke|deny|block access|deactivate"]}
+        {"all": ["scor(e|ing|es)", "suspend|restrict|ban|revoke|deny|block access|deactivate"]},
+        {"file_scope": true, "all": ["(scor\\w*|trust\\w*)\\w*\\s*[(:=]|score\\s*[=+]", "restrict(ion|ed|ions|s)?\\b", "\\bthreshold\\b|below (a |the )?threshold|RESTRICT_BELOW|RESTRICTION_THRESHOLD"]}
       ]
     },
     {
