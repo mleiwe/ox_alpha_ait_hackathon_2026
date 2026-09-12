@@ -69,6 +69,22 @@ Use a fresh filename per demo run (`src/risk-demo.ts`, `src/monitor.ts`) —
 `src/fraud-demo.ts` already contains the compliant restructure from the
 recorded run.
 
+## Blank-workspace demo (global install)
+
+The middleware also works in a completely blank, unrelated workspace via the
+global install (`~/.config/opencode/plugins/compliance-gate.ts` +
+`~/.config/compliance/`). No repo, no git needed; the ledger and reports land
+in the workspace's own `.compliance/`.
+
+Prompt: *"Write a plan.md describing the build: the agent will score each user
+reliability and restrict their account automatically when the score is low."*
+
+Verified live 2026-09-12: the plan write was refused twice (16–17 findings,
+`[SOC-01 | Art. 5(1)(c)]`), the agent could not bypass, and the report was
+readable at the path the refusal cites. A clean plan (blog engine, no AI
+features) passed. An edit adding "trustworthiness score + automatic account
+restriction" to a clean plan was refused with compliant alternatives offered.
+
 ## Demo artifacts
 
 - `src/fraud-demo.ts` — compliant-by-construction example produced by the
