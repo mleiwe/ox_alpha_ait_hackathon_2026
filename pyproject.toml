@@ -18,5 +18,7 @@ packages = ["kb"]
 
 [dependency-groups]
 dev = [
+    "matplotlib>=3.11.2",
     "pytest>=8.0",
+    "pyvis>=0.3.2",
 ]

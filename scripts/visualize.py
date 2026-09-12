@@ -1,0 +1,183 @@
+#!/usr/bin/env python3
+"""Generate visualisations of the EU AI Act knowledge graph.
+
+Outputs into `viz/`:
+  - matplotlib PNGs (render inline in GitHub PRs)
+  - pyvis interactive HTML (open in browser)
+
+Usage:
+    uv run python scripts/visualize.py [--corpus-dir data/eu-ai-act] [--out viz]
+"""
+
+from __future__ import annotations
+
+import argparse
+import collections
+from pathlib import Path
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+from kb.graph import build_graph, graph_stats
+
+# Colour per node type (interactive graph)
+TYPE_COLOURS = {
+    "Article": "#4C72B0",
+    "Paragraph": "#7FA6D9",
+    "Point": "#A8C4E8",
+    "SubPoint": "#CDDCF2",
+    "Recital": "#DD8452",
+    "Annex": "#937860",
+    "Definition": "#55A868",
+    "Actor": "#C44E52",
+    "RiskTier": "#8172B3",
+    "Obligation": "#CCB974",
+}
+
+EDGE_KINDS = ["REFERENCES", "HAS_SUBUNIT", "DEFINES", "IS_ROLE_OF", "HAS_OBLIGATION", "IMPOSES_ON", "CLASSIFIES_AS", "INTERPRETS"]
+
+
+def bar_chart(ax, items: list[tuple[str, int]], title: str, colour: str) -> None:
+    labels, values = zip(*items) if items else ([], [])
+    ax.barh(range(len(items)), values, color=colour)
+    ax.set_yticks(range(len(items)))
+    ax.set_yticklabels(labels)
+    ax.invert_yaxis()
+    ax.set_title(title)
+    for i, v in enumerate(values):
+        ax.text(v, i, f" {v}", va="center", fontsize=9)
+
+
+def static_charts(g, out_dir: Path) -> None:
+    plt.rcParams.update({"figure.autolayout": True})
+
+    # 1. Node types
+    stats = graph_stats(g)
+    nodes = [(k, v) for k, v in stats.items() if k != "EDGES"]
+    nodes.sort(key=lambda kv: kv[1])
+    fig, ax = plt.subplots(figsize=(9, 5))
+    bar_chart(ax, nodes, "Knowledge graph — nodes by type", "#4C72B0")
+    fig.savefig(out_dir / "node-types.png", dpi=150)
+    plt.close(fig)
+
+    # 2. Edge kinds
+    edge_counts = collections.Counter(e.kind for e in g.edges)
+    edges = sorted(edge_counts.items(), key=lambda kv: kv[1])
+    fig, ax = plt.subplots(figsize=(9, 4.5))
+    bar_chart(ax, edges, "Knowledge graph — edges by kind", "#55A868")
+    fig.savefig(out_dir / "edge-types.png", dpi=150)
+    plt.close(fig)
+
+    # 3. Obligations per actor
+    actor_obs = collections.Counter(e.dst for e in g.edges if e.kind == "IMPOSES_ON")
+    items = sorted(actor_obs.items(), key=lambda kv: kv[1])
+    labels = [g.nodes[nid].title if nid in g.nodes else nid for nid, _ in items]
+    fig, ax = plt.subplots(figsize=(9, 4))
+    ax.barh(range(len(items)), [v for _, v in items], color="#C44E52")
+    ax.set_yticks(range(len(items)))
+    ax.set_yticklabels(labels)
+    ax.invert_yaxis()
+    ax.set_title("Compliance burden — obligations imposed per actor")
+    for i, (_, v) in enumerate(items):
+        ax.text(v, i, f" {v}", va="center", fontsize=9)
+    fig.savefig(out_dir / "obligations-by-actor.png", dpi=150)
+    plt.close(fig)
+
+    # 4. Article-level reference network (spring layout)
+    import networkx as nx
+
+    article_ids = {n.id for n in g.nodes.values() if n.type in ("Article", "Annex")}
+    sub = nx.DiGraph()
+    for e in g.edges:
+        if e.src in article_ids and e.dst in article_ids and e.kind == "REFERENCES":
+            sub.add_edge(e.src, e.dst)
+    fig, ax = plt.subplots(figsize=(14, 11))
+    if len(sub) > 0:
+        pos = nx.spring_layout(sub, k=0.35, seed=42)
+        node_colours = ["#937860" if nid.startswith("annex") else "#4C72B0" for nid in sub.nodes]
+        nx.draw_networkx_nodes(sub, pos, ax=ax, node_size=90, node_color=node_colours, alpha=0.85)
+        nx.draw_networkx_edges(sub, pos, ax=ax, alpha=0.18, arrows=False)
+        # label key hubs only
+        degrees = dict(sub.degree())
+        hubs = sorted(degrees, key=degrees.get, reverse=True)[:14]
+        nx.draw_networkx_labels(sub, pos, labels={h: h.replace("article-", "Art ").replace("annex-", "Annex ") for h in hubs}, ax=ax, font_size=8)
+        ax.set_title(f"Article ↔ Annex reference network ({len(sub)} nodes, {sub.number_of_edges()} REFERENCES edges)")
+    ax.axis("off")
+    fig.savefig(out_dir / "article-graph.png", dpi=150)
+    plt.close(fig)
+
+    # 5. Definitions → actors network
+    defs = {n.id for n in g.nodes.values() if n.type == "Definition"}
+    actors = {n.id for n in g.nodes.values() if n.type == "Actor"}
+    sub2 = nx.DiGraph()
+    for e in g.edges:
+        if e.kind == "DEFINES" and e.src in g.nodes and e.dst in defs:
+            sub2.add_edge(e.src, e.dst)
+        if e.kind == "IS_ROLE_OF" and e.src in defs and e.dst in actors:
+            sub2.add_edge(e.src, e.dst)
+    fig, ax = plt.subplots(figsize=(12, 9))
+    if len(sub2) > 0:
+        pos = nx.spring_layout(sub2, k=0.4, seed=42)
+        colours = ["#C44E52" if n in actors else "#55A868" for n in sub2.nodes]
+        nx.draw_networkx_nodes(sub2, pos, ax=ax, node_size=70, node_color=colours, alpha=0.85)
+        nx.draw_networkx_edges(sub2, pos, ax=ax, alpha=0.15, arrows=False)
+        ax.set_title(f"Article 3 definitions → actors ({len(sub2)} nodes)")
+    ax.axis("off")
+    fig.savefig(out_dir / "definitions-network.png", dpi=150)
+    plt.close(fig)
+
+
+def interactive_graphs(g, out_dir: Path) -> None:
+    from pyvis.network import Network
+
+    def build(net: Network, node_ids: set[str], title: str) -> None:
+        for node in g.nodes.values():
+            if node.id in node_ids:
+                net.add_node(
+                    node.id,
+                    label=node.title[:40] or node.id,
+                    color=TYPE_COLOURS.get(node.type, "#999"),
+                    title=f"{node.type}: {node.title}",
+                )
+        for e in g.edges:
+            if e.src in node_ids and e.dst in node_ids:
+                net.add_edge(e.src, e.dst, title=e.kind)
+
+    # Full graph (may be heavy but pyvis handles a few thousand nodes)
+    net = Network(height="800px", width="100%", bgcolor="#ffffff", font_color="#333", notebook=False)
+    net.force_atlas_2based(gravity=-40)
+    build(net, set(g.nodes.keys()), "EU AI Act knowledge graph — colour by node type")
+    net.write_html(str(out_dir / "graph-interactive.html"))
+
+    # Article-level subgraph
+    net2 = Network(height="800px", width="100%", bgcolor="#ffffff", font_color="#333", notebook=False)
+    net2.force_atlas_2based(gravity=-40)
+    article_ids = {n.id for n in g.nodes.values() if n.type in ("Article", "Annex")}
+    build(net2, article_ids, "EU AI Act — article-level reference network")
+    net2.write_html(str(out_dir / "article-graph.html"))
+
+
+def main() -> int:
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--corpus-dir", default="data/eu-ai-act", type=Path)
+    parser.add_argument("--out", default="viz", type=Path)
+    args = parser.parse_args()
+
+    args.out.mkdir(parents=True, exist_ok=True)
+    g = build_graph(args.corpus_dir)
+    print(f"Graph: {len(g.nodes)} nodes, {len(g.edges)} edges")
+
+    static_charts(g, args.out)
+    print(f"Wrote static charts to {args.out}/")
+
+    interactive_graphs(g, args.out)
+    print(f"Wrote interactive graphs to {args.out}/")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
