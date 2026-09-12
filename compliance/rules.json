@@ -27,7 +27,8 @@
       "patterns": [
         {"all": ["emotion", "workplace|workplace-related|employee|staff|office|employer"]},
         {"all": ["emotion", "education|student|school|classroom|exam"]},
-        {"all": ["infer|detect|detecting|recognis|recogniz", "emotion(al)? state", "employee|staff|student"]}
+        {"all": ["infer|detect|detecting|recognis|recogniz", "emotion(al)? state", "employee|staff|student"]},
+        {"file_scope": true, "all": ["emotion\\w*", "employee|staff|workplace"]}
       ]
     },
     {
