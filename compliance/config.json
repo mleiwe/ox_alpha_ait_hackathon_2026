@@ -8,7 +8,15 @@
   "ledger": ".compliance/ledger.jsonl",
   "reports_dir": ".compliance",
   "llm_command": "",
-  "llm_timeout_s": 120,
+  "llm": {
+    "enabled": true,
+    "base_url": "http://192.168.0.237:8000/v1",
+    "model": "GLM-5.3-Flash-EXL3-4bpw(vllm)",
+    "api_key_env": "",
+    "max_tokens": 1500,
+    "temperature": 0
+  },
+  "llm_timeout_s": 240,
   "debounce_ms": 30000,
   "stage_globs": {
     "planning": ["**/prd.md", "docs/requirements/**", "**/requirements/**", "**/PRD*.md"],

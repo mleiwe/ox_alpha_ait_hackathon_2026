@@ -248,11 +248,15 @@ def short_verdict(path: str, stage: str, findings: list[dict], report_path: str 
     v = {EXIT_CLEAN: "clean", EXIT_WARN: "warn", EXIT_BLOCK: "block"}[verdict_of(findings)]
     if not findings:
         return f"COMPLIANCE_CLEAN ({stage}: {os.path.relpath(path, REPO_ROOT)})"
-    cites = sorted({c for f_ in findings for c in f_["citations"]})
-    rules = sorted({f_["rule"] for f_ in findings})
+    # Map rule -> citations from the findings. Never zip rules against the
+    # deduped citation set: both are independently sorted, so zip mispairs
+    # (SOC-01 got MANIP-01's 5(1)(b) and dropped its own 5(1)(c)).
+    rule_cites: dict[str, set[str]] = {}
+    for f_ in findings:
+        rule_cites.setdefault(f_["rule"], set()).update(f_["citations"])
     out = [f"COMPLIANCE_{v.upper()} ({len(findings)} finding(s) | {stage}: {os.path.relpath(path, REPO_ROOT)})"]
-    for r, c in zip(rules, cites):
-        out.append(f"[{r} | {c}]")
+    for r in sorted(rule_cites):
+        out.append(f"[{r} | {', '.join(sorted(rule_cites[r]))}]")
     if report_path:
         out.append(f"Full report: {os.path.relpath(report_path, REPO_ROOT)}")
     out.append("Fix the flagged lines or run compliance_review.")
@@ -293,20 +297,59 @@ def cmd_fast(args, cfg, rules) -> int:
     return exit_code
 
 
+def adjudicate(cfg: dict, payload: dict) -> str:
+    """Tier 2 applicability judgement. External script (llm_command) overrides;
+    otherwise built-in OpenAI-compatible call per config.llm."""
+    if cfg.get("llm_command"):
+        try:
+            r = subprocess.run([cfg["llm_command"]], input=json.dumps(payload),
+                               capture_output=True, text=True,
+                               timeout=cfg.get("llm_timeout_s", 240))
+            return r.stdout.strip()
+        except Exception as e:  # noqa: BLE001 — hook context must never crash the agent
+            return f"(adjudicator error: {e})"
+    llm = cfg.get("llm") or {}
+    if not llm.get("enabled"):
+        return ""
+    import urllib.request
+    sys_prompt = (
+        "You are an EU AI Act compliance adjudicator. You receive a development "
+        "artifact (stage, flagged findings, and obligations retrieved from a "
+        "knowledge graph of the Act). For each retrieved obligation, state in one "
+        "line whether it applies to the artifact and why. Then a final line: "
+        "VERDICT: <pass|violation> — <citation or 'none'>. Be concrete; quote the "
+        "artifact when judging. Max 12 lines."
+    )
+    user = json.dumps(payload, ensure_ascii=False)[:12000]
+    body = {
+        "model": llm.get("model", ""),
+        "messages": [{"role": "system", "content": sys_prompt},
+                     {"role": "user", "content": user}],
+        "max_tokens": llm.get("max_tokens", 1500),
+        "temperature": llm.get("temperature", 0),
+    }
+    headers = {"Content-Type": "application/json"}
+    key_env = llm.get("api_key_env") or ""
+    if key_env and os.environ.get(key_env):
+        headers["Authorization"] = f"Bearer {os.environ[key_env]}"
+    req = urllib.request.Request(
+        llm.get("base_url", "").rstrip("/") + "/chat/completions",
+        data=json.dumps(body).encode(), headers=headers, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=cfg.get("llm_timeout_s", 240)) as resp:
+            data = json.loads(resp.read())
+        return (data["choices"][0]["message"].get("content") or "").strip()
+    except Exception as e:  # noqa: BLE001 — adjudicator unavailability must degrade
+        return f"(adjudicator error: {e})"
+
+
 def cmd_llm(args, cfg, rules) -> int:
     t0 = time.time()
     stage, findings = scan_file(args.file, read_content(args), cfg, rules)
     exit_code = verdict_of(findings)
     kb = kb_retrieve(cfg, sorted({c for f_ in findings for c in f_["citations"]}), stage)
-    adjudication = ""
-    if cfg.get("llm_command"):
-        try:
-            payload = json.dumps({"file": args.file, "stage": stage, "findings": findings, "kb": kb})
-            r = subprocess.run([cfg["llm_command"]], input=payload, capture_output=True,
-                               text=True, timeout=cfg.get("llm_timeout_s", 120))
-            adjudication = r.stdout.strip()
-        except Exception as e:  # noqa: BLE001 — hook context must never crash the agent
-            adjudication = f"(adjudicator error: {e})"
+    adjudication = adjudicate(cfg, {"file": args.file, "stage": stage,
+                                    "findings": findings, "kb": kb})
     report = write_report(cfg, args.file, "llm", stage, findings, kb=kb) if (findings or adjudication) else None
     ledger_append(cfg, {
         "ts": datetime.now(timezone.utc).isoformat(timespec="seconds"),

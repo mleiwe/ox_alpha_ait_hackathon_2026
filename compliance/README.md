@@ -58,13 +58,31 @@ compliance/compliance-check --ledger [--tail N]
 
 - `compliance-check` verified end to end: block/warn/clean exits, PRD +
   product-file catches, disclosure gap, ledger, session report, scan mode.
-- Plugin parsed via bun; hook payload field names (`filePath` vs `path`,
-  presence of `content`) still need a live smoke test in an OpenCode session
-  (log `JSON.stringify({tool: input.tool, args: output.args})` once).
-- KB excerpts empty until PR #1 (`ml_eu-ai-act-markdown`) merges and populates
-  `data/eu-ai-act/`; until then citations come from `rules.json`.
-- Adjudicator LLM (Tier 2 deep review) is a config slot (`llm_command`), not
-  wired yet.
+- Gate block path verified live in a real OpenCode session (2026-09-12):
+  a violating write to `src/` was refused (exit 2, rules MANIP-01 + SOC-01,
+  ~2.6ms), the file never landed, the ledger recorded the block. Fixed in
+  the process: `short_verdict` zipped the rules set against the deduped
+  citation set, mispairing SOC-01 with Art. 5(1)(b); it now maps rule →
+  citations from the findings. All three verdict paths re-verified after
+  the fix (block/warn/clean).
+- Plugin verified live in an OpenCode 1.18.30 session (2026-09-12):
+  `tool.execute.before` payload field is `filePath` for write/edit/read/bash;
+  `write` carries `content`, `edit` carries `oldString`/`newString` (no content —
+  candidate reconstruction needed, as implemented). `file.edited` properties
+  carry `file` (absolute path). Gate + background review confirmed end to end:
+  two `fast` gate entries and one `llm` review entry for `src/smoke-demo.ts`
+  in the ledger, correct session ID, ~2ms latency.
+- KB-first review verified against the real graph in a `ml_kb-layer` worktree:
+  relevance search returns node ids; clean-doc review retrieves Art. 11/13/18
+  units with no rules fired; reports carry the "Relevant obligations" section.
+- Adjudicator (Tier 2) wired and verified: built-in OpenAI-compatible call to
+  the local vLLM endpoint (config `llm` block, key via `api_key_env` name,
+  never stored in config), judged each retrieved obligation's applicability
+  concretely and quoted the artifact. External `llm_command` script overrides
+  when set.
+- CI workflow `.github/workflows/compliance-scan.yml`: scan on PR/push, report
+  to `$GITHUB_STEP_SUMMARY` + artifact, PR fails only on block verdicts
+  (warn passes). Verified locally via `--scan`; remote run pending push.
 
 ## Rules format
 
