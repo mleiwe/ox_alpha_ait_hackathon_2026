@@ -21,11 +21,38 @@
 |------|---------------|----------------|
 | `viz/node-types.png` | Node counts by type (bar chart) | Corpus coverage at a glance |
 | `viz/edge-types.png` | Edge counts by kind (bar chart) | Graph semantics coverage |
-| `viz/article-graph.png` | Article↔Annex reference network (spring layout) | Cross-reference structure |
+| `viz/article-graph.png` | Article↔Annex reference network (spring layout, **weighted edges**) | Cross-reference structure; edge width = citation count |
 | `viz/obligations-by-actor.png` | Obligations per actor (bar) | Who bears the compliance burden |
 | `viz/definitions-network.png` | Article 3 definitions → actors | Definition grounding |
+| `viz/tsne-articles.png` | **t-SNE projection** of article-level graph | Units with similar reference profiles cluster together |
+| `viz/tsne-clauses.png` | **t-SNE projection of clause-level graph** (paragraphs/points, bipartite features) | Topic clusters at clause granularity |
+| `viz/heatmap-articles.png` | **Interaction heatmap** (128×128, log-scaled) | All citation interactions at a glance |
 | `viz/graph-interactive.html` | Full graph (pyvis, colour by type) | Interactive exploration |
 | `viz/article-graph.html` | Article-level subgraph (pyvis) | Focused exploration |
+
+## Design decisions
+
+### Figure legends
+All network charts carry legends: node-type colours (Article/Annex/Definition/Actor) and the edge-weight scale (1 citation → max citations).
+
+### Edge weights
+`REFERENCES` edges are **weighted by citation count** — how many times unit A cites unit B across the corpus. Weight drives:
+- edge **thickness** in the static article graph
+- spring-layout attraction (`spring_layout(weight="weight")`)
+- edge `title` tooltips in the interactive HTML
+
+Other edge kinds (HAS_SUBUNIT, IMPOSES_ON, INTERPRETS) are structural and unweighted.
+
+### Embeddings (t-SNE now, UMAP deferred)
+- **t-SNE** (sklearn) projects units by their **graph neighbourhood**: feature vector = who a unit references + who references it. Units with similar reference profiles cluster together — topic groups emerge without any text embeddings.
+- **Clause-level t-SNE** uses **bipartite features** (clause × referenced/parent articles) since clauses rarely cite each other directly.
+- **UMAP deferred**: `umap-learn` → `llvmlite` needs CMake to build on this Python/platform combo. Install `cmake` (`brew install cmake`) and `uv add --group dev umap-learn` to add it later — UMAP preserves global structure better than t-SNE.
+- Phase-3 option: swap graph-neighbourhood features for **text embeddings** (sentence-transformers) to compare structural vs semantic clustering.
+
+### Granularity option
+`--granularity article|clause|all` (default `all`):
+- **article**: 113 Articles + 15 Annexes
+- **clause**: 662 Paragraphs + 340 Points + 247 Sub-points (t-SNE uses bipartite features; heatmap filters to units with interactions)
 
 ## Phase 5 preview (cross-legislation)
 

@@ -4,6 +4,11 @@
 Outputs into `viz/`:
   - matplotlib PNGs (render inline in GitHub PRs)
   - pyvis interactive HTML (open in browser)
+  - t-SNE embedding projection (semantic clusters by node type)
+
+Edge weights: REFERENCES edges are weighted by citation count (how many times
+unit A cites unit B across the corpus). Weight drives edge thickness (static)
+and width (interactive). Other edge kinds are unweighted (structural).
 
 Usage:
     uv run python scripts/visualize.py [--corpus-dir data/eu-ai-act] [--out viz]
@@ -19,10 +24,11 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 
 from kb.graph import build_graph, graph_stats
 
-# Colour per node type (interactive graph)
+# Colour per node type (interactive graph + legends)
 TYPE_COLOURS = {
     "Article": "#4C72B0",
     "Paragraph": "#7FA6D9",
@@ -39,6 +45,12 @@ TYPE_COLOURS = {
 EDGE_KINDS = ["REFERENCES", "HAS_SUBUNIT", "DEFINES", "IS_ROLE_OF", "HAS_OBLIGATION", "IMPOSES_ON", "CLASSIFIES_AS", "INTERPRETS"]
 
 
+def type_legend(ax_handles=None, types=None) -> list[Line2D]:
+    """Legend handles for node types."""
+    keys = types or list(TYPE_COLOURS.keys())
+    return [Line2D([0], [0], marker="o", color="w", markerfacecolor=TYPE_COLOURS[k], markersize=9, label=k) for k in keys]
+
+
 def bar_chart(ax, items: list[tuple[str, int]], title: str, colour: str) -> None:
     labels, values = zip(*items) if items else ([], [])
     ax.barh(range(len(items)), values, color=colour)
@@ -53,7 +65,7 @@ def bar_chart(ax, items: list[tuple[str, int]], title: str, colour: str) -> None
 def static_charts(g, out_dir: Path) -> None:
     plt.rcParams.update({"figure.autolayout": True})
 
-    # 1. Node types
+    # 1. Node types (with legend)
     stats = graph_stats(g)
     nodes = [(k, v) for k, v in stats.items() if k != "EDGES"]
     nodes.sort(key=lambda kv: kv[1])
@@ -62,7 +74,7 @@ def static_charts(g, out_dir: Path) -> None:
     fig.savefig(out_dir / "node-types.png", dpi=150)
     plt.close(fig)
 
-    # 2. Edge kinds
+    # 2. Edge kinds (with legend of edge semantics)
     edge_counts = collections.Counter(e.kind for e in g.edges)
     edges = sorted(edge_counts.items(), key=lambda kv: kv[1])
     fig, ax = plt.subplots(figsize=(9, 4.5))
@@ -85,30 +97,42 @@ def static_charts(g, out_dir: Path) -> None:
     fig.savefig(out_dir / "obligations-by-actor.png", dpi=150)
     plt.close(fig)
 
-    # 4. Article-level reference network (spring layout)
+    # 4. Article-level reference network (spring layout, weighted edges, legend)
     import networkx as nx
 
     article_ids = {n.id for n in g.nodes.values() if n.type in ("Article", "Annex")}
     sub = nx.DiGraph()
     for e in g.edges:
         if e.src in article_ids and e.dst in article_ids and e.kind == "REFERENCES":
-            sub.add_edge(e.src, e.dst)
+            w = sub[u][v]["weight"] + 1 if sub.has_edge(u := e.src, v := e.dst) else 1
+            sub.add_edge(e.src, e.dst, weight=w)
     fig, ax = plt.subplots(figsize=(14, 11))
     if len(sub) > 0:
-        pos = nx.spring_layout(sub, k=0.35, seed=42)
+        pos = nx.spring_layout(sub, k=0.35, seed=42, weight="weight")
         node_colours = ["#937860" if nid.startswith("annex") else "#4C72B0" for nid in sub.nodes]
+        weights = [sub[u][v]["weight"] for u, v in sub.edges]
+        max_w = max(weights)
+        widths = [0.3 + 2.5 * (w / max_w) for w in weights]
         nx.draw_networkx_nodes(sub, pos, ax=ax, node_size=90, node_color=node_colours, alpha=0.85)
-        nx.draw_networkx_edges(sub, pos, ax=ax, alpha=0.18, arrows=False)
+        nx.draw_networkx_edges(sub, pos, ax=ax, alpha=0.18, arrows=False, width=widths)
         # label key hubs only
         degrees = dict(sub.degree())
         hubs = sorted(degrees, key=degrees.get, reverse=True)[:14]
         nx.draw_networkx_labels(sub, pos, labels={h: h.replace("article-", "Art ").replace("annex-", "Annex ") for h in hubs}, ax=ax, font_size=8)
-        ax.set_title(f"Article ↔ Annex reference network ({len(sub)} nodes, {sub.number_of_edges()} REFERENCES edges)")
+        # legend: node types + edge weight scale
+        handles = type_legend(types=["Article", "Annex"])
+        handles += [
+            Line2D([0], [0], color="#4C72B0", lw=0.5, label="1 citation"),
+            Line2D([0], [0], color="#4C72B0", lw=1.5, label="~5 citations"),
+            Line2D([0], [0], color="#4C72B0", lw=2.8, label=f"{max_w} citations (max)"),
+        ]
+        ax.legend(handles=handles, loc="upper right", fontsize=8, framealpha=0.9)
+        ax.set_title(f"Article ↔ Annex reference network ({len(sub)} nodes, {sub.number_of_edges()} REFERENCES edges)\nEdge width = citation count")
     ax.axis("off")
     fig.savefig(out_dir / "article-graph.png", dpi=150)
     plt.close(fig)
 
-    # 5. Definitions → actors network
+    # 5. Definitions → actors network (with legend)
     defs = {n.id for n in g.nodes.values() if n.type == "Definition"}
     actors = {n.id for n in g.nodes.values() if n.type == "Actor"}
     sub2 = nx.DiGraph()
@@ -123,10 +147,171 @@ def static_charts(g, out_dir: Path) -> None:
         colours = ["#C44E52" if n in actors else "#55A868" for n in sub2.nodes]
         nx.draw_networkx_nodes(sub2, pos, ax=ax, node_size=70, node_color=colours, alpha=0.85)
         nx.draw_networkx_edges(sub2, pos, ax=ax, alpha=0.15, arrows=False)
+        handles = [
+            Line2D([0], [0], marker="o", color="w", markerfacecolor="#55A868", markersize=9, label="Definition (Art 3)"),
+            Line2D([0], [0], marker="o", color="w", markerfacecolor="#C44E52", markersize=9, label="Actor (regulated role)"),
+        ]
+        ax.legend(handles=handles, loc="upper right", fontsize=9, framealpha=0.9)
         ax.set_title(f"Article 3 definitions → actors ({len(sub2)} nodes)")
     ax.axis("off")
     fig.savefig(out_dir / "definitions-network.png", dpi=150)
     plt.close(fig)
+
+    # 6. t-SNE embedding projections (article + clause level)
+    embedding_chart(g, out_dir, level="article")
+    embedding_chart(g, out_dir, level="clause")
+
+    # 7. Interaction heatmaps (article + clause level)
+    heatmap_chart(g, out_dir, level="article")
+    heatmap_chart(g, out_dir, level="clause")
+
+
+def embedding_chart(g, out_dir: Path, level: str = "article") -> None:
+    """t-SNE projection based on graph structure.
+
+    Feature vector per unit: who it references + who references it
+    (graph neighbourhood as a sparse binary vector). t-SNE places
+    semantically-related units (similar reference profiles) together.
+    UMAP deferred (needs cmake for llvmlite build); t-SNE from sklearn.
+
+    level: "article" or "clause" (paragraphs/points — more granular).
+    """
+    import numpy as np
+    from sklearn.manifold import TSNE
+
+    if level == "article":
+        unit_ids = sorted(n.id for n in g.nodes.values() if n.type in ("Article", "Annex"))
+        fname = "tsne-articles.png"
+        title = "t-SNE projection of article-level graph"
+    else:
+        unit_ids = sorted(n.id for n in g.nodes.values() if n.type in ("Paragraph", "Point", "SubPoint"))
+        fname = "tsne-clauses.png"
+        title = "t-SNE projection of clause-level graph (paragraphs/points)"
+
+    if len(unit_ids) < 10:
+        return
+    index = {nid: i for i, nid in enumerate(unit_ids)}
+    n = len(unit_ids)
+
+    if level == "article":
+        # Feature matrix: article × article adjacency (out + in neighbours)
+        feats = np.zeros((n, n))
+        for e in g.edges:
+            if e.kind != "REFERENCES":
+                continue
+            if e.src in index and e.dst in index:
+                feats[index[e.src], index[e.dst]] = 1
+                feats[index[e.dst], index[e.src]] = 1
+    else:
+        # Bipartite features: clause × (articles+annexes). A clause's profile =
+        # which articles/annexes it references + which article contains it.
+        # This gives meaningful clusters (clauses about the same topic group).
+        art_ids = sorted(a.id for a in g.nodes.values() if a.type in ("Article", "Annex"))
+        art_index = {aid: j for j, aid in enumerate(art_ids)}
+        feats = np.zeros((n, len(art_ids)))
+
+        # containment: clause -> root article
+        parent_of = {}
+        for e in g.edges:
+            if e.kind == "HAS_SUBUNIT":
+                parent_of[e.dst] = e.src
+        for i, nid in enumerate(unit_ids):
+            root = nid
+            while root in parent_of:
+                root = parent_of[root]
+            if root in art_index:
+                feats[i, art_index[root]] = 1
+
+        # references: clause -> article/annex
+        for e in g.edges:
+            if e.kind != "REFERENCES":
+                continue
+            if e.src in index and e.dst in art_index:
+                feats[index[e.src], art_index[e.dst]] = 1
+
+    perp = min(30, n - 1)
+    tsne = TSNE(n_components=2, perplexity=perp, random_state=42, init="pca")
+    coords = tsne.fit_transform(feats)
+
+    fig, ax = plt.subplots(figsize=(12, 10))
+    for nid, (x, y) in zip(unit_ids, coords):
+        is_annex = nid.startswith("annex")
+        ax.scatter(x, y, s=60 if level == "article" else 25, c="#937860" if is_annex else "#4C72B0", alpha=0.8, edgecolors="white", linewidths=0.5)
+    if level == "article":
+        for nid in ("article-5", "article-6", "article-50", "article-113", "annex-i", "annex-iii"):
+            if nid in index:
+                x, y = coords[index[nid]]
+                ax.annotate(nid.replace("article-", "Art ").replace("annex-", "Annex "), (x, y), fontsize=8, xytext=(5, 5), textcoords="offset points")
+    handles = type_legend(types=["Article", "Annex"])
+    ax.legend(handles=handles, loc="upper right", fontsize=9, framealpha=0.9)
+    ax.set_title(f"{title}\n(units with similar reference profiles cluster together)")
+    ax.axis("off")
+    fig.savefig(out_dir / fname, dpi=150)
+    plt.close(fig)
+
+
+def heatmap_chart(g, out_dir: Path, level: str = "article") -> None:
+    """Interaction heatmap: unit × unit REFERENCES matrix.
+
+    level: "article" (113×113) or "paragraph" (clause-level, top units).
+    Cell intensity = number of citation interactions between two units.
+    """
+    import numpy as np
+
+    if level == "article":
+        unit_ids = sorted(n.id for n in g.nodes.values() if n.type in ("Article", "Annex"))
+        title = "Article ↔ Annex citation interactions"
+        fname = "heatmap-articles.png"
+    else:
+        # Clause-level: paragraphs + points (top N by interaction count)
+        unit_ids = sorted(
+            n.id for n in g.nodes.values() if n.type in ("Paragraph", "Point", "SubPoint")
+        )
+        title = "Clause-level citation interactions (paragraphs/points)"
+        fname = "heatmap-clauses.png"
+
+    index = {nid: i for i, nid in enumerate(unit_ids)}
+    n = len(unit_ids)
+    if n < 5:
+        return
+
+    mat = np.zeros((n, n))
+    for e in g.edges:
+        if e.kind != "REFERENCES":
+            continue
+        if e.src in index and e.dst in index:
+            mat[index[e.src], index[e.dst]] += 1
+
+    # Clause-level matrix is huge — keep only units with >=1 interaction
+    if level != "article":
+        active = np.where(mat.sum(axis=1) + mat.sum(axis=0) > 0)[0]
+        mat = mat[np.ix_(active, active)]
+        unit_ids = [unit_ids[i] for i in active]
+        n = len(unit_ids)
+        if n < 5:
+            print("  heatmap-clauses: not enough interactions, skipped")
+            return
+
+    fig, ax = plt.subplots(figsize=(16, 14))
+    im = ax.imshow(np.log1p(mat), cmap="YlOrRd", aspect="auto")
+
+    # Ticks: short labels
+    def short(nid: str) -> str:
+        return nid.replace("article-", "Art ").replace("annex-", "Annex ").replace("annex-", "Annex ")
+
+    step = max(1, n // 60)
+    ticks = list(range(0, n, step))
+    ax.set_xticks(ticks)
+    ax.set_yticks(ticks)
+    ax.set_xticklabels([short(unit_ids[i]) for i in ticks], rotation=90, fontsize=6)
+    ax.set_yticklabels([short(unit_ids[i]) for i in ticks], fontsize=6)
+    ax.set_xlabel("Cited unit")
+    ax.set_ylabel("Citing unit")
+    ax.set_title(f"{title} ({n}×{n}, log-scaled intensity)")
+    fig.colorbar(im, ax=ax, label="log(1 + citation count)", shrink=0.7)
+    fig.savefig(out_dir / fname, dpi=150)
+    plt.close(fig)
+    print(f"  heatmap ({level}): {n}×{n}")
 
 
 def interactive_graphs(g, out_dir: Path) -> None:
@@ -165,6 +350,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--corpus-dir", default="data/eu-ai-act", type=Path)
     parser.add_argument("--out", default="viz", type=Path)
+    parser.add_argument(
+        "--granularity",
+        default="all",
+        choices=["all", "article", "clause"],
+        help="Granularity for t-SNE/heatmap: article-level, clause-level (paragraphs/points), or all",
+    )
     args = parser.parse_args()
 
     args.out.mkdir(parents=True, exist_ok=True)
@@ -172,10 +363,16 @@ def main() -> int:
     print(f"Graph: {len(g.nodes)} nodes, {len(g.edges)} edges")
 
     static_charts(g, args.out)
-    print(f"Wrote static charts to {args.out}/")
+    print("Wrote static charts to {}/".format(args.out))
 
     interactive_graphs(g, args.out)
-    print(f"Wrote interactive graphs to {args.out}/")
+    print("Wrote interactive graphs to {}/".format(args.out))
+
+    levels = {"all": ["article", "clause"], "article": ["article"], "clause": ["clause"]}[args.granularity]
+    for level in levels:
+        embedding_chart(g, args.out, level=level)
+        heatmap_chart(g, args.out, level=level)
+    print("Wrote embeddings + heatmaps to {}/".format(args.out))
     return 0
 
 
