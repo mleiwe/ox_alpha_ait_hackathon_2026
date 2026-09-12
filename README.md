@@ -107,7 +107,7 @@ The retrieval strategy powering the agent was selected by a pre-registered bench
 
 GraphRAG delivers whole multi-hop chains (Art 6(2) → Annex III → Art 113) **3× as often** as flat retrieval at identical latency — 9 ms mean / 17 ms p95, 50× under a 1 s IDE budget. Reasoning tier: typed expansion holds 30% of expected chain hops vs 23% for BM25. Backend check: LLMwiki preserves rankings at −0.2 MRR → **NetworkX ships** as the agent backend.
 
-![Retrieval quality by strategy](viz/bench-mrr.png)
+![Retrieval quality by strategy](bench/viz/bench-mrr.png)
 
 ## Roadmap
 
