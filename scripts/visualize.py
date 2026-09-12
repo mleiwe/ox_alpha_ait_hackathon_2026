@@ -224,13 +224,22 @@ def heatmap_chart(g, out_dir: Path, level: str = "article") -> None:
     np.fill_diagonal(sym, sym.diagonal())  # keep self-citations
     Z = linkage(sym, method="average", metric="euclidean")
 
-    fig = plt.figure(figsize=(18, 16))
-    gs = fig.add_gridspec(2, 2, width_ratios=[1, 5], height_ratios=[1, 5], wspace=0.01, hspace=0.01)
+    fig = plt.figure(figsize=(20, 16))
+    # 2x3 grid: dendrograms share the heatmap's exact cell, colourbar gets
+    # its own column so the top dendrogram stays aligned with the heatmap.
+    gs = fig.add_gridspec(
+        2, 3,
+        width_ratios=[1, 5, 0.15],
+        height_ratios=[1, 5],
+        wspace=0.01, hspace=0.01,
+    )
 
     # Dendrograms: top (columns) and left (rows)
     ax_dend_top = fig.add_subplot(gs[0, 1])
     ax_dend_left = fig.add_subplot(gs[1, 0])
     ax_heat = fig.add_subplot(gs[1, 1])
+    # Colourbar in its own gridspec slot (keeps dendrogram aligned with heatmap)
+    ax_cbar = fig.add_subplot(gs[1, 2])
 
     def short(nid: str) -> str:
         return nid.replace("article-", "Art ").replace("annex-", "Annex ")
@@ -267,7 +276,7 @@ def heatmap_chart(g, out_dir: Path, level: str = "article") -> None:
     ax_heat.set_title(f"{title} ({n}×{n}, log-scaled, dendrogram-grouped)")
 
     # Colourbar
-    cbar = fig.colorbar(im, ax=ax_heat, label="log(1 + citation count)", shrink=0.6, pad=0.02)
+    cbar = fig.colorbar(im, cax=ax_cbar, label="log(1 + citation count)")
 
     # Legend: colourbar meaning + dendrogram colour coding
     handles = [
