@@ -65,16 +65,17 @@ Recitals benefit most: before this, 86 of 180 recitals were isolated nodes (reci
 | `viz/article-graph.png` | Article↔Annex reference network (spring layout, **weighted edges**) | Cross-reference structure; edge width = citation count |
 | `viz/obligations-by-actor.png` | Obligations per actor (bar) | Who bears the compliance burden |
 | `viz/definitions-network.png` | Article 3 definitions → actors | Definition grounding |
-| `viz/tsne-articles.png` | **t-SNE projection** of article-level graph | Units with similar reference profiles cluster together |
-| `viz/tsne-clauses.png` | **t-SNE projection of clause-level graph** (paragraphs/points, bipartite features) | Topic clusters at clause granularity |
-| `viz/heatmap-articles.png` | **Interaction heatmap** (128×128, log-scaled, **Louvain-grouped**) | All citation interactions; rows/cols reordered by community so block structure is visible |
+| `viz/heatmap-articles.png` | **Interaction heatmap** (128×128, log-scaled, **dendrogram-grouped**) | All citation interactions; rows/cols collated by hierarchical clustering with dendrograms on both axes |
 | `viz/graph-interactive.html` | Full graph (pyvis, colour by type, **HTML legend**) | Interactive exploration |
 | `viz/article-graph.html` | Article-level subgraph (pyvis, **HTML legend**) | Focused exploration |
 
 ## Design decisions
 
+### Visualisation scope: Louvain + dendrograms only
+t-SNE/UMAP projections were **removed** (per decision) — Louvain community detection and hierarchical-clustering dendrograms cover the clustering story with no extra dependencies and exact, reproducible groupings.
+
 ### Figure legends
-All network charts carry legends: node-type colours (Article/Annex/Definition/Actor) and the edge-weight scale (1 citation → max citations).
+All network charts carry legends: node-type colours (Article/Annex/Definition/Actor) and the edge-weight scale (1 citation → max citations). The pyvis interactive HTMLs have an injected fixed-position HTML legend (pyvis has no native legend).
 
 ### Edge weights
 `REFERENCES` edges are **weighted by citation count** — how many times unit A cites unit B across the corpus. Weight drives:
@@ -84,19 +85,13 @@ All network charts carry legends: node-type colours (Article/Annex/Definition/Ac
 
 Other edge kinds (HAS_SUBUNIT, IMPOSES_ON, INTERPRETS) are structural and unweighted.
 
-### Embeddings (t-SNE now, UMAP deferred)
-- **t-SNE** (sklearn) projects units by their **graph neighbourhood**: feature vector = who a unit references + who references it. Units with similar reference profiles cluster together — topic groups emerge without any text embeddings.
-- **Clause-level t-SNE** uses **bipartite features** (clause × referenced/parent articles) since clauses rarely cite each other directly.
-- **UMAP deferred**: `umap-learn` → `llvmlite` needs CMake to build on this Python/platform combo. Install `cmake` (`brew install cmake`) and `uv add --group dev umap-learn` to add it later — UMAP preserves global structure better than t-SNE.
-- Phase-3 option: swap graph-neighbourhood features for **text embeddings** (sentence-transformers) to compare structural vs semantic clustering.
+### Heatmap: dendrogram grouping (replaces Louvain blocks)
+The heatmap rows/columns are **collated by hierarchical clustering** (scipy `linkage`, average method, on the symmetric citation profile) with **dendrograms on both axes**. This shows:
+- **Which units cite alike** — the tree groups articles with similar citation profiles (the conformity-assessment cluster, the enforcement cluster, the amendment cluster)
+- **Cluster hierarchy** — unlike flat Louvain blocks, the dendrogram shows sub-clusters and their merge distances
+- The two top-level clusters visible in the dendrogram: the **hub group** (Art 97, Annex I, Art 5/6 — heavily-citing provisions) and the **amendment group** (Art 102–110, which only cite Art 36)
 
-### Louvain grouping (heatmap)
-The heatmap rows/columns are **reordered by Louvain community** (`nx.community.louvain_communities`, weighted by citation count). Communities appear as coloured blocks along the axes with a legend — clusters of articles that cite each other heavily (e.g. the conformity-assessment cluster, the enforcement cluster) become visible as off-diagonal blocks instead of a noisy matrix. Louvain is built into NetworkX — no extra deps.
-
-### Granularity option
-`--granularity article|clause|all` (default `all`):
-- **article**: 113 Articles + 15 Annexes
-- **clause**: 662 Paragraphs + 340 Points + 247 Sub-points (t-SNE uses bipartite features; heatmap filters to units with interactions)
+Louvain remains available in the graph layer (`nx.community.louvain_communities`) for the phase-5 cross-legislation work; the heatmap now uses dendrograms for ordering.
 
 ## Phase 5 preview (cross-legislation)
 

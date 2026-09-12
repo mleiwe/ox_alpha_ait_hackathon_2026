@@ -157,106 +157,21 @@ def static_charts(g, out_dir: Path) -> None:
     fig.savefig(out_dir / "definitions-network.png", dpi=150)
     plt.close(fig)
 
-    # 6. t-SNE embedding projections (article + clause level)
-    embedding_chart(g, out_dir, level="article")
-    embedding_chart(g, out_dir, level="clause")
-
-    # 7. Interaction heatmaps (article + clause level)
+    # 6. Interaction heatmap with dendrogram grouping (article + clause level)
     heatmap_chart(g, out_dir, level="article")
     heatmap_chart(g, out_dir, level="clause")
 
 
-def embedding_chart(g, out_dir: Path, level: str = "article") -> None:
-    """t-SNE projection based on graph structure.
-
-    Feature vector per unit: who it references + who references it
-    (graph neighbourhood as a sparse binary vector). t-SNE places
-    semantically-related units (similar reference profiles) together.
-    UMAP deferred (needs cmake for llvmlite build); t-SNE from sklearn.
-
-    level: "article" or "clause" (paragraphs/points — more granular).
-    """
-    import numpy as np
-    from sklearn.manifold import TSNE
-
-    if level == "article":
-        unit_ids = sorted(n.id for n in g.nodes.values() if n.type in ("Article", "Annex"))
-        fname = "tsne-articles.png"
-        title = "t-SNE projection of article-level graph"
-    else:
-        unit_ids = sorted(n.id for n in g.nodes.values() if n.type in ("Paragraph", "Point", "SubPoint"))
-        fname = "tsne-clauses.png"
-        title = "t-SNE projection of clause-level graph (paragraphs/points)"
-
-    if len(unit_ids) < 10:
-        return
-    index = {nid: i for i, nid in enumerate(unit_ids)}
-    n = len(unit_ids)
-
-    if level == "article":
-        # Feature matrix: article × article adjacency (out + in neighbours)
-        feats = np.zeros((n, n))
-        for e in g.edges:
-            if e.kind != "REFERENCES":
-                continue
-            if e.src in index and e.dst in index:
-                feats[index[e.src], index[e.dst]] = 1
-                feats[index[e.dst], index[e.src]] = 1
-    else:
-        # Bipartite features: clause × (articles+annexes). A clause's profile =
-        # which articles/annexes it references + which article contains it.
-        # This gives meaningful clusters (clauses about the same topic group).
-        art_ids = sorted(a.id for a in g.nodes.values() if a.type in ("Article", "Annex"))
-        art_index = {aid: j for j, aid in enumerate(art_ids)}
-        feats = np.zeros((n, len(art_ids)))
-
-        # containment: clause -> root article
-        parent_of = {}
-        for e in g.edges:
-            if e.kind == "HAS_SUBUNIT":
-                parent_of[e.dst] = e.src
-        for i, nid in enumerate(unit_ids):
-            root = nid
-            while root in parent_of:
-                root = parent_of[root]
-            if root in art_index:
-                feats[i, art_index[root]] = 1
-
-        # references: clause -> article/annex
-        for e in g.edges:
-            if e.kind != "REFERENCES":
-                continue
-            if e.src in index and e.dst in art_index:
-                feats[index[e.src], art_index[e.dst]] = 1
-
-    perp = min(30, n - 1)
-    tsne = TSNE(n_components=2, perplexity=perp, random_state=42, init="pca")
-    coords = tsne.fit_transform(feats)
-
-    fig, ax = plt.subplots(figsize=(12, 10))
-    for nid, (x, y) in zip(unit_ids, coords):
-        is_annex = nid.startswith("annex")
-        ax.scatter(x, y, s=60 if level == "article" else 25, c="#937860" if is_annex else "#4C72B0", alpha=0.8, edgecolors="white", linewidths=0.5)
-    if level == "article":
-        for nid in ("article-5", "article-6", "article-50", "article-113", "annex-i", "annex-iii"):
-            if nid in index:
-                x, y = coords[index[nid]]
-                ax.annotate(nid.replace("article-", "Art ").replace("annex-", "Annex "), (x, y), fontsize=8, xytext=(5, 5), textcoords="offset points")
-    handles = type_legend(types=["Article", "Annex"])
-    ax.legend(handles=handles, loc="upper right", fontsize=9, framealpha=0.9)
-    ax.set_title(f"{title}\n(units with similar reference profiles cluster together)")
-    ax.axis("off")
-    fig.savefig(out_dir / fname, dpi=150)
-    plt.close(fig)
-
-
 def heatmap_chart(g, out_dir: Path, level: str = "article") -> None:
-    """Interaction heatmap: unit × unit REFERENCES matrix.
+    """Interaction heatmap: unit × unit REFERENCES matrix, grouped by
+    hierarchical clustering with dendrograms on both axes.
 
-    level: "article" (113×113) or "paragraph" (clause-level, top units).
-    Cell intensity = number of citation interactions between two units.
+    Dendrograms show the cluster hierarchy (which units cite alike) alongside
+    the collated matrix — block structure emerges from the clustering order.
     """
     import numpy as np
+    from scipy.cluster.hierarchy import dendrogram, linkage
+    from scipy.spatial.distance import pdist
 
     if level == "article":
         unit_ids = sorted(n.id for n in g.nodes.values() if n.type in ("Article", "Annex"))
@@ -292,69 +207,54 @@ def heatmap_chart(g, out_dir: Path, level: str = "article") -> None:
             print("  heatmap-clauses: not enough interactions, skipped")
             return
 
-    fig, ax = plt.subplots(figsize=(16, 14))
+    # Hierarchical clustering on the symmetric interaction profile
+    # (rows of the matrix = who each unit cites/is cited by).
+    sym = mat + mat.T
+    np.fill_diagonal(sym, sym.diagonal())  # keep self-citations
+    Z = linkage(sym, method="average", metric="euclidean")
 
-    # Louvain community grouping: reorder rows/cols by community so the
-    # block structure (clusters of heavily-citing units) becomes visible.
-    import networkx as nx
+    fig = plt.figure(figsize=(18, 16))
+    gs = fig.add_gridspec(2, 2, width_ratios=[1, 5], height_ratios=[1, 5], wspace=0.01, hspace=0.01)
 
-    cite_graph = nx.Graph()
-    for i in range(n):
-        for j in range(n):
-            if mat[i, j] > 0:
-                cite_graph.add_edge(unit_ids[i], unit_ids[j], weight=float(mat[i, j]))
-    communities = nx.community.louvain_communities(cite_graph, seed=42, weight="weight")
-    # Order: communities sorted by size desc, members sorted within
-    order: list[int] = []
-    community_bounds: list[tuple[int, int, int]] = []  # (start, end, colour_idx)
-    comm_colours = ["#4C72B0", "#DD8452", "#55A868", "#C44E52", "#8172B3", "#CCB974", "#64B5CD", "#937860"]
-    for ci, comm in enumerate(sorted(communities, key=len, reverse=True)):
-        members = sorted(m for m in comm if m in index)
-        start = len(order)
-        order.extend(index[m] for m in members)
-        community_bounds.append((start, len(order), ci))
+    # Dendrograms: top (columns) and left (rows)
+    ax_dend_top = fig.add_subplot(gs[0, 1])
+    ax_dend_left = fig.add_subplot(gs[1, 0])
+    ax_heat = fig.add_subplot(gs[1, 1])
 
-    if len(order) == n:
-        mat = mat[np.ix_(order, order)]
-        unit_ids = [unit_ids[i] for i in order]
+    def short(nid: str) -> str:
+        return nid.replace("article-", "Art ").replace("annex-", "Annex ")
 
-        im = ax.imshow(np.log1p(mat), cmap="YlOrRd", aspect="auto")
+    # Column dendrogram
+    dendrogram(Z, ax=ax_dend_top, orientation="top", no_labels=True, color_threshold=0.7 * Z[:, 2].max())
+    ax_dend_top.set_xticks([])
+    ax_dend_top.set_yticks([])
+    for spine in ax_dend_top.spines.values():
+        spine.set_visible(False)
 
-        # Ticks: short labels
-        def short(nid: str) -> str:
-            return nid.replace("article-", "Art ").replace("annex-", "Annex ").replace("annex-", "Annex ")
+    # Row dendrogram
+    dendrogram(Z, ax=ax_dend_left, orientation="left", no_labels=True, color_threshold=0.7 * Z[:, 2].max())
+    ax_dend_left.set_xticks([])
+    ax_dend_left.set_yticks([])
+    for spine in ax_dend_left.spines.values():
+        spine.set_visible(False)
 
-        step = max(1, n // 60)
-        ticks = list(range(0, n, step))
-        ax.set_xticks(ticks)
-        ax.set_yticks(ticks)
-        ax.set_xticklabels([short(unit_ids[i]) for i in ticks], rotation=90, fontsize=6)
-        ax.set_yticklabels([short(unit_ids[i]) for i in ticks], fontsize=6)
+    # Heatmap in the dendrogram's leaf order
+    leaves = dendrogram(Z, no_plot=True)["leaves"]
+    mat_ordered = mat[np.ix_(leaves, leaves)]
+    ordered_ids = [unit_ids[i] for i in leaves]
 
-        # Community blocks: coloured spans along the axes + dividers
-        for start, end, ci in community_bounds:
-            if end - start < 2:
-                continue
-            colour = comm_colours[ci % len(comm_colours)]
-            ax.axhline(start - 0.5, color="white", lw=1.2)
-            ax.axvline(start - 0.5, color="white", lw=1.2)
-            ax.add_patch(plt.Rectangle((-0.5, start - 0.5), 6, end - start, color=colour, alpha=0.55, zorder=3, clip_on=False))
-            ax.add_patch(plt.Rectangle((start - 0.5, -0.5), end - start, 6, color=colour, alpha=0.55, zorder=3, clip_on=False))
+    im = ax_heat.imshow(np.log1p(mat_ordered), cmap="YlOrRd", aspect="auto", interpolation="nearest")
 
-        # Legend: community colours
-        handles = [
-            Line2D([0], [0], marker="s", color="w", markerfacecolor=comm_colours[ci % len(comm_colours)], markersize=10,
-                   label=f"community {ci + 1} ({end - start} units)")
-            for ci, (start, end, _) in enumerate(community_bounds) if end - start >= 2
-        ]
-        ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(1.01, 1), fontsize=8, framealpha=0.9, title="Louvain communities")
-
-        ax.set_xlabel("Cited unit")
-        ax.set_ylabel("Citing unit")
-        ax.set_title(f"{title} ({n}×{n}, log-scaled intensity, Louvain-grouped)")
-    else:
-        im = ax.imshow(np.log1p(mat), cmap="YlOrRd", aspect="auto")
-        ax.set_title(f"{title} ({n}×{n}, log-scaled intensity)")
+    step = max(1, n // 60)
+    ticks = list(range(0, n, step))
+    ax_heat.set_xticks(ticks)
+    ax_heat.set_yticks(ticks)
+    ax_heat.set_xticklabels([short(ordered_ids[i]) for i in ticks], rotation=90, fontsize=6)
+    ax_heat.set_yticklabels([short(ordered_ids[i]) for i in ticks], fontsize=6)
+    ax_heat.set_xlabel("Cited unit")
+    fig.savefig(out_dir / fname, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    print(f"  heatmap ({level}): {n}×{n}, dendrogram-grouped")
 
 
 LEGEND_HTML = """
@@ -448,9 +348,8 @@ def main() -> int:
 
     levels = {"all": ["article", "clause"], "article": ["article"], "clause": ["clause"]}[args.granularity]
     for level in levels:
-        embedding_chart(g, args.out, level=level)
         heatmap_chart(g, args.out, level=level)
-    print("Wrote embeddings + heatmaps to {}/".format(args.out))
+    print("Wrote heatmaps to {}/".format(args.out))
     return 0
 
 
