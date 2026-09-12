@@ -1,0 +1,502 @@
+{
+  "0-substring": [
+    {
+      "strategy": "0-substring",
+      "backend": "NetworkXKB",
+      "k": 3,
+      "n_items": 40,
+      "mrr_at_k": 0.0,
+      "recall_at_k": 0.0,
+      "latency_mean_s": 0.006342185399898881,
+      "latency_p95_s": 0.007874532999267103,
+      "unanswerable_no_hit_rate": 1.0,
+      "per_category": {
+        "multi-hop": {
+          "n": 10,
+          "precision": 0.0,
+          "recall": 0.0,
+          "mrr": 0.0,
+          "chain_recall": 0.0
+        },
+        "scenario": {
+          "n": 8,
+          "precision": 0.0,
+          "recall": 0.0,
+          "mrr": 0.0,
+          "chain_recall": 0.0
+        },
+        "single-hop": {
+          "n": 10,
+          "precision": 0.0,
+          "recall": 0.0,
+          "mrr": 0.0,
+          "chain_recall": 0.0
+        },
+        "temporal": {
+          "n": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "mrr": 0.0,
+          "chain_recall": 0.0
+        }
+      }
+    },
+    {
+      "strategy": "0-substring",
+      "backend": "NetworkXKB",
+      "k": 5,
+      "n_items": 40,
+      "mrr_at_k": 0.0,
+      "recall_at_k": 0.0,
+      "latency_mean_s": 0.006790233300216641,
+      "latency_p95_s": 0.009177679999993416,
+      "unanswerable_no_hit_rate": 1.0,
+      "per_category": {
+        "multi-hop": {
+          "n": 10,
+          "precision": 0.0,
+          "recall": 0.0,
+          "mrr": 0.0,
+          "chain_recall": 0.0
+        },
+        "scenario": {
+          "n": 8,
+          "precision": 0.0,
+          "recall": 0.0,
+          "mrr": 0.0,
+          "chain_recall": 0.0
+        },
+        "single-hop": {
+          "n": 10,
+          "precision": 0.0,
+          "recall": 0.0,
+          "mrr": 0.0,
+          "chain_recall": 0.0
+        },
+        "temporal": {
+          "n": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "mrr": 0.0,
+          "chain_recall": 0.0
+        }
+      }
+    },
+    {
+      "strategy": "0-substring",
+      "backend": "NetworkXKB",
+      "k": 10,
+      "n_items": 40,
+      "mrr_at_k": 0.0,
+      "recall_at_k": 0.0,
+      "latency_mean_s": 0.006568496024920023,
+      "latency_p95_s": 0.00803238499793224,
+      "unanswerable_no_hit_rate": 1.0,
+      "per_category": {
+        "multi-hop": {
+          "n": 10,
+          "precision": 0.0,
+          "recall": 0.0,
+          "mrr": 0.0,
+          "chain_recall": 0.0
+        },
+        "scenario": {
+          "n": 8,
+          "precision": 0.0,
+          "recall": 0.0,
+          "mrr": 0.0,
+          "chain_recall": 0.0
+        },
+        "single-hop": {
+          "n": 10,
+          "precision": 0.0,
+          "recall": 0.0,
+          "mrr": 0.0,
+          "chain_recall": 0.0
+        },
+        "temporal": {
+          "n": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "mrr": 0.0,
+          "chain_recall": 0.0
+        }
+      }
+    }
+  ],
+  "1-bm25": [
+    {
+      "strategy": "1-bm25",
+      "backend": "NetworkXKB",
+      "k": 3,
+      "n_items": 40,
+      "mrr_at_k": 0.44285714285714284,
+      "recall_at_k": 0.380952380952381,
+      "latency_mean_s": 0.006608555100137891,
+      "latency_p95_s": 0.010638896997988923,
+      "unanswerable_no_hit_rate": 1.0,
+      "per_category": {
+        "multi-hop": {
+          "n": 10,
+          "precision": 0.2333333333333333,
+          "recall": 0.31666666666666665,
+          "mrr": 0.6,
+          "chain_recall": 0.1
+        },
+        "scenario": {
+          "n": 8,
+          "precision": 0.08333333333333333,
+          "recall": 0.1875,
+          "mrr": 0.1875,
+          "chain_recall": 0.125
+        },
+        "single-hop": {
+          "n": 10,
+          "precision": 0.13333333333333333,
+          "recall": 0.4,
+          "mrr": 0.25,
+          "chain_recall": 0.4
+        },
+        "temporal": {
+          "n": 7,
+          "precision": 0.3333333333333333,
+          "recall": 0.6666666666666667,
+          "mrr": 0.7857142857142857,
+          "chain_recall": 0.42857142857142855
+        }
+      }
+    },
+    {
+      "strategy": "1-bm25",
+      "backend": "NetworkXKB",
+      "k": 5,
+      "n_items": 40,
+      "mrr_at_k": 0.4557142857142857,
+      "recall_at_k": 0.4380952380952381,
+      "latency_mean_s": 0.005841596499794832,
+      "latency_p95_s": 0.011298841000098037,
+      "unanswerable_no_hit_rate": 1.0,
+      "per_category": {
+        "multi-hop": {
+          "n": 10,
+          "precision": 0.18,
+          "recall": 0.4166666666666667,
+          "mrr": 0.625,
+          "chain_recall": 0.2
+        },
+        "scenario": {
+          "n": 8,
+          "precision": 0.07500000000000001,
+          "recall": 0.3125,
+          "mrr": 0.2125,
+          "chain_recall": 0.25
+        },
+        "single-hop": {
+          "n": 10,
+          "precision": 0.08,
+          "recall": 0.4,
+          "mrr": 0.25,
+          "chain_recall": 0.4
+        },
+        "temporal": {
+          "n": 7,
+          "precision": 0.2,
+          "recall": 0.6666666666666667,
+          "mrr": 0.7857142857142857,
+          "chain_recall": 0.42857142857142855
+        }
+      }
+    },
+    {
+      "strategy": "1-bm25",
+      "backend": "NetworkXKB",
+      "k": 10,
+      "n_items": 40,
+      "mrr_at_k": 0.4741609977324263,
+      "recall_at_k": 0.5380952380952381,
+      "latency_mean_s": 0.006037870425188885,
+      "latency_p95_s": 0.009825690001889598,
+      "unanswerable_no_hit_rate": 1.0,
+      "per_category": {
+        "multi-hop": {
+          "n": 10,
+          "precision": 0.11000000000000001,
+          "recall": 0.5166666666666667,
+          "mrr": 0.6541666666666667,
+          "chain_recall": 0.2
+        },
+        "scenario": {
+          "n": 8,
+          "precision": 0.05,
+          "recall": 0.4375,
+          "mrr": 0.225,
+          "chain_recall": 0.375
+        },
+        "single-hop": {
+          "n": 10,
+          "precision": 0.06000000000000001,
+          "recall": 0.55,
+          "mrr": 0.2753968253968254,
+          "chain_recall": 0.5
+        },
+        "temporal": {
+          "n": 7,
+          "precision": 0.1,
+          "recall": 0.6666666666666667,
+          "mrr": 0.7857142857142857,
+          "chain_recall": 0.42857142857142855
+        }
+      }
+    }
+  ],
+  "2-tfidf": [
+    {
+      "strategy": "2-tfidf",
+      "backend": "NetworkXKB",
+      "k": 3,
+      "n_items": 40,
+      "mrr_at_k": 0.3380952380952381,
+      "recall_at_k": 0.32857142857142857,
+      "latency_mean_s": 0.0020544880498164276,
+      "latency_p95_s": 0.002960894998977892,
+      "unanswerable_no_hit_rate": 1.0,
+      "per_category": {
+        "multi-hop": {
+          "n": 10,
+          "precision": 0.26666666666666666,
+          "recall": 0.36666666666666664,
+          "mrr": 0.5666666666666667,
+          "chain_recall": 0.1
+        },
+        "scenario": {
+          "n": 8,
+          "precision": 0.08333333333333333,
+          "recall": 0.1875,
+          "mrr": 0.125,
+          "chain_recall": 0.125
+        },
+        "single-hop": {
+          "n": 10,
+          "precision": 0.16666666666666666,
+          "recall": 0.45,
+          "mrr": 0.2833333333333333,
+          "chain_recall": 0.4
+        },
+        "temporal": {
+          "n": 7,
+          "precision": 0.14285714285714285,
+          "recall": 0.2619047619047619,
+          "mrr": 0.33333333333333337,
+          "chain_recall": 0.14285714285714285
+        }
+      }
+    },
+    {
+      "strategy": "2-tfidf",
+      "backend": "NetworkXKB",
+      "k": 5,
+      "n_items": 40,
+      "mrr_at_k": 0.3438095238095238,
+      "recall_at_k": 0.3380952380952381,
+      "latency_mean_s": 0.003852743574861961,
+      "latency_p95_s": 0.006719760000123642,
+      "unanswerable_no_hit_rate": 1.0,
+      "per_category": {
+        "multi-hop": {
+          "n": 10,
+          "precision": 0.16,
+          "recall": 0.36666666666666664,
+          "mrr": 0.5666666666666667,
+          "chain_recall": 0.1
+        },
+        "scenario": {
+          "n": 8,
+          "precision": 0.05,
+          "recall": 0.1875,
+          "mrr": 0.125,
+          "chain_recall": 0.125
+        },
+        "single-hop": {
+          "n": 10,
+          "precision": 0.1,
+          "recall": 0.45,
+          "mrr": 0.2833333333333333,
+          "chain_recall": 0.4
+        },
+        "temporal": {
+          "n": 7,
+          "precision": 0.1142857142857143,
+          "recall": 0.3095238095238095,
+          "mrr": 0.3619047619047619,
+          "chain_recall": 0.14285714285714285
+        }
+      }
+    },
+    {
+      "strategy": "2-tfidf",
+      "backend": "NetworkXKB",
+      "k": 10,
+      "n_items": 40,
+      "mrr_at_k": 0.36792517006802716,
+      "recall_at_k": 0.4952380952380952,
+      "latency_mean_s": 0.0020330752749941894,
+      "latency_p95_s": 0.002798577999783447,
+      "unanswerable_no_hit_rate": 1.0,
+      "per_category": {
+        "multi-hop": {
+          "n": 10,
+          "precision": 0.11000000000000001,
+          "recall": 0.5166666666666667,
+          "mrr": 0.5891666666666666,
+          "chain_recall": 0.2
+        },
+        "scenario": {
+          "n": 8,
+          "precision": 0.037500000000000006,
+          "recall": 0.3125,
+          "mrr": 0.14583333333333334,
+          "chain_recall": 0.25
+        },
+        "single-hop": {
+          "n": 10,
+          "precision": 0.06000000000000001,
+          "recall": 0.55,
+          "mrr": 0.2976190476190476,
+          "chain_recall": 0.5
+        },
+        "temporal": {
+          "n": 7,
+          "precision": 0.08571428571428573,
+          "recall": 0.5952380952380952,
+          "mrr": 0.4061224489795919,
+          "chain_recall": 0.42857142857142855
+        }
+      }
+    }
+  ],
+  "4-graphrag": [
+    {
+      "strategy": "4-graphrag",
+      "backend": "NetworkXKB",
+      "k": 3,
+      "n_items": 40,
+      "mrr_at_k": 0.4238095238095238,
+      "recall_at_k": 0.380952380952381,
+      "latency_mean_s": 0.006272877100309415,
+      "latency_p95_s": 0.010279314999934286,
+      "unanswerable_no_hit_rate": 1.0,
+      "per_category": {
+        "multi-hop": {
+          "n": 10,
+          "precision": 0.2333333333333333,
+          "recall": 0.31666666666666665,
+          "mrr": 0.6,
+          "chain_recall": 0.3
+        },
+        "scenario": {
+          "n": 8,
+          "precision": 0.08333333333333333,
+          "recall": 0.1875,
+          "mrr": 0.1875,
+          "chain_recall": 0.125
+        },
+        "single-hop": {
+          "n": 10,
+          "precision": 0.13333333333333333,
+          "recall": 0.4,
+          "mrr": 0.25,
+          "chain_recall": 0.6
+        },
+        "temporal": {
+          "n": 7,
+          "precision": 0.3333333333333333,
+          "recall": 0.6666666666666667,
+          "mrr": 0.6904761904761905,
+          "chain_recall": 1.0
+        }
+      }
+    },
+    {
+      "strategy": "4-graphrag",
+      "backend": "NetworkXKB",
+      "k": 5,
+      "n_items": 40,
+      "mrr_at_k": 0.4176190476190476,
+      "recall_at_k": 0.4380952380952381,
+      "latency_mean_s": 0.008765364175178546,
+      "latency_p95_s": 0.017284246001509018,
+      "unanswerable_no_hit_rate": 1.0,
+      "per_category": {
+        "multi-hop": {
+          "n": 10,
+          "precision": 0.18,
+          "recall": 0.4166666666666667,
+          "mrr": 0.625,
+          "chain_recall": 0.6
+        },
+        "scenario": {
+          "n": 8,
+          "precision": 0.07500000000000001,
+          "recall": 0.3125,
+          "mrr": 0.15,
+          "chain_recall": 0.375
+        },
+        "single-hop": {
+          "n": 10,
+          "precision": 0.08,
+          "recall": 0.4,
+          "mrr": 0.23333333333333334,
+          "chain_recall": 0.6
+        },
+        "temporal": {
+          "n": 7,
+          "precision": 0.2,
+          "recall": 0.6666666666666667,
+          "mrr": 0.6904761904761905,
+          "chain_recall": 1.0
+        }
+      }
+    },
+    {
+      "strategy": "4-graphrag",
+      "backend": "NetworkXKB",
+      "k": 10,
+      "n_items": 40,
+      "mrr_at_k": 0.4334467120181406,
+      "recall_at_k": 0.6,
+      "latency_mean_s": 0.007345695849835465,
+      "latency_p95_s": 0.011185687999386573,
+      "unanswerable_no_hit_rate": 1.0,
+      "per_category": {
+        "multi-hop": {
+          "n": 10,
+          "precision": 0.14,
+          "recall": 0.65,
+          "mrr": 0.6950000000000001,
+          "chain_recall": 0.6
+        },
+        "scenario": {
+          "n": 8,
+          "precision": 0.05,
+          "recall": 0.4375,
+          "mrr": 0.1625,
+          "chain_recall": 0.625
+        },
+        "single-hop": {
+          "n": 10,
+          "precision": 0.07,
+          "recall": 0.6,
+          "mrr": 0.3503968253968254,
+          "chain_recall": 0.8
+        },
+        "temporal": {
+          "n": 7,
+          "precision": 0.1142857142857143,
+          "recall": 0.7142857142857143,
+          "mrr": 0.4880952380952381,
+          "chain_recall": 1.0
+        }
+      }
+    }
+  ]
+}

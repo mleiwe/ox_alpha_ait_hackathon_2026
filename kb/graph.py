@@ -42,6 +42,13 @@ ACTOR_TERMS = {
 
 ROMAN = {"i": 1, "ii": 2, "iii": 3, "iv": 4, "v": 5, "vi": 6, "vii": 7, "viii": 8, "ix": 9, "x": 10}
 
+# Corpus hygiene: files excluded from the graph. The large-scale-IT-systems
+# annex duplicates Annex X content (CELLAR consolidated renderings split it
+# out) and pollutes search results.
+EXCLUDED_FILES = {
+    "union-legislative-acts-on-large-scale-it-systems-in-the-area-of-freedom,-security-and-justice",
+}
+
 
 def parse_frontmatter(text: str) -> tuple[dict[str, str], str]:
     """Parse simple `key: value` frontmatter. Returns (meta, body)."""
@@ -109,6 +116,8 @@ def load_units(corpus_dir: Path) -> list[tuple[dict[str, str], str, Path]]:
         if not d.is_dir():
             continue
         for path in sorted(d.glob("*.md")):
+            if path.stem in EXCLUDED_FILES:
+                continue
             meta, body = parse_frontmatter(path.read_text(encoding="utf-8"))
             units.append((meta, body, path))
     return units
@@ -152,19 +161,19 @@ def build_graph(corpus_dir: Path) -> Graph:
             for level, heading, text in sections[1:]:
                 # Determine sub-unit id: article-6.1 / article-6.1.a / article-6.1.a.i
                 h = heading.strip()
+                # Pop same-level and deeper entries BEFORE computing the parent,
+                # so same-level headings chain to their true parent (article-5.1.f),
+                # not linearly to the previous sibling (article-5.1.a.b.ba.bb...).
+                while stack and stack[-1][0] >= level:
+                    stack.pop()
                 parent_id = stack[-1][1] if stack else uid
                 if level == 2:
                     sub_id = f"{uid}.{_slug(h)}"
-                elif level == 3:
-                    sub_id = f"{parent_id}.{_slug(h)}"
                 else:
                     sub_id = f"{parent_id}.{_slug(h)}"
                 sub_type = {2: "Paragraph", 3: "Point"}.get(level, "SubPoint")
                 g.add_node(Node(id=sub_id, type=sub_type, title=h, content=text))
                 g.add_edge(parent_id, sub_id, "HAS_SUBUNIT")
-                # maintain stack: pop entries with level >= current
-                while stack and stack[-1][0] >= level:
-                    stack.pop()
                 stack.append((level, sub_id))
 
     # Pass 2: definitions (Article 3) and actors

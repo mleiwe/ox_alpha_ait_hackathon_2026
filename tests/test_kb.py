@@ -135,3 +135,53 @@ def test_backends_agree(nx_kb, graph, tmp_path):
 
     assert nx_kb.references("article-6") == wiki_kb.references("article-6")
     assert len(nx_kb.obligations_for("actor-provider")) == len(wiki_kb.obligations_for("actor-provider"))
+
+
+def test_parser_parent_fix(graph):
+    """Same-level headings chain to their true parent, not linearly (verified bug).
+
+    article-5.1.f (emotion inference) must exist at paragraph depth, not as
+    article-5.1.a.b.ba.bb.c.i.ii.d.e.f (the old linear-chain bug).
+    """
+    assert "article-5.1.f" in graph.nodes
+    assert "article-5.1.a.b.ba.bb.c.i.ii.d.e.f" not in graph.nodes
+    node = graph.nodes["article-5.1.f"]
+    assert "emotion" in node.content.lower()
+    # parent chain: article-5.1.f -> article-5.1 -> article-5
+    parents = [e.src for e in graph.edges if e.dst == "article-5.1.f" and e.kind == "HAS_SUBUNIT"]
+    assert parents == ["article-5.1"]
+
+
+def test_corpus_hygiene_excluded_files(graph):
+    """The stray large-scale-IT-systems annex (duplicates Annex X) is excluded."""
+    assert not any("union-legislative" in nid for nid in graph.nodes)
+
+
+def test_backend_edges_method(nx_kb, graph, tmp_path):
+    """ABC edges(unit, direction, kinds) works on both backends (strategy 4 surface)."""
+    wiki_dir = tmp_path / "wiki"
+    generate_wiki(graph, wiki_dir)
+    wiki_kb = LLMwikiKB(CORPUS, wiki_dir=wiki_dir)
+
+    for kb in (nx_kb, wiki_kb):
+        out = kb.edges("article-6", direction="out", kinds=("REFERENCES",))
+        assert out, "expected outgoing REFERENCES from article-6"
+        assert all(kind == "REFERENCES" for _s, _d, kind in out)
+        both = kb.edges("article-6", direction="both", kinds=("HAS_SUBUNIT",))
+        assert both, "expected HAS_SUBUNIT edges touching article-6"
+        # kind filter is respected
+        kinds = {kind for _s, _d, kind in kb.edges("article-6", direction="both", kinds=("REFERENCES", "IMPOSES_ON"))}
+        assert kinds <= {"REFERENCES", "IMPOSES_ON"}
+
+
+def test_gold_lint_green():
+    """The benchmark does not run on a red lint — gold set must pass."""
+    import subprocess
+
+    result = subprocess.run(
+        ["uv", "run", "bench/lint_gold.py"],
+        capture_output=True,
+        text=True,
+        cwd=Path(__file__).parent.parent,
+    )
+    assert result.returncode == 0, f"gold lint red:\n{result.stdout}"

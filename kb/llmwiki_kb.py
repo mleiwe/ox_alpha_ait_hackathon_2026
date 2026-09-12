@@ -78,10 +78,11 @@ class LLMwikiKB(KBBackend):
         self.pages: dict[str, str] = {}
         for path in (self.wiki_dir / "pages").glob("*.md"):
             self.pages[path.stem] = path.read_text(encoding="utf-8")
-        self.edges: list[tuple[str, str, str]] = []
+        # NB: named edge_list to avoid shadowing KBBackend.edges()
+        self.edge_list: list[tuple[str, str, str]] = []
         with (self.wiki_dir / "edges.csv").open() as f:
             for row in csv.DictReader(f):
-                self.edges.append((row["src"], row["dst"], row["kind"]))
+                self.edge_list.append((row["src"], row["dst"], row["kind"]))
 
     def get_unit(self, unit_id: str) -> Node | None:
         text = self.pages.get(unit_id)
@@ -92,12 +93,28 @@ class LLMwikiKB(KBBackend):
         return Node(id=unit_id, type="", title=title, content=text)
 
     def references(self, unit_id: str) -> list[str]:
-        refs = {dst for src, dst, kind in self.edges if src == unit_id and kind == "REFERENCES"}
+        refs = {dst for src, dst, kind in self.edge_list if src == unit_id and kind == "REFERENCES"}
         return sorted(refs)
+
+    def edges(
+        self,
+        unit_id: str,
+        direction: str = "out",
+        kinds: tuple[str, ...] | None = None,
+    ) -> list[tuple[str, str, str]]:
+        from . import _match_kinds
+
+        results: list[tuple[str, str, str]] = []
+        for src, dst, kind in self.edge_list:
+            if direction in ("out", "both") and src == unit_id and _match_kinds(kind, kinds):
+                results.append((src, dst, kind))
+            if direction in ("in", "both") and dst == unit_id and _match_kinds(kind, kinds):
+                results.append((src, dst, kind))
+        return results
 
     def obligations_for(self, actor_id: str) -> list[Node]:
         results = []
-        for src, dst, kind in self.edges:
+        for src, dst, kind in self.edge_list:
             if dst == actor_id and kind == "IMPOSES_ON":
                 node = self.get_unit(src)
                 if node:
@@ -123,7 +140,7 @@ class LLMwikiKB(KBBackend):
 
         directed_adj: dict[str, list[str]] = {}
         undirected_adj: dict[str, list[str]] = {}
-        for s, d, _k in self.edges:
+        for s, d, _k in self.edge_list:
             directed_adj.setdefault(s, []).append(d)
             undirected_adj.setdefault(s, []).append(d)
             undirected_adj.setdefault(d, []).append(s)
@@ -135,5 +152,5 @@ class LLMwikiKB(KBBackend):
         return [nid for nid, text in self.pages.items() if q in text.lower()]
 
     def stats(self) -> dict[str, int]:
-        stats = {"pages": len(self.pages), "EDGES": len(self.edges)}
+        stats = {"pages": len(self.pages), "EDGES": len(self.edge_list)}
         return stats
