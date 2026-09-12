@@ -88,9 +88,10 @@ The OpenCode plugin auto-loads when OpenCode starts in this repo (or globally vi
 |------|-------|
 | `graph-interactive.html` | Full graph (pyvis, colour by type) — 2,347 nodes |
 | `article-graph.html` | Article-level subgraph (interactive) |
-| `bench-mrr.png` / `bench-recall.png` / `bench-chain.png` / `bench-latency.png` | benchmark results |
 | `node-types.png` / `edge-types.png` / `obligations-by-actor.png` | corpus composition |
 | `definitions-network.png` | Article 3 definitions → actors |
+
+Benchmark figures live in [`bench/viz/`](bench/viz) — see the Benchmarking section below.
 
 ## Benchmarking
 
@@ -108,6 +109,16 @@ The retrieval strategy powering the agent was selected by a pre-registered bench
 GraphRAG delivers whole multi-hop chains (Art 6(2) → Annex III → Art 113) **3× as often** as flat retrieval at identical latency — 9 ms mean / 17 ms p95, 50× under a 1 s IDE budget. Reasoning tier: typed expansion holds 30% of expected chain hops vs 23% for BM25. Backend check: LLMwiki preserves rankings at −0.2 MRR → **NetworkX ships** as the agent backend.
 
 ![Retrieval quality by strategy](bench/viz/bench-mrr.png)
+
+**The tiebreak — who delivers the whole chain?** This is the figure that decided the winner: flat retrieval (BM25) finds the seed node but drops the chain; typed-edge expansion delivers all hops 3× as often.
+
+![H3: chain recall on multi-hop questions](bench/viz/bench-chain.png)
+
+**Latency vs the IDE budget.** Every strategy runs in single-digit milliseconds — 50× under the 1 s budget for an inline IDE gate, so retrieval quality was the only real trade-off.
+
+![Latency vs the 1s IDE budget](bench/viz/bench-latency.png)
+
+Full figure set — recall by category, score curves, and the reasoning tier (hop coverage, distractor resistance) — lives in [`bench/viz/`](bench/viz) with the analysis in [`bench/REPORT.md`](bench/REPORT.md).
 
 ## Roadmap
 
