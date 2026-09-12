@@ -58,7 +58,9 @@ export const ComplianceGate: Plugin = async ({ client, $, directory, worktree })
   const cfg = loadConfig(worktree || directory)
   if (!cfg) return {} // no config in this worktree: middleware off
 
-  const root = worktree || directory
+  // worktree is "/" in non-git directories: fall back to directory so
+  // relative paths (and src/**-style globs) resolve against the workspace.
+  const root = worktree && worktree !== "/" ? worktree : directory
   const cliPath = (cfg: any) => (cfg._source === "global" ? CLI_FALLBACK : join(root, CLI))
   const lastReview = new Map<string, number>()
   const rel = (p: string) => (isAbsolute(p) ? relative(root, p) : p)
