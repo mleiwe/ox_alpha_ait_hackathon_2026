@@ -26,9 +26,9 @@
 | `viz/definitions-network.png` | Article 3 definitions → actors | Definition grounding |
 | `viz/tsne-articles.png` | **t-SNE projection** of article-level graph | Units with similar reference profiles cluster together |
 | `viz/tsne-clauses.png` | **t-SNE projection of clause-level graph** (paragraphs/points, bipartite features) | Topic clusters at clause granularity |
-| `viz/heatmap-articles.png` | **Interaction heatmap** (128×128, log-scaled) | All citation interactions at a glance |
-| `viz/graph-interactive.html` | Full graph (pyvis, colour by type) | Interactive exploration |
-| `viz/article-graph.html` | Article-level subgraph (pyvis) | Focused exploration |
+| `viz/heatmap-articles.png` | **Interaction heatmap** (128×128, log-scaled, **Louvain-grouped**) | All citation interactions; rows/cols reordered by community so block structure is visible |
+| `viz/graph-interactive.html` | Full graph (pyvis, colour by type, **HTML legend**) | Interactive exploration |
+| `viz/article-graph.html` | Article-level subgraph (pyvis, **HTML legend**) | Focused exploration |
 
 ## Design decisions
 
@@ -48,6 +48,9 @@ Other edge kinds (HAS_SUBUNIT, IMPOSES_ON, INTERPRETS) are structural and unweig
 - **Clause-level t-SNE** uses **bipartite features** (clause × referenced/parent articles) since clauses rarely cite each other directly.
 - **UMAP deferred**: `umap-learn` → `llvmlite` needs CMake to build on this Python/platform combo. Install `cmake` (`brew install cmake`) and `uv add --group dev umap-learn` to add it later — UMAP preserves global structure better than t-SNE.
 - Phase-3 option: swap graph-neighbourhood features for **text embeddings** (sentence-transformers) to compare structural vs semantic clustering.
+
+### Louvain grouping (heatmap)
+The heatmap rows/columns are **reordered by Louvain community** (`nx.community.louvain_communities`, weighted by citation count). Communities appear as coloured blocks along the axes with a legend — clusters of articles that cite each other heavily (e.g. the conformity-assessment cluster, the enforcement cluster) become visible as off-diagonal blocks instead of a noisy matrix. Louvain is built into NetworkX — no extra deps.
 
 ### Granularity option
 `--granularity article|clause|all` (default `all`):

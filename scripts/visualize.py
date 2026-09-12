@@ -293,25 +293,91 @@ def heatmap_chart(g, out_dir: Path, level: str = "article") -> None:
             return
 
     fig, ax = plt.subplots(figsize=(16, 14))
-    im = ax.imshow(np.log1p(mat), cmap="YlOrRd", aspect="auto")
 
-    # Ticks: short labels
-    def short(nid: str) -> str:
-        return nid.replace("article-", "Art ").replace("annex-", "Annex ").replace("annex-", "Annex ")
+    # Louvain community grouping: reorder rows/cols by community so the
+    # block structure (clusters of heavily-citing units) becomes visible.
+    import networkx as nx
 
-    step = max(1, n // 60)
-    ticks = list(range(0, n, step))
-    ax.set_xticks(ticks)
-    ax.set_yticks(ticks)
-    ax.set_xticklabels([short(unit_ids[i]) for i in ticks], rotation=90, fontsize=6)
-    ax.set_yticklabels([short(unit_ids[i]) for i in ticks], fontsize=6)
-    ax.set_xlabel("Cited unit")
-    ax.set_ylabel("Citing unit")
-    ax.set_title(f"{title} ({n}×{n}, log-scaled intensity)")
-    fig.colorbar(im, ax=ax, label="log(1 + citation count)", shrink=0.7)
-    fig.savefig(out_dir / fname, dpi=150)
-    plt.close(fig)
-    print(f"  heatmap ({level}): {n}×{n}")
+    cite_graph = nx.Graph()
+    for i in range(n):
+        for j in range(n):
+            if mat[i, j] > 0:
+                cite_graph.add_edge(unit_ids[i], unit_ids[j], weight=float(mat[i, j]))
+    communities = nx.community.louvain_communities(cite_graph, seed=42, weight="weight")
+    # Order: communities sorted by size desc, members sorted within
+    order: list[int] = []
+    community_bounds: list[tuple[int, int, int]] = []  # (start, end, colour_idx)
+    comm_colours = ["#4C72B0", "#DD8452", "#55A868", "#C44E52", "#8172B3", "#CCB974", "#64B5CD", "#937860"]
+    for ci, comm in enumerate(sorted(communities, key=len, reverse=True)):
+        members = sorted(m for m in comm if m in index)
+        start = len(order)
+        order.extend(index[m] for m in members)
+        community_bounds.append((start, len(order), ci))
+
+    if len(order) == n:
+        mat = mat[np.ix_(order, order)]
+        unit_ids = [unit_ids[i] for i in order]
+
+        im = ax.imshow(np.log1p(mat), cmap="YlOrRd", aspect="auto")
+
+        # Ticks: short labels
+        def short(nid: str) -> str:
+            return nid.replace("article-", "Art ").replace("annex-", "Annex ").replace("annex-", "Annex ")
+
+        step = max(1, n // 60)
+        ticks = list(range(0, n, step))
+        ax.set_xticks(ticks)
+        ax.set_yticks(ticks)
+        ax.set_xticklabels([short(unit_ids[i]) for i in ticks], rotation=90, fontsize=6)
+        ax.set_yticklabels([short(unit_ids[i]) for i in ticks], fontsize=6)
+
+        # Community blocks: coloured spans along the axes + dividers
+        for start, end, ci in community_bounds:
+            if end - start < 2:
+                continue
+            colour = comm_colours[ci % len(comm_colours)]
+            ax.axhline(start - 0.5, color="white", lw=1.2)
+            ax.axvline(start - 0.5, color="white", lw=1.2)
+            ax.add_patch(plt.Rectangle((-0.5, start - 0.5), 6, end - start, color=colour, alpha=0.55, zorder=3, clip_on=False))
+            ax.add_patch(plt.Rectangle((start - 0.5, -0.5), end - start, 6, color=colour, alpha=0.55, zorder=3, clip_on=False))
+
+        # Legend: community colours
+        handles = [
+            Line2D([0], [0], marker="s", color="w", markerfacecolor=comm_colours[ci % len(comm_colours)], markersize=10,
+                   label=f"community {ci + 1} ({end - start} units)")
+            for ci, (start, end, _) in enumerate(community_bounds) if end - start >= 2
+        ]
+        ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(1.01, 1), fontsize=8, framealpha=0.9, title="Louvain communities")
+
+        ax.set_xlabel("Cited unit")
+        ax.set_ylabel("Citing unit")
+        ax.set_title(f"{title} ({n}×{n}, log-scaled intensity, Louvain-grouped)")
+    else:
+        im = ax.imshow(np.log1p(mat), cmap="YlOrRd", aspect="auto")
+        ax.set_title(f"{title} ({n}×{n}, log-scaled intensity)")
+
+
+LEGEND_HTML = """
+<div style="position:fixed; top:12px; left:12px; z-index:9999;
+     background:rgba(255,255,255,0.92); border:1px solid #ccc; border-radius:6px;
+     padding:10px 14px; font-family:sans-serif; font-size:13px; color:#333;
+     box-shadow:0 1px 4px rgba(0,0,0,0.15);">
+  <div style="font-weight:600; margin-bottom:6px;">{title}</div>
+  {items}
+</div>
+"""
+
+
+def _legend_items(pairs: list[tuple[str, str]], shape: str = "square") -> str:
+    """HTML for legend rows: (label, colour)."""
+    if shape == "square":
+        swatch = 'display:inline-block; width:12px; height:12px; margin-right:7px; border-radius:2px; background:{c};'
+    else:  # line
+        swatch = 'display:inline-block; width:22px; height:0; margin-right:7px; border-top:3px solid {c}; vertical-align:middle;'
+    return "".join(
+        f'<div style="margin:3px 0;"><span style="{swatch.format(c=c)}"></span>{label}</div>'
+        for label, c in pairs
+    )
 
 
 def interactive_graphs(g, out_dir: Path) -> None:
@@ -330,18 +396,30 @@ def interactive_graphs(g, out_dir: Path) -> None:
             if e.src in node_ids and e.dst in node_ids:
                 net.add_edge(e.src, e.dst, title=e.kind)
 
+    def write_with_legend(net: Network, path: Path, title: str, node_types: list[str], show_edge_scale: bool = False) -> None:
+        net.write_html(str(path))
+        html = path.read_text(encoding="utf-8")
+        items = _legend_items([(t, TYPE_COLOURS.get(t, "#999")) for t in node_types])
+        if show_edge_scale:
+            items += _legend_items([("edge width = citation count", "#4C72B0")], shape="line")
+        legend = LEGEND_HTML.format(title=title, items=items)
+        # Inject before </body>
+        html = html.replace("</body>", legend + "\n</body>")
+        path.write_text(html, encoding="utf-8")
+
     # Full graph (may be heavy but pyvis handles a few thousand nodes)
     net = Network(height="800px", width="100%", bgcolor="#ffffff", font_color="#333", notebook=False)
     net.force_atlas_2based(gravity=-40)
     build(net, set(g.nodes.keys()), "EU AI Act knowledge graph — colour by node type")
-    net.write_html(str(out_dir / "graph-interactive.html"))
+    full_types = [t for t in TYPE_COLOURS if any(n.type == t for n in g.nodes.values())]
+    write_with_legend(net, out_dir / "graph-interactive.html", "EU AI Act knowledge graph — colour by node type", full_types)
 
     # Article-level subgraph
     net2 = Network(height="800px", width="100%", bgcolor="#ffffff", font_color="#333", notebook=False)
     net2.force_atlas_2based(gravity=-40)
     article_ids = {n.id for n in g.nodes.values() if n.type in ("Article", "Annex")}
     build(net2, article_ids, "EU AI Act — article-level reference network")
-    net2.write_html(str(out_dir / "article-graph.html"))
+    write_with_legend(net2, out_dir / "article-graph.html", "EU AI Act — article-level reference network", ["Article", "Annex"], show_edge_scale=True)
 
 
 def main() -> int:
