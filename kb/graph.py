@@ -319,7 +319,7 @@ def apply_edge_weights(g: Graph) -> None:
         seen.add(key)
         base = EDGE_BASE_WEIGHTS.get(e.kind, 1.0)
         e.attrs["weight"] = f"{base + (counts[key] - 1):.1f}"
-        weighted.append(e) if False else weighted.append(e)
+        weighted.append(e)
     g.edges = weighted
 
 

@@ -105,22 +105,30 @@ class LLMwikiKB(KBBackend):
         return results
 
     def path(self, src: str, dst: str) -> list[str]:
-        # BFS over the edge list
-        adj: dict[str, list[str]] = {}
-        for s, d, _k in self.edges:
-            adj.setdefault(s, []).append(d)
+        """BFS over the edge list. Directed first (legal direction), then
+        undirected fallback if no directed path exists."""
         from collections import deque
 
-        queue, seen = deque([[src]]), {src}
-        while queue:
-            p = queue.popleft()
-            if p[-1] == dst:
-                return p
-            for nxt in adj.get(p[-1], []):
-                if nxt not in seen:
-                    seen.add(nxt)
-                    queue.append(p + [nxt])
-        return []
+        def bfs(adj: dict[str, list[str]]) -> list[str]:
+            queue, seen = deque([[src]]), {src}
+            while queue:
+                p = queue.popleft()
+                if p[-1] == dst:
+                    return p
+                for nxt in adj.get(p[-1], []):
+                    if nxt not in seen:
+                        seen.add(nxt)
+                        queue.append(p + [nxt])
+            return []
+
+        directed_adj: dict[str, list[str]] = {}
+        undirected_adj: dict[str, list[str]] = {}
+        for s, d, _k in self.edges:
+            directed_adj.setdefault(s, []).append(d)
+            undirected_adj.setdefault(s, []).append(d)
+            undirected_adj.setdefault(d, []).append(s)
+
+        return bfs(directed_adj) or bfs(undirected_adj)
 
     def search(self, query: str) -> list[str]:
         q = query.lower()

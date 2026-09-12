@@ -42,13 +42,18 @@ class KBBackend(abc.ABC):
         """Node counts by type + edges."""
 
 
-def get_kb(backend: str, corpus_dir: Path | None = None) -> KBBackend:
-    """Instantiate a backend by name."""
+def get_kb(backend: str, corpus_dir: Path | None = None, directed: bool = True) -> KBBackend:
+    """Instantiate a backend by name.
+
+    directed=True (default): traversal respects legal edge direction
+    (cites, imposes-on, contains) with undirected fallback for path().
+    directed=False: fully undirected graph.
+    """
     corpus_dir = corpus_dir or Path("data/eu-ai-act")
     if backend == "networkx":
         from .networkx_kb import NetworkXKB
 
-        return NetworkXKB(corpus_dir)
+        return NetworkXKB(corpus_dir, directed=directed)
     if backend == "llmwiki":
         from .llmwiki_kb import LLMwikiKB
 
