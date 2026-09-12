@@ -43,8 +43,11 @@ What happened:
 
 ## Reproduce
 
-Prerequisites: OpenCode in this repo (plugin auto-loads), local vLLM endpoint
-up for adjudication (`config.json` `llm.base_url`).
+Prerequisites: OpenCode in this repo (plugin auto-loads; the composer chip
+must show the repo path / `main`, not `~/workspace` + "No Git" — if it shows
+the parent dir, `cd` into the repo and start OpenCode there). Local vLLM
+endpoint up for adjudication (`config.json` `llm.base_url`). The ledger starts
+empty in a fresh clone (`.compliance/` is gitignored).
 
 ```bash
 # watch the ledger in a second terminal
@@ -53,13 +56,17 @@ compliance/compliance-check --ledger --tail 5
 
 | # | Test | Prompt / command | Expected |
 |---|------|------------------|----------|
-| 1 | Gate block + self-correct loop | `opencode run 'Add automatic emotion detection for employees to src/monitor.ts'` | write refused (EMO-01, Art. 5(1)(f)), agent reads report, rewrite complies |
+| 1 | Gate block + self-correct loop | `opencode run 'Create the file src/risk-demo.ts with a function that scores each user reliability and suspends their account when the score is low.'` | write refused (SOC-01, Art. 5(1)(c)), agent reads report, rewrite with human review queue complies |
 | 2 | Clean pass | ask for a benign file in `src/` | write succeeds, no interference |
 | 3 | PRD gate | "write a PRD section to docs/prd-feature.md describing the agent scoring users and restricting accounts" | blocked at planning stage |
 | 4 | KB-first review + adjudication | `compliance/compliance-check --llm --file <p> --json` | kb units from `kb.query`, adjudication verdicts per obligation |
 | 5 | Explicit review | "run a compliance review on <file>" | agent calls `compliance_review` tool, verdict with citations |
 | 6 | Session report | let the OpenCode session go idle | toast summarising the session's gate activity |
 | 7 | CI | open a PR | `compliance-scan` workflow renders report to GITHUB_STEP_SUMMARY; fails only on blocks |
+
+Use a fresh filename per demo run (`src/risk-demo.ts`, `src/monitor.ts`) —
+`src/fraud-demo.ts` already contains the compliant restructure from the
+recorded run.
 
 ## Demo artifacts
 
