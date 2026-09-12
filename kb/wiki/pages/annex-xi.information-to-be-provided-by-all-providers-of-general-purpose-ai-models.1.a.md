@@ -1,9 +1,0 @@
-# annex-xi.information-to-be-provided-by-all-providers-of-general-purpose-ai-models.1.a
-
-**(a)**
-
-the tasks that the model is intended to perform and the type and nature of AI systems in which it can be integrated;
-
-## Links
-
-- HAS_SUBUNIT: [[annex-xi.information-to-be-provided-by-all-providers-of-general-purpose-ai-models.1.a.b]]

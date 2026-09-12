@@ -1,9 +1,0 @@
-# article-91.3
-
-**3**
-
-Upon a duly substantiated request from the scientific panel, the Commission may issue a request for information to a provider of a general-purpose AI model, where the access to information is necessary and proportionate for the fulfilment of the tasks of the scientific panel under Article 68(2).
-
-## Links
-
-- HAS_SUBUNIT: [[article-91.4]]

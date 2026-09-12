@@ -1,9 +1,0 @@
-# obligation-article-73-1
-
-**2 The report referred to in paragraph 1 shall be made immediately after the prov**
-
-2 The report referred to in paragraph 1 shall be made immediately after the provider has established a causal link between the AI system and the serious incident or the reasonable likelihood of such a link, and, in any event, not later than 15 days after the provider or, where applicable, the deployer, becomes aware of the serious incident.
-
-## Links
-
-- IMPOSES_ON: [[actor-provider]]

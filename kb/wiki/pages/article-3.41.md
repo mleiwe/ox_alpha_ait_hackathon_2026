@@ -1,9 +1,0 @@
-# article-3.41
-
-**(41)**
-
-‘remote biometric identification system’ means an AI system for the purpose of identifying natural persons, without their active involvement, typically at a distance through the comparison of a person’s biometric data with the biometric data contained in a reference database;
-
-## Links
-
-- HAS_SUBUNIT: [[article-3.42]]

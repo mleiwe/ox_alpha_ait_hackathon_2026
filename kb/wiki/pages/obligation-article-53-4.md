@@ -1,9 +1,0 @@
-# obligation-article-53-4
-
-**3 Providers of general-purpose AI models shall cooperate as necessary with the C**
-
-3 Providers of general-purpose AI models shall cooperate as necessary with the Commission and the national competent authorities in the exercise of their competences and powers pursuant to this Regulation.
-
-## Links
-
-- IMPOSES_ON: [[actor-provider]]

@@ -1,9 +1,0 @@
-# obligation-article-31-13
-
-**8 Notified bodies shall have procedures for the performance of activities which **
-
-8 Notified bodies shall have procedures for the performance of activities which take due account of the size of a provider, the sector in which it operates, its structure, and the degree of complexity of the AI system concerned.
-
-## Links
-
-- IMPOSES_ON: [[actor-provider]]

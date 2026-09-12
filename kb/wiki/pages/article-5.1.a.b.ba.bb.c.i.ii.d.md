@@ -1,9 +1,0 @@
-# article-5.1.a.b.ba.bb.c.i.ii.d
-
-**(d)**
-
-the placing on the market, the putting into service for this specific purpose, or the use of an AI system for making risk assessments of natural persons in order to assess or predict the risk of a natural person committing a criminal offence, based solely on the profiling of a natural person or on assessing their personality traits and characteristics; this prohibition shall not apply to AI systems used to support the human assessment of the involvement of a person in a criminal activity, which is already based on objective and verifiable facts directly linked to a criminal activity;
-
-## Links
-
-- HAS_SUBUNIT: [[article-5.1.a.b.ba.bb.c.i.ii.d.e]]

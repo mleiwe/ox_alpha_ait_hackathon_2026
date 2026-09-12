@@ -1,9 +1,0 @@
-# article-61.1
-
-**1**
-
-For the purpose of testing in real world conditions under Article 60, freely-given informed consent shall be obtained from the subjects of testing prior to their participation in such testing and after their having been duly informed with concise, clear, relevant, and understandable information regarding:
-
-## Links
-
-- HAS_SUBUNIT: [[article-61.1.a]]

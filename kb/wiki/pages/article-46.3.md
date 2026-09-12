@@ -1,9 +1,0 @@
-# article-46.3
-
-**3**
-
-The authorisation referred to in paragraph 1 shall be issued only if the market surveillance authority concludes that the high-risk AI system complies with the requirements of Section 2. The market surveillance authority shall inform the Commission and the other Member States of any authorisation issued pursuant to paragraphs 1 and 2. This obligation shall not cover sensitive operational data in relation to the activities of law-enforcement authorities.
-
-## Links
-
-- HAS_SUBUNIT: [[article-46.4]]

@@ -1,5 +1,0 @@
-# obligation-article-74-10
-
-**9 Where Union institutions, bodies, offices or agencies fall within the scope of**
-
-9 Where Union institutions, bodies, offices or agencies fall within the scope of this Regulation, the European Data Protection Supervisor shall act as their market surveillance authority, except in relation to the Court of Justice of the European Union acting in its judicial capacity.

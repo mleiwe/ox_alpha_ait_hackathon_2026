@@ -1,9 +1,0 @@
-# article-26.1
-
-**1**
-
-Deployers of high-risk AI systems shall take appropriate technical and organisational measures to ensure they use such systems in accordance with the instructions for use accompanying the systems, pursuant to paragraphs 3 and 6.
-
-## Links
-
-- HAS_SUBUNIT: [[article-26.2]]

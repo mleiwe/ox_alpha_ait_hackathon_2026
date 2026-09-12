@@ -1,9 +1,0 @@
-# article-100.1.a.b.c.d
-
-**(d)**
-
-the degree of cooperation with the European Data Protection Supervisor in order to remedy the infringement and mitigate the possible adverse effects of the infringement, including compliance with any of the measures previously ordered by the European Data Protection Supervisor against the Union institution, body, office or agency concerned with regard to the same subject matter;
-
-## Links
-
-- HAS_SUBUNIT: [[article-100.1.a.b.c.d.e]]

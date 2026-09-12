@@ -1,9 +1,0 @@
-# article-5.1a.a.i.ii.b
-
-**(b)**
-
-the use of an AI system that generates or manipulates the material or performance referred to in paragraph 1, first subparagraph, points (ba) and (bb) is only prohibited where the deployer uses the system for the purpose of generating or manipulating such material or performance.
-
-## Links
-
-- HAS_SUBUNIT: [[article-5.1b]]

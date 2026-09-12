@@ -1,9 +1,0 @@
-# article-5.7
-
-**7**
-
-The Commission shall publish annual reports on the use of real-time remote biometric identification systems in publicly accessible spaces for law enforcement purposes, based on aggregated data in Member States on the basis of the annual reports referred to in paragraph 6. Those annual reports shall not include sensitive operational data of the related law enforcement activities.
-
-## Links
-
-- HAS_SUBUNIT: [[article-5.8]]

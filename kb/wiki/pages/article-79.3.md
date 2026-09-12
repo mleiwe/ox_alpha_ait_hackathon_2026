@@ -1,9 +1,0 @@
-# article-79.3
-
-**3**
-
-Where the market surveillance authority considers that the non-compliance is not restricted to its national territory, it shall inform the Commission and the other Member States without undue delay of the results of the evaluation and of the actions which it has required the operator to take.
-
-## Links
-
-- HAS_SUBUNIT: [[article-79.4]]

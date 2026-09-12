@@ -1,9 +1,0 @@
-# article-62.1.a
-
-**(a)**
-
-provide SMEs, including start-ups, having a registered office or a branch in the Union, with priority access to the AI regulatory sandboxes, to the extent that they fulfil the eligibility conditions and selection criteria; the priority access shall not preclude other SMEs, including start-ups, other than those referred to in this paragraph from access to the AI regulatory sandbox, provided that they also fulfil the eligibility conditions and selection criteria;
-
-## Links
-
-- HAS_SUBUNIT: [[article-62.1.a.b]]

@@ -1,9 +1,0 @@
-# article-7.1
-
-**1**
-
-The Commission is empowered to adopt delegated acts in accordance with Article 97 to amend Annex III by adding or modifying use-cases of high-risk AI systems where both of the following conditions are fulfilled:
-
-## Links
-
-- HAS_SUBUNIT: [[article-7.1.a]]

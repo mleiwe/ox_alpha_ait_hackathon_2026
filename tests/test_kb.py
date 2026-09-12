@@ -60,7 +60,29 @@ def test_cross_references(graph):
 
 def test_recital_interpretation(graph):
     interprets = [e for e in graph.edges if e.kind == "INTERPRETS"]
-    assert len(interprets) > 50
+    assert len(interprets) > 40  # deduplicated; repeated links collapse to one weighted edge
+
+
+def test_definition_usage_edges(graph):
+    """Clauses/sub-clauses that use an Art 3 term get USES_DEFINITION edges."""
+    uses = [e for e in graph.edges if e.kind == "USES_DEFINITION"]
+    assert len(uses) > 1000
+    # clause-level sources (article-1.1 etc.)
+    assert any("." in e.src for e in uses)
+
+
+def test_clause_level_references(graph):
+    """Clauses/sub-clauses referencing other articles (direct refs)."""
+    clause_refs = [e for e in graph.edges if e.kind == "REFERENCES" and "." in e.src]
+    assert len(clause_refs) > 300
+
+
+def test_edge_weights(graph):
+    """All edges carry a weight; direct citations weigh more than containment."""
+    assert all("weight" in e.attrs for e in graph.edges)
+    ref = next(e for e in graph.edges if e.kind == "REFERENCES")
+    sub = next(e for e in graph.edges if e.kind == "HAS_SUBUNIT")
+    assert float(ref.attrs["weight"]) > float(sub.attrs["weight"])
 
 
 def test_obligations_imposed(graph):

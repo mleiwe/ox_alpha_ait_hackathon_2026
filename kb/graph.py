@@ -182,27 +182,65 @@ def build_graph(corpus_dir: Path) -> Graph:
                 g.add_node(Node(id=actor_id, type="Actor", title=term_clean))
                 g.add_edge(def_id, actor_id, "IS_ROLE_OF")
 
-    # Pass 3: cross-references, obligations, risk tiers
+    # Pass 3: sub-unit edges (definition usage, clause-level cross-references),
+    # obligations, risk tiers. Direct references only.
     for meta, body, path in units:
         uid = meta.get("id")
         if not uid:
             continue
 
+        # Collect sub-units for this unit (article-6.1, article-6.1.a, ...)
+        sub_units = [n for n in g.nodes.values() if n.id.startswith(uid + ".")]
+        # Map sub-unit -> its root article/annex id
+        def root_of(sub_id: str) -> str:
+            return uid
+
+        for sub in sub_units:
+            text = sub.content or ""
+
+            # 3a. Definition usage: clause/sub-clause uses a term defined in
+            # Article 3. Terms appear quoted ('AI system') or unquoted in
+            # running text — match as a word-boundary phrase.
+            defs_text = next((n.content for n in g.nodes.values() if n.id == "article-3"), "")
+            for term, _definition in DEFINITION_RE.findall(defs_text):
+                term_clean = term.strip().lower()
+                pattern = re.compile(r"['\u2018\u2019\"]?" + re.escape(term_clean) + r"['\u2018\u2019\"]?", re.IGNORECASE)
+                if pattern.search(text):
+                    def_id = f"def-{_slug(term_clean)}"
+                    if def_id in g.nodes:
+                        g.add_edge(sub.id, def_id, "USES_DEFINITION")
+
+            # 3b. Clause-level cross-references (direct only): "Article X(n)",
+            # "point (a) of Article X", "paragraph n of this Article", "Annex X".
+            for num, letter, _para in ARTICLE_REF_RE.findall(text):
+                ref_id = _norm_article(num, letter)
+                if ref_id != uid and ref_id in g.nodes:
+                    g.add_edge(sub.id, ref_id, "REFERENCES")
+
+            for num in ANNEX_REF_RE.findall(text):
+                ref_id = _norm_annex(num)
+                if ref_id in g.nodes:
+                    g.add_edge(sub.id, ref_id, "REFERENCES")
+
+        # Unit-level references (article -> article/annex) — keep for rollup
+        body = "\n".join(n.content for n in sub_units) if sub_units else ""
+        full_text = body or (g.nodes[uid].content if uid in g.nodes else "")
+
         # Article references
-        for num, letter, _para in ARTICLE_REF_RE.findall(body):
+        for num, letter, _para in ARTICLE_REF_RE.findall(full_text):
             ref_id = _norm_article(num, letter)
             if ref_id != uid and ref_id in g.nodes:
                 g.add_edge(uid, ref_id, "REFERENCES")
 
         # Annex references
-        for num in ANNEX_REF_RE.findall(body):
+        for num in ANNEX_REF_RE.findall(full_text):
             ref_id = _norm_annex(num)
             if ref_id != uid and ref_id in g.nodes:
                 g.add_edge(uid, ref_id, "REFERENCES")
 
         # Obligations: sentences with "shall" in articles
         if uid.startswith("article-"):
-            for i, sent in enumerate(SHALL_RE.findall(body)):
+            for i, sent in enumerate(SHALL_RE.findall(full_text)):
                 sent_clean = " ".join(sent.split())
                 sent_clean = re.sub(r"^#{1,6}\s+", "", sent_clean)  # strip heading markers
                 if len(sent_clean) < 20:
@@ -215,7 +253,7 @@ def build_graph(corpus_dir: Path) -> Graph:
                     g.add_edge(ob_id, actor, "IMPOSES_ON")
 
         # Risk tiers
-        low = body.lower()
+        low = (g.nodes[uid].content if uid in g.nodes else "").lower()
         if uid == "article-5" or "prohibited" in low[:200]:
             g.add_node(Node(id="risk-unacceptable", type="RiskTier", title="unacceptable risk"))
             g.add_edge(uid, "risk-unacceptable", "CLASSIFIES_AS")
@@ -233,7 +271,46 @@ def build_graph(corpus_dir: Path) -> Graph:
             if ref_id in g.nodes:
                 g.add_edge(uid, ref_id, "INTERPRETS")
 
+    apply_edge_weights(g)
     return g
+
+
+# Edge strength scheme: base weight per kind, reflecting how strongly the
+# edge implies semantic dependency. Direct citations are strongest.
+EDGE_BASE_WEIGHTS: dict[str, float] = {
+    "REFERENCES": 3.0,        # direct citation — strongest signal
+    "USES_DEFINITION": 2.0,   # uses an Art 3 term — strong semantic dependency
+    "IMPOSES_ON": 2.5,        # obligation binding an actor
+    "INTERPRETS": 1.5,        # recital interpretation — persuasive, not binding
+    "DEFINES": 2.0,           # article defines a term
+    "IS_ROLE_OF": 2.0,        # definition maps to an actor role
+    "CLASSIFIES_AS": 1.5,     # risk-tier classification
+    "HAS_OBLIGATION": 1.5,    # article contains obligation
+    "HAS_SUBUNIT": 1.0,       # structural containment — weakest
+}
+
+
+def apply_edge_weights(g: Graph) -> None:
+    """Assign weights to all edges: base weight per kind, boosted by multiplicity.
+
+    Repeated references (unit A cites unit B in several clauses) accumulate:
+    weight = base + (count - 1). Stored on the edge attrs.
+    """
+    counts: dict[tuple[str, str, str], int] = {}
+    for e in g.edges:
+        counts[(e.src, e.dst, e.kind)] = counts.get((e.src, e.dst, e.kind), 0) + 1
+
+    seen: set[tuple[str, str, str]] = set()
+    weighted: list[Edge] = []
+    for e in g.edges:
+        key = (e.src, e.dst, e.kind)
+        if key in seen:
+            continue  # deduplicate repeated edges, keep one with accumulated weight
+        seen.add(key)
+        base = EDGE_BASE_WEIGHTS.get(e.kind, 1.0)
+        e.attrs["weight"] = f"{base + (counts[key] - 1):.1f}"
+        weighted.append(e) if False else weighted.append(e)
+    g.edges = weighted
 
 
 def graph_stats(g: Graph) -> dict[str, int]:

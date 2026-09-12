@@ -1,5 +1,0 @@
-# def-deep-fake
-
-**deep fake**
-
-AI-generated or manipulated image, audio or video content that resembles existing persons, objects, places, entities or events and would falsely appear to a person to be authentic or truthful

@@ -1,5 +1,0 @@
-# obligation-article-74-11
-
-**10 Member States shall facilitate coordination between market surveillance autho**
-
-10 Member States shall facilitate coordination between market surveillance authorities designated under this Regulation and other relevant national authorities or bodies which supervise the application of Union harmonisation legislation listed in Annex I, or in other Union law, that might be relevant for the high-risk AI systems referred to in Annex III.

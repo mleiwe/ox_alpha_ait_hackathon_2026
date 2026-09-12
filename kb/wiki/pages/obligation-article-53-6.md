@@ -1,5 +1,0 @@
-# obligation-article-53-6
-
-**7 Any information or documentation obtained pursuant to this Article, including **
-
-7 Any information or documentation obtained pursuant to this Article, including trade secrets, shall be treated in accordance with the confidentiality obligations set out in Article 78.

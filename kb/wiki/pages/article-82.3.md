@@ -1,9 +1,0 @@
-# article-82.3
-
-**3**
-
-The Member States shall immediately inform the Commission and the other Member States of a finding under paragraph 1. That information shall include all available details, in particular the data necessary for the identification of the AI system concerned, the origin and the supply chain of the AI system, the nature of the risk involved and the nature and duration of the national measures taken.
-
-## Links
-
-- HAS_SUBUNIT: [[article-82.4]]

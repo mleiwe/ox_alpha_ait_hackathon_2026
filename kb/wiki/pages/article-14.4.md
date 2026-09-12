@@ -1,9 +1,0 @@
-# article-14.4
-
-**4**
-
-For the purpose of implementing paragraphs 1, 2 and 3, the high-risk AI system shall be provided to the deployer in such a way that natural persons to whom human oversight is assigned are enabled, as appropriate and proportionate:
-
-## Links
-
-- HAS_SUBUNIT: [[article-14.4.a]]

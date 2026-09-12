@@ -1,9 +1,0 @@
-# article-25.3
-
-**3**
-
-In the case of high-risk AI systems that are safety components of products covered by the Union harmonisation legislation listed in Section A of Annex I, the product manufacturer shall be considered to be the provider of the high-risk AI system, and shall be subject to the obligations under Article 16 under either of the following circumstances:
-
-## Links
-
-- HAS_SUBUNIT: [[article-25.3.a]]

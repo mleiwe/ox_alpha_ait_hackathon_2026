@@ -1,9 +1,0 @@
-# article-60.4.a.b.c.d.e.f.g.h.i
-
-**(i)**
-
-the subjects of the testing in real world conditions have given informed consent in accordance with Article 61, or in the case of law enforcement, where the seeking of informed consent would prevent the AI system from being tested, the testing itself and the outcome of the testing in the real world conditions shall not have any negative effect on the subjects, and their personal data shall be deleted after the test is performed;
-
-## Links
-
-- HAS_SUBUNIT: [[article-60.4.a.b.c.d.e.f.g.h.i.j]]

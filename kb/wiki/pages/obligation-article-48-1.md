@@ -1,5 +1,0 @@
-# obligation-article-48-1
-
-**2 For high-risk AI systems provided digitally, a digital CE marking shall be use**
-
-2 For high-risk AI systems provided digitally, a digital CE marking shall be used, only if it can easily be accessed via the interface from which that system is accessed or via an easily accessible machine-readable code or other electronic means.

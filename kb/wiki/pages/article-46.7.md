@@ -1,5 +1,0 @@
-# article-46.7
-
-**7**
-
-For high-risk AI systems related to products covered by Union harmonisation legislation listed in Section A of Annex I, only the derogations from the conformity assessment established in that Union harmonisation legislation shall apply.

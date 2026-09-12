@@ -1,9 +1,0 @@
-# article-99.9
-
-**9**
-
-Depending on the legal system of the Member States, the rules on administrative fines may be applied in such a manner that the fines are imposed by competent national courts or by other bodies, as applicable in those Member States. The application of such rules in those Member States shall have an equivalent effect.
-
-## Links
-
-- HAS_SUBUNIT: [[article-99.10]]

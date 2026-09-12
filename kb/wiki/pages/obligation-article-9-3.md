@@ -1,5 +1,0 @@
-# obligation-article-9-3
-
-**3 The risks referred to in this Article shall concern only those which may be re**
-
-3 The risks referred to in this Article shall concern only those which may be reasonably mitigated or eliminated through the development or design of the high-risk AI system, or the provision of adequate technical information.

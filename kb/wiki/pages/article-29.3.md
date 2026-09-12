@@ -1,9 +1,0 @@
-# article-29.3
-
-**3**
-
-Where the conformity assessment body concerned cannot provide an accreditation certificate, it shall provide the notifying authority with all the documentary evidence necessary for the verification, recognition and regular monitoring of its compliance with the requirements laid down in Article 31.
-
-## Links
-
-- HAS_SUBUNIT: [[article-29.4]]

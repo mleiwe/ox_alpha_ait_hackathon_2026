@@ -1,9 +1,0 @@
-# article-8.1
-
-**1**
-
-High-risk AI systems shall comply with the requirements laid down in this Section, taking into account their intended purpose as well as the generally acknowledged state of the art on AI and AI-related technologies. The risk management system referred to in Article 9 shall be taken into account when ensuring compliance with those requirements.
-
-## Links
-
-- HAS_SUBUNIT: [[article-8.2]]

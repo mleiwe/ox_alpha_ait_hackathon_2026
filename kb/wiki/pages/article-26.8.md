@@ -1,9 +1,0 @@
-# article-26.8
-
-**8**
-
-Deployers of high-risk AI systems that are public authorities, or Union institutions, bodies, offices or agencies shall comply with the registration obligations referred to in Article 49. When such deployers find that the high-risk AI system that they envisage using has not been registered in the EU database referred to in Article 71, they shall not use that system and shall inform the provider or the distributor.
-
-## Links
-
-- HAS_SUBUNIT: [[article-26.9]]

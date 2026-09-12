@@ -1,9 +1,0 @@
-# article-58.2.a
-
-**(a)**
-
-that AI regulatory sandboxes are open to any applying provider or prospective provider of an AI system who fulfils eligibility and selection criteria, which shall be transparent and fair, and that national competent authorities inform applicants of their decision within three months of the application;
-
-## Links
-
-- HAS_SUBUNIT: [[article-58.2.a.b]]

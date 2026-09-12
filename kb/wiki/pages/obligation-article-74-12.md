@@ -1,5 +1,0 @@
-# obligation-article-74-12
-
-**11 Market surveillance authorities and the Commission shall be able to propose j**
-
-11 Market surveillance authorities and the Commission shall be able to propose joint activities, including joint investigations, to be conducted by either market surveillance authorities or market surveillance authorities jointly with the Commission, that have the aim of promoting compliance, identifying non-compliance, raising awareness or providing guidance in relation to this Regulation with respect to specific categories of high-risk AI systems that are found to present a serious risk across two or more Member States in accordance with Article 9 of Regulation (EU) 2019/1020.

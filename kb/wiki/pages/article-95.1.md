@@ -1,9 +1,0 @@
-# article-95.1
-
-**1**
-
-The AI Office and the Member States shall encourage and facilitate the drawing up of codes of conduct, including related governance mechanisms, intended to foster the voluntary application to AI systems, other than high-risk AI systems, of some or all of the requirements set out in Chapter III, Section 2 taking into account the available technical solutions and industry best practices allowing for the application of such requirements.
-
-## Links
-
-- HAS_SUBUNIT: [[article-95.2]]

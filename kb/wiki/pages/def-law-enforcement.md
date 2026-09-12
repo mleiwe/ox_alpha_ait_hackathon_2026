@@ -1,5 +1,0 @@
-# def-law-enforcement
-
-**law enforcement**
-
-activities carried out by law enforcement authorities or on their behalf for the prevention, investigation, detection or prosecution of criminal offences or the execution of criminal penalties, including safeguarding against and preventing threats to public security

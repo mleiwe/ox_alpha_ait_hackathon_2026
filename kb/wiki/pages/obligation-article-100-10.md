@@ -1,5 +1,0 @@
-# obligation-article-100-10
-
-**7 The European Data Protection Supervisor shall, on an annual basis, notify the **
-
-7 The European Data Protection Supervisor shall, on an annual basis, notify the Commission of the administrative fines it has imposed pursuant to this Article and of any litigation or judicial proceedings it has initiated.

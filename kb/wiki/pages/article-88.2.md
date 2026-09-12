@@ -1,5 +1,0 @@
-# article-88.2
-
-**2**
-
-Without prejudice to Article 75(3), market surveillance authorities may request the Commission to exercise the powers laid down in this Section, where that is necessary and proportionate to assist with the fulfilment of their tasks under this Regulation.

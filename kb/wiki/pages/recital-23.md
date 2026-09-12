@@ -1,7 +1,0 @@
-# recital-23
-
-**Recital 23**
-
-# Recital 23
-
-This Regulation should also apply to Union institutions, bodies, offices and agencies when acting as a provider or deployer of an AI system.

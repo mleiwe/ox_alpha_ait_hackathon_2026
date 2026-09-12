@@ -1,9 +1,0 @@
-# article-56.4
-
-**4**
-
-The AI Office and the Board shall aim to ensure that the codes of practice clearly set out their specific objectives and contain commitments or measures, including key performance indicators as appropriate, to ensure the achievement of those objectives, and that they take due account of the needs and interests of all interested parties, including affected persons, at Union level.
-
-## Links
-
-- HAS_SUBUNIT: [[article-56.5]]

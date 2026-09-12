@@ -1,9 +1,0 @@
-# article-59.2
-
-**2**
-
-For the purposes of the prevention, investigation, detection or prosecution of criminal offences or the execution of criminal penalties, including safeguarding against and preventing threats to public security, under the control and responsibility of law enforcement authorities, the processing of personal data in AI regulatory sandboxes shall be based on a specific Union or national law and subject to the same cumulative conditions as referred to in paragraph 1.
-
-## Links
-
-- HAS_SUBUNIT: [[article-59.3]]

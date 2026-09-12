@@ -1,9 +1,0 @@
-# article-41.5
-
-**5**
-
-Where providers of high-risk AI systems or general-purpose AI models do not comply with the common specifications referred to in paragraph 1, they shall duly justify that they have adopted technical solutions that meet the requirements referred to in Section 2 of this Chapter or, as applicable, comply with the obligations set out in Sections 2 and 3 of Chapter V to a level at least equivalent thereto.
-
-## Links
-
-- HAS_SUBUNIT: [[article-41.6]]

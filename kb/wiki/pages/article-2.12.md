@@ -1,9 +1,0 @@
-# article-2.12
-
-**12**
-
-This Regulation does not apply to AI systems released under free and open-source licences, unless they are placed on the market or put into service as high-risk AI systems or as an AI system that falls under Article 5 or 50.
-
-## Links
-
-- HAS_SUBUNIT: [[article-2.13]]

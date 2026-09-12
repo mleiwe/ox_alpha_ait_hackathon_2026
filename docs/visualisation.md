@@ -15,6 +15,45 @@
 
 **Decision:** matplotlib PNGs for the PR (GitHub renders them inline), pyvis HTML for interactive exploration, Mermaid diagrams in docs. Neo4j Browser covers the graph-DB view when the service is up.
 
+## Canonical graph (current)
+
+| Node type | Count |
+|-----------|-------|
+| Article | 113 |
+| Paragraph | 662 |
+| Point | 340 |
+| Sub-point | 247 |
+| Recital | 180 |
+| Annex | 15 |
+| Definition | 67 |
+| Actor | 5 |
+| Obligation | 785 |
+| **Edges** | **5,583** |
+
+### Edge kinds & strength scheme
+
+| Edge | Meaning | Base weight | Count |
+|------|---------|-------------|-------|
+| `REFERENCES` | **Direct citation** (unit → article/annex it cites) | 3.0 | 904 |
+| `USES_DEFINITION` | Clause/sub-clause uses an Art 3 term | 2.0 | 2,174 |
+| `IMPOSES_ON` | Obligation binds an actor | 2.5 | 217 |
+| `INTERPRETS` | Recital interprets an article | 1.5 | 46 |
+| `DEFINES` | Article 3 defines a term | 2.0 | 67 |
+| `IS_ROLE_OF` | Definition maps to an actor | 2.0 | 5 |
+| `CLASSIFIES_AS` | Risk-tier classification | 1.5 | 136 |
+| `HAS_OBLIGATION` | Article contains an obligation | 1.5 | 785 |
+| `HAS_SUBUNIT` | Structural containment | 1.0 | 1,249 |
+
+**Weighting rules:**
+- `weight = base + (multiplicity − 1)` — repeated citations accumulate (e.g. Annex XIV → Annex I cites 24× → weight 24.0)
+- Edges are **deduplicated**: repeated identical links collapse to one weighted edge
+- **Direct references only** (per design decision): no transitive/inferred edges — traversal handles multi-hop
+- Clause-level references are **first-class**: `article-101.1.a.b → article-91` (sub-clause citing another article, across articles)
+
+### Definition-usage edges
+
+Every clause/sub-clause that uses a term defined in Article 3 gets a `USES_DEFINITION` edge to the `Definition` node (2,174 edges). Terms are matched as word-boundary phrases (quoted `'AI system'` or unquoted). This is the grounding layer for IDE agents: a PRD mentioning "deployer" resolves via `def-deployer` → `actor-deployer` → all `IMPOSES_ON` obligations.
+
 ## Generated visuals
 
 | File | What it shows | Why it matters |

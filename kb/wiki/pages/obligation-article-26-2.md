@@ -1,9 +1,0 @@
-# obligation-article-26-2
-
-**4 Without prejudice to paragraphs 1 and 2, to the extent the deployer exercises **
-
-4 Without prejudice to paragraphs 1 and 2, to the extent the deployer exercises control over the input data, that deployer shall ensure that input data is relevant and sufficiently representative in view of the intended purpose of the high-risk AI system.
-
-## Links
-
-- IMPOSES_ON: [[actor-deployer]]

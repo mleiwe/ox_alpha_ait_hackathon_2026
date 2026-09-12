@@ -1,5 +1,0 @@
-# obligation-article-101-5
-
-**5 The Court of Justice of the European Union shall have unlimited jurisdiction t**
-
-5 The Court of Justice of the European Union shall have unlimited jurisdiction to review decisions of the Commission fixing a fine under this Article.

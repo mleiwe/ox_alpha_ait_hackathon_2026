@@ -1,9 +1,0 @@
-# article-73.7
-
-**7**
-
-Upon receiving a notification related to a serious incident referred to in Article 3, point (49)(c), the relevant market surveillance authority shall inform the national public authorities or bodies referred to in Article 77(1). The Commission shall develop dedicated guidance to facilitate compliance with the obligations set out in paragraph 1 of this Article. That guidance shall be issued by 2 August 2025, and shall be assessed regularly.
-
-## Links
-
-- HAS_SUBUNIT: [[article-73.8]]

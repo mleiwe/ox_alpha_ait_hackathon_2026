@@ -1,5 +1,0 @@
-# def-validation-data
-
-**validation data**
-
-data used for providing an evaluation of the trained AI system and for tuning its non-learnable parameters and its learning process in order, inter alia, to prevent underfitting or overfitting

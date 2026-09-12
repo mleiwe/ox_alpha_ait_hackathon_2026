@@ -1,9 +1,0 @@
-# article-4.2
-
-**2**
-
-The Commission and the Member States shall support and facilitate the efforts of providers and deployers of AI systems, in particular SMEs, in fulfilling their obligation under paragraph 1 of this Article. For that purpose, the Commission shall publish practical examples of how to comply with that obligation on the single information platform referred to in Article 62(3), point (b).
-
-## Links
-
-- HAS_SUBUNIT: [[article-4.3]]

@@ -1,9 +1,0 @@
-# obligation-article-34-1
-
-**2 Notified bodies shall avoid unnecessary burdens for providers when performing **
-
-2 Notified bodies shall avoid unnecessary burdens for providers when performing their activities, and take due account of the size of the provider, the sector in which it operates, its structure and the degree of complexity of the high-risk AI system concerned, in particular in view of minimising administrative burdens and compliance costs for micro- and small enterprises within the meaning of Recommendation 2003/361/EC.
-
-## Links
-
-- IMPOSES_ON: [[actor-provider]]

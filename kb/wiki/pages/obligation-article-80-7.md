@@ -1,9 +1,0 @@
-# obligation-article-80-7
-
-**7 Where, in the course of the evaluation pursuant to paragraph 1 of this Article**
-
-7 Where, in the course of the evaluation pursuant to paragraph 1 of this Article, the market surveillance authority establishes that the AI system was misclassified by the provider as non-high-risk in order to circumvent the application of requirements in Chapter III, Section 2, the provider shall be subject to fines in accordance with Article 99.
-
-## Links
-
-- IMPOSES_ON: [[actor-provider]]

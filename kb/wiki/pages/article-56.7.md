@@ -1,9 +1,0 @@
-# article-56.7
-
-**7**
-
-The AI Office may invite all providers of general-purpose AI models to adhere to the codes of practice. For providers of general-purpose AI models not presenting systemic risks this adherence may be limited to the obligations provided for in Article 53, unless they declare explicitly their interest to join the full code.
-
-## Links
-
-- HAS_SUBUNIT: [[article-56.8]]

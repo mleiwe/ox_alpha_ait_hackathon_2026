@@ -1,5 +1,0 @@
-# obligation-article-73-14
-
-**11 National competent authorities shall immediately notify the Commission of any**
-
-11 National competent authorities shall immediately notify the Commission of any serious incident, whether or not they have taken action on it, in accordance with Article 20 of Regulation (EU) 2019/1020.

@@ -1,9 +1,0 @@
-# article-9.2
-
-**2**
-
-The risk management system shall be understood as a continuous iterative process planned and run throughout the entire lifecycle of a high-risk AI system, requiring regular systematic review and updating. It shall comprise the following steps:
-
-## Links
-
-- HAS_SUBUNIT: [[article-9.2.a]]

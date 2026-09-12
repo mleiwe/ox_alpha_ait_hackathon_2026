@@ -1,9 +1,0 @@
-# article-3.40
-
-**(40)**
-
-‘biometric categorisation system’ means an AI system for the purpose of assigning natural persons to specific categories on the basis of their biometric data, unless it is ancillary to another commercial service and strictly necessary for objective technical reasons;
-
-## Links
-
-- HAS_SUBUNIT: [[article-3.41]]

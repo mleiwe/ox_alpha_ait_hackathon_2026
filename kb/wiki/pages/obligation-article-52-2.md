@@ -1,9 +1,0 @@
-# obligation-article-52-2
-
-**3 Where the Commission concludes that the arguments submitted pursuant to paragr**
-
-3 Where the Commission concludes that the arguments submitted pursuant to paragraph 2 are not sufficiently substantiated and the relevant provider was not able to demonstrate that the general-purpose AI model does not present, due to its specific characteristics, systemic risks, it shall reject those arguments, and the general-purpose AI model shall be considered to be a general-purpose AI model with systemic risk.
-
-## Links
-
-- IMPOSES_ON: [[actor-provider]]

@@ -1,5 +1,0 @@
-# obligation-article-56-1
-
-**2 The AI Office and the Board shall aim to ensure that the codes of practice cov**
-
-2 The AI Office and the Board shall aim to ensure that the codes of practice cover at least the obligations provided for in Articles 53 and 55, including the following issues: ### (a) the means to ensure that the information referred to in Article 53(1), points (a) and (b), is kept up to date in light of market and technological developments; ### (b) the adequate level of detail for the summary about the content used for training; ### (c) the identification of the type and nature of the systemic risks at Union level, including their sources, where appropriate; ### (d) the measures, procedures and modalities for the assessment and management of the systemic risks at Union level, including the documentation thereof, which shall be proportionate to the risks, take into consideration their severity and probability and take into account the specific challenges of tackling those risks in light of the possible ways in which such risks may emerge and materialise along the AI value chain.

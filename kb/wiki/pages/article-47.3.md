@@ -1,9 +1,0 @@
-# article-47.3
-
-**3**
-
-Where high-risk AI systems are subject to other Union harmonisation legislation which also requires an EU declaration of conformity, a single EU declaration of conformity shall be drawn up in respect of all Union law applicable to the high-risk AI system. The declaration shall contain all the information required to identify the Union harmonisation legislation to which the declaration relates.
-
-## Links
-
-- HAS_SUBUNIT: [[article-47.4]]

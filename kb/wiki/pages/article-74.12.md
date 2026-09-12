@@ -1,9 +1,0 @@
-# article-74.12
-
-**12**
-
-Without prejudice to the powers provided for under Regulation (EU) 2019/1020, and where relevant and limited to what is necessary to fulfil their tasks, the market surveillance authorities shall be granted full access by providers to the documentation as well as the training, validation and testing data sets used for the development of high-risk AI systems, including, where appropriate and subject to security safeguards, through application programming interfaces (API) or other relevant technical means and tools enabling remote access.
-
-## Links
-
-- HAS_SUBUNIT: [[article-74.13]]

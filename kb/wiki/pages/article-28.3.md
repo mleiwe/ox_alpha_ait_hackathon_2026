@@ -1,9 +1,0 @@
-# article-28.3
-
-**3**
-
-Notifying authorities shall be established, organised and operated in such a way that no conflict of interest arises with conformity assessment bodies, and that the objectivity and impartiality of their activities are safeguarded.
-
-## Links
-
-- HAS_SUBUNIT: [[article-28.4]]

@@ -1,9 +1,0 @@
-# article-79.7
-
-**7**
-
-The market surveillance authorities other than the market surveillance authority of the Member State initiating the procedure shall, without undue delay, inform the Commission and the other Member States of any measures adopted and of any additional information at their disposal relating to the non-compliance of the AI system concerned, and, in the event of disagreement with the notified national measure, of their objections.
-
-## Links
-
-- HAS_SUBUNIT: [[article-79.8]]

@@ -1,5 +1,0 @@
-# obligation-article-10-6
-
-**————— ## 6 For the development of high-risk AI systems not using techniques invo**
-
-————— ## 6 For the development of high-risk AI systems not using techniques involving the training of AI models, paragraphs 2, 3 and 4 of this Article and Article 4a(1) shall apply only to the testing data sets.

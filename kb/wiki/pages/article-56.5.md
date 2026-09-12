@@ -1,9 +1,0 @@
-# article-56.5
-
-**5**
-
-The AI Office shall aim to ensure that participants to the codes of practice report regularly to the AI Office on the implementation of the commitments and the measures taken and their outcomes, including as measured against the key performance indicators as appropriate. Key performance indicators and reporting commitments shall reflect differences in size and capacity between various participants.
-
-## Links
-
-- HAS_SUBUNIT: [[article-56.6]]

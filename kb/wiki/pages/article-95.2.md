@@ -1,9 +1,0 @@
-# article-95.2
-
-**2**
-
-The AI Office and the Member States shall facilitate the drawing up of codes of conduct concerning the voluntary application, including by deployers, of specific requirements to all AI systems, on the basis of clear objectives and key performance indicators to measure the achievement of those objectives, including elements such as, but not limited to:
-
-## Links
-
-- HAS_SUBUNIT: [[article-95.2.a]]

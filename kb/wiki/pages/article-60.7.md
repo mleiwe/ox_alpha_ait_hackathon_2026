@@ -1,9 +1,0 @@
-# article-60.7
-
-**7**
-
-Any serious incident identified in the course of the testing in real world conditions shall be reported to the national market surveillance authority in accordance with Article 73. The provider or prospective provider shall adopt immediate mitigation measures or, failing that, shall suspend the testing in real world conditions until such mitigation takes place, or otherwise terminate it. The provider or prospective provider shall establish a procedure for the prompt recall of the AI system upon such termination of the testing in real world conditions.
-
-## Links
-
-- HAS_SUBUNIT: [[article-60.8]]

@@ -1,9 +1,0 @@
-# article-5.1.a.b
-
-**(b)**
-
-the placing on the market, the putting into service or the use of an AI system that exploits any of the vulnerabilities of a natural person or a specific group of persons due to their age, disability or a specific social or economic situation, with the objective, or the effect, of materially distorting the behaviour of that person or a person belonging to that group in a manner that causes or is reasonably likely to cause that person or another person significant harm;
-
-## Links
-
-- HAS_SUBUNIT: [[article-5.1.a.b.ba]]

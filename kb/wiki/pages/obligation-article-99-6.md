@@ -1,5 +1,0 @@
-# obligation-article-99-6
-
-**5 The supply of incorrect, incomplete or misleading information to notified bodi**
-
-5 The supply of incorrect, incomplete or misleading information to notified bodies or national competent authorities in reply to a request shall be subject to administrative fines of up to EUR 7 500 000 or, if the offender is an undertaking, up to 1 % of its total worldwide annual turnover for the preceding financial year, whichever is higher.

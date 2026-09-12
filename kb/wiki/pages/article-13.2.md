@@ -1,9 +1,0 @@
-# article-13.2
-
-**2**
-
-High-risk AI systems shall be accompanied by instructions for use in an appropriate digital format or otherwise that include concise, complete, correct and clear information that is relevant, accessible and comprehensible to deployers.
-
-## Links
-
-- HAS_SUBUNIT: [[article-13.3]]

@@ -1,9 +1,0 @@
-# obligation-article-44-3
-
-**3 Where a notified body finds that an AI system no longer meets the requirements**
-
-3 Where a notified body finds that an AI system no longer meets the requirements set out in Section 2, it shall, taking account of the principle of proportionality, suspend or withdraw the certificate issued or impose restrictions on it, unless compliance with those requirements is ensured by appropriate corrective action taken by the provider of the system within an appropriate deadline set by the notified body.
-
-## Links
-
-- IMPOSES_ON: [[actor-provider]]

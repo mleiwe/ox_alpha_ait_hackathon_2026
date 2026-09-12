@@ -1,9 +1,0 @@
-# article-3.13
-
-**(13)**
-
-‘reasonably foreseeable misuse’ means the use of an AI system in a way that is not in accordance with its intended purpose, but which may result from reasonably foreseeable human behaviour or interaction with other systems, including other AI systems;
-
-## Links
-
-- HAS_SUBUNIT: [[article-3.14]]

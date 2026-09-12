@@ -1,9 +1,0 @@
-# obligation-article-43-3
-
-**2 For high-risk AI systems referred to in points 2 to 8 of Annex III, providers **
-
-2 For high-risk AI systems referred to in points 2 to 8 of Annex III, providers shall follow the conformity assessment procedure based on internal control as referred to in Annex VI, which does not provide for the involvement of a notified body.
-
-## Links
-
-- IMPOSES_ON: [[actor-provider]]

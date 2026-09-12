@@ -1,9 +1,0 @@
-# article-3.12
-
-**(12)**
-
-‘intended purpose’ means the use for which an AI system is intended by the provider, including the specific context and conditions of use, as specified in the information supplied by the provider in the instructions for use, promotional or sales materials and statements, as well as in the technical documentation;
-
-## Links
-
-- HAS_SUBUNIT: [[article-3.13]]

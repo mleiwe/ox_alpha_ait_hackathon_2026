@@ -1,9 +1,0 @@
-# article-7.2.a.b.c.d.e.f.g
-
-**(g)**
-
-the extent to which persons who are potentially harmed or suffer an adverse impact are dependent on the outcome produced with an AI system, in particular because for practical or legal reasons it is not reasonably possible to opt-out from that outcome;
-
-## Links
-
-- HAS_SUBUNIT: [[article-7.2.a.b.c.d.e.f.g.h]]

@@ -1,9 +1,0 @@
-# annex-iii.a.b.c.a.b.c.2.3.a.b.c.d.a.b.c.d.4.a.b.a.b.5.a.b.c.d.a.b.c.d.6.a.b.c.d
-
-**(d)**
-
-AI systems intended to be used by law enforcement authorities or on their behalf or by Union institutions, bodies, offices or agencies in support of law enforcement authorities for assessing the risk of a natural person offending or re-offending not solely on the basis of the profiling of natural persons as referred to in Article 3(4) of Directive (EU) 2016/680, or to assess personality traits and characteristics or past criminal behaviour of natural persons or groups;
-
-## Links
-
-- HAS_SUBUNIT: [[annex-iii.a.b.c.a.b.c.2.3.a.b.c.d.a.b.c.d.4.a.b.a.b.5.a.b.c.d.a.b.c.d.6.a.b.c.d.e]]

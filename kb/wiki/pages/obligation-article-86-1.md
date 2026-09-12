@@ -1,5 +1,0 @@
-# obligation-article-86-1
-
-**2 Paragraph 1 shall not apply to the use of AI systems for which exceptions from**
-
-2 Paragraph 1 shall not apply to the use of AI systems for which exceptions from, or restrictions to, the obligation under that paragraph follow from Union or national law in compliance with Union law.

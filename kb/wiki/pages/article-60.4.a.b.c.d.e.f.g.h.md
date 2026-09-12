@@ -1,9 +1,0 @@
-# article-60.4.a.b.c.d.e.f.g.h
-
-**(h)**
-
-where a provider or prospective provider organises the testing in real world conditions in cooperation with one or more deployers or prospective deployers, the latter have been informed of all aspects of the testing that are relevant to their decision to participate, and given the relevant instructions for use of the AI system referred to in Article 13; the provider or prospective provider and the deployer or prospective deployer shall conclude an agreement specifying their roles and responsibilities with a view to ensuring compliance with the provisions for testing in real world conditions under this Regulation and under other applicable Union and national law;
-
-## Links
-
-- HAS_SUBUNIT: [[article-60.4.a.b.c.d.e.f.g.h.i]]

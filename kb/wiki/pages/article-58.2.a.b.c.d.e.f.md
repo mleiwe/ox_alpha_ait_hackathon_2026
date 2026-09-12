@@ -1,9 +1,0 @@
-# article-58.2.a.b.c.d.e.f
-
-**(f)**
-
-that AI regulatory sandboxes facilitate the involvement of other relevant actors within the AI ecosystem, such as notified bodies and standardisation organisations, SMEs, including start-ups, enterprises, innovators, testing and experimentation facilities, research and experimentation labs and European Digital Innovation Hubs, centres of excellence, individual researchers, in order to allow and facilitate cooperation with the public and private sectors;
-
-## Links
-
-- HAS_SUBUNIT: [[article-58.2.a.b.c.d.e.f.g]]

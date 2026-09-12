@@ -1,9 +1,0 @@
-# article-24.3
-
-**3**
-
-Distributors shall ensure that, while a high-risk AI system is under their responsibility, storage or transport conditions, where applicable, do not jeopardise the compliance of the system with the requirements set out in Section 2.
-
-## Links
-
-- HAS_SUBUNIT: [[article-24.4]]

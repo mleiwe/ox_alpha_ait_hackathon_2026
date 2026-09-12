@@ -1,9 +1,0 @@
-# article-25.1.a.b
-
-**(b)**
-
-they make a substantial modification to a high-risk AI system that has already been placed on the market or has already been put into service in such a way that it remains a high-risk AI system pursuant to Article 6;
-
-## Links
-
-- HAS_SUBUNIT: [[article-25.1.a.b.c]]

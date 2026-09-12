@@ -1,5 +1,0 @@
-# obligation-article-111-0
-
-**Article 111 — AI systems already placed on the market or put into service and ge**
-
-Article 111 — AI systems already placed on the market or put into service and general-purpose AI models already placed on the marked ## 1 Without prejudice to the application of Article 5 as referred to in Article 113(3), point (a), AI systems which are components of the large-scale IT systems established by the legal acts listed in Annex X that have been placed on the market or put into service before 2 August 2027 shall be brought into compliance with this Regulation by 31 December 2030.

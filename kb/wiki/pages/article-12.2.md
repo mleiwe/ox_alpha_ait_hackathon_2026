@@ -1,9 +1,0 @@
-# article-12.2
-
-**2**
-
-In order to ensure a level of traceability of the functioning of a high-risk AI system that is appropriate to the intended purpose of the system, logging capabilities shall enable the recording of events relevant for:
-
-## Links
-
-- HAS_SUBUNIT: [[article-12.2.a]]

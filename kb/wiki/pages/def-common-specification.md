@@ -1,5 +1,0 @@
-# def-common-specification
-
-**common specification**
-
-a set of technical specifications as defined in Article 2, point (4) of Regulation (EU) No 1025/2012, providing means to comply with certain requirements established under this Regulation

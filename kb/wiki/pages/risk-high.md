@@ -1,3 +1,0 @@
-# risk-high
-
-**high risk**

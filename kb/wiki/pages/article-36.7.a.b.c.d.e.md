@@ -1,9 +1,0 @@
-# article-36.7.a.b.c.d.e
-
-**(e)**
-
-provide the national competent authorities of the Member State in which the provider has its registered place of business with all relevant information about the certificates of which it has required the suspension or withdrawal; that authority shall take the appropriate measures, where necessary, to avoid a potential risk to health, safety or fundamental rights.
-
-## Links
-
-- HAS_SUBUNIT: [[article-36.8]]

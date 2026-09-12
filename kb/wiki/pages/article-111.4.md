@@ -1,5 +1,0 @@
-# article-111.4
-
-**4**
-
-Providers of AI systems, including general-purpose AI systems, generating synthetic audio, image, video or text content, that have been placed on the market before 2 August 2026 shall take the necessary steps in order to comply with Article 50(2) by 2 December 2026.

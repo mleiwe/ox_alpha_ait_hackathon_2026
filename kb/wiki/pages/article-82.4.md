@@ -1,9 +1,0 @@
-# article-82.4
-
-**4**
-
-The Commission shall without undue delay enter into consultation with the Member States concerned and the relevant operators, and shall evaluate the national measures taken. On the basis of the results of that evaluation, the Commission shall decide whether the measure is justified and, where necessary, propose other appropriate measures.
-
-## Links
-
-- HAS_SUBUNIT: [[article-82.5]]

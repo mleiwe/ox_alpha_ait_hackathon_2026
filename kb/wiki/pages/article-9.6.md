@@ -1,9 +1,0 @@
-# article-9.6
-
-**6**
-
-High-risk AI systems shall be tested for the purpose of identifying the most appropriate and targeted risk management measures. Testing shall ensure that high-risk AI systems perform consistently for their intended purpose and that they are in compliance with the requirements set out in this Section.
-
-## Links
-
-- HAS_SUBUNIT: [[article-9.7]]

@@ -1,9 +1,0 @@
-# article-66.j
-
-**(j)**
-
-assist national competent authorities and the Commission in developing the organisational and technical expertise required for the implementation of this Regulation, including by contributing to the assessment of training needs for staff of Member States involved in implementing this Regulation;
-
-## Links
-
-- HAS_SUBUNIT: [[article-66.k]]

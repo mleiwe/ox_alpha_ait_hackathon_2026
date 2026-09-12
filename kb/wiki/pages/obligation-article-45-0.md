@@ -1,5 +1,0 @@
-# obligation-article-45-0
-
-**Article 45 — Information obligations of notified bodies ## 1 Notified bodies sha**
-
-Article 45 — Information obligations of notified bodies ## 1 Notified bodies shall inform the notifying authority of the following: ### (a) any Union technical documentation assessment certificates, any supplements to those certificates, and any quality management system approvals issued in accordance with the requirements of Annex VII; ### (b) any refusal, restriction, suspension or withdrawal of a Union technical documentation assessment certificate or a quality management system approval issued in accordance with the requirements of Annex VII; ### (c) any circumstances affecting the scope of or conditions for notification; ### (d) any request for information which they have received from market surveillance authorities regarding conformity assessment activities; ### (e) on request, conformity assessment activities performed within the scope of their notification and any other activity performed, including cross-border activities and subcontracting.

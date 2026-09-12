@@ -1,9 +1,0 @@
-# article-31.6
-
-**6**
-
-Notified bodies shall be organised and operated so as to safeguard the independence, objectivity and impartiality of their activities. Notified bodies shall document and implement a structure and procedures to safeguard impartiality and to promote and apply the principles of impartiality throughout their organisation, personnel and assessment activities.
-
-## Links
-
-- HAS_SUBUNIT: [[article-31.7]]

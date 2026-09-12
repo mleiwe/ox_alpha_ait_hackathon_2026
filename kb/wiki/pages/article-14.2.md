@@ -1,9 +1,0 @@
-# article-14.2
-
-**2**
-
-Human oversight shall aim to prevent or minimise the risks to health, safety or fundamental rights that may emerge when a high-risk AI system is used in accordance with its intended purpose or under conditions of reasonably foreseeable misuse, in particular where such risks persist despite the application of other requirements set out in this Section.
-
-## Links
-
-- HAS_SUBUNIT: [[article-14.3]]

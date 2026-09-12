@@ -1,9 +1,0 @@
-# obligation-article-58-4
-
-**3 Prospective providers in the AI regulatory sandboxes, in particular SMEs and s**
-
-3 Prospective providers in the AI regulatory sandboxes, in particular SMEs and start-ups, shall be directed, where relevant, to pre-deployment services such as guidance on the implementation of this Regulation, to other value-adding services such as help with standardisation documents and certification, testing and experimentation facilities, European Digital Innovation Hubs and centres of excellence.
-
-## Links
-
-- IMPOSES_ON: [[actor-provider]]

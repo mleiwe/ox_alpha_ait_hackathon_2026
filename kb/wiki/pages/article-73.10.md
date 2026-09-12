@@ -1,9 +1,0 @@
-# article-73.10
-
-**10**
-
-For high-risk AI systems which are safety components of devices, or are themselves devices, covered by Regulations (EU) 2017/745 and (EU) 2017/746, the notification of serious incidents shall be limited to those referred to in Article 3, point (49)(c) of this Regulation, and shall be made to the national competent authority chosen for that purpose by the Member States where the incident occurred.
-
-## Links
-
-- HAS_SUBUNIT: [[article-73.11]]

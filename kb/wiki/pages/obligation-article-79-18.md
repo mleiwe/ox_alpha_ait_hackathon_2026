@@ -1,5 +1,0 @@
-# obligation-article-79-18
-
-**9 The market surveillance authorities shall ensure that appropriate restrictive **
-
-9 The market surveillance authorities shall ensure that appropriate restrictive measures are taken in respect of the product or the AI system concerned, such as withdrawal of the product or the AI system from their market, without undue delay.

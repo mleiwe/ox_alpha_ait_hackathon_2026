@@ -1,9 +1,0 @@
-# article-99.7
-
-**7**
-
-When deciding whether to impose an administrative fine and when deciding on the amount of the administrative fine in each individual case, all relevant circumstances of the specific situation shall be taken into account and, as appropriate, regard shall be given to the following:
-
-## Links
-
-- HAS_SUBUNIT: [[article-99.7.a]]

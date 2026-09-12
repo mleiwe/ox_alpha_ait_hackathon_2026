@@ -1,9 +1,0 @@
-# article-9.9
-
-**9**
-
-When implementing the risk management system as provided for in paragraphs 1 to 7, providers shall give consideration to whether in view of its intended purpose the high-risk AI system is likely to have an adverse impact on persons under the age of 18 and, as appropriate, other vulnerable groups.
-
-## Links
-
-- HAS_SUBUNIT: [[article-9.10]]

@@ -1,5 +1,0 @@
-# obligation-article-99-0
-
-**Article 99 — Penalties ## 1 In accordance with the terms and conditions laid dow**
-
-Article 99 — Penalties ## 1 In accordance with the terms and conditions laid down in this Regulation, Member States shall lay down the rules on penalties and other enforcement measures, which may also include administrative fines, warnings and non-monetary measures, applicable to any infringement of this Regulation by operators, and shall take all measures necessary to ensure that they are properly and effectively implemented, thereby taking into account the guidelines issued by the Commission pursuant to Article 96.

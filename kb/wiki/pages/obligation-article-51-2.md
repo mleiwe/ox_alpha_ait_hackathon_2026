@@ -1,5 +1,0 @@
-# obligation-article-51-2
-
-**3 The Commission shall adopt delegated acts in accordance with Article 97 to ame**
-
-3 The Commission shall adopt delegated acts in accordance with Article 97 to amend the thresholds listed in paragraphs 1 and 2 of this Article, as well as to supplement benchmarks and indicators in light of evolving technological developments, such as algorithmic improvements or increased hardware efficiency, when necessary, for these thresholds to reflect the state of the art.

@@ -1,9 +1,0 @@
-# article-91.1
-
-**1**
-
-The Commission may request the provider of the general-purpose AI model concerned to provide the documentation drawn up by the provider in accordance with Articles 53 and 55, or any additional information that is necessary for the purpose of assessing compliance of the provider with this Regulation.
-
-## Links
-
-- HAS_SUBUNIT: [[article-91.2]]
