@@ -141,7 +141,7 @@ def ledger_append(cfg: dict, record: dict):
         f.write(json.dumps(record) + "\n")
 
 
-def write_report(cfg: dict, path: str, mode: str, stage: str, findings: list[dict]) -> str:
+def write_report(cfg: dict, path: str, mode: str, stage: str, findings: list[dict], kb: dict | None = None) -> str:
     cfg["reports_dir"].mkdir(parents=True, exist_ok=True)
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S")
     name = f"{ts}-{Path(path).name}-{mode}.md"
@@ -152,6 +152,17 @@ def write_report(cfg: dict, path: str, mode: str, stage: str, findings: list[dic
         f"- generated: {datetime.now(timezone.utc).isoformat()}",
         "",
     ]
+    if kb:
+        lines_out += ["## Relevant obligations (from the knowledge graph)"]
+        for uid, u in kb.items():
+            src = u.get("source", "kb")
+            first = (u.get("text") or "").strip().splitlines()
+            title = first[0][:120] if first else ""
+            lines_out += [f"### {uid}  ({src})", title, ""]
+        lines_out.append("Assessment: obligations above were checked against the artifact "
+                         "before this verdict; applicability judgements are the adjudicator's "
+                         "when llm_command is configured.")
+        lines_out.append("")
     if findings:
         lines_out.append("## Findings")
         for f_ in findings:
@@ -167,12 +178,59 @@ def write_report(cfg: dict, path: str, mode: str, stage: str, findings: list[dic
     return str(rp)
 
 
-def kb_excerpts(cfg: dict, citations: list[str], cap: int = 600) -> dict:
-    """Best-effort article retrieval from the corpus (PR #1 layout)."""
-    out = {}
+def kb_available(cfg: dict) -> bool:
+    """KB layer present (kb/ package + corpus). True once PR #1/#2 merge or a KB checkout is used."""
+    return (REPO_ROOT / "kb").is_dir() and (REPO_ROOT / cfg["kb"].get("corpus", "data/eu-ai-act")).is_dir()
+
+
+def kb_query_cli(cfg: dict, kb_args: list[str]) -> str:
+    """Run kb.query from the KB layer (uses the repo's own uv env)."""
+    cmd = ["uv", "run", "python", "-m", "kb.query",
+           "--backend", cfg["kb"].get("backend", "networkx")] + kb_args
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=60, cwd=REPO_ROOT)
+        return r.stdout.strip()
+    except Exception:  # noqa: BLE001 — KB unavailability must degrade, not crash
+        return ""
+
+
+# Relevance signals per stage: which parts of the Act to query the graph for.
+DOMAIN_SIGNALS = {
+    "planning": ["provider", "deployer", "high-risk", "prohibited", "transparency", "risk management"],
+    "implementation": ["transparency", "logging", "human oversight", "personal data", "automated decision"],
+    "documentation": ["technical documentation", "instructions for use", "transparency", "accuracy"],
+    "other": ["prohibited", "transparency"],
+}
+
+
+def kb_retrieve(cfg: dict, citations: list[str], stage: str, cap: int = 700) -> dict:
+    """KB-first retrieval: query the knowledge graph for obligations relevant
+    to the artifact (citation-derived unit ids + stage domain signals), then
+    fetch each unit's text. Falls back to raw article files when the kb/ layer
+    is absent."""
+    units: dict[str, dict] = {}
+    unit_ids: list[str] = []
+    for c in citations:
+        m = re.match(r"Art\.\s*(\d+)", c)
+        if m and f"article-{m.group(1)}" not in unit_ids:
+            unit_ids.append(f"article-{m.group(1)}")
+    if kb_available(cfg):
+        for term in DOMAIN_SIGNALS.get(stage, []):
+            out = kb_query_cli(cfg, ["--search", term])
+            unit_ids += [l.strip() for l in out.splitlines() if l.strip()][:5]
+        seen: set[str] = set()
+        for uid in unit_ids:
+            if uid in seen or len(seen) >= 8:
+                continue
+            seen.add(uid)
+            text = kb_query_cli(cfg, ["--unit", uid])
+            if text and not text.startswith("not found"):
+                units[uid] = {"source": "kb", "text": text[:cap]}
+        return units
+    # fallback: raw markdown articles (PR #1 layout), no kb/ package
     arts_dir = REPO_ROOT / cfg["kb"].get("articles", "data/eu-ai-act/articles")
     if not arts_dir.is_dir():
-        return out
+        return units
     for c in citations:
         m = re.match(r"Art\.\s*(\d+)", c)
         if not m:
@@ -181,9 +239,9 @@ def kb_excerpts(cfg: dict, citations: list[str], cap: int = 600) -> dict:
         for cand in sorted(arts_dir.glob(f"*{num}*.md"))[:1]:
             text = cand.read_text(encoding="utf-8", errors="replace")
             idx = text.lower().find(f"article {num}")
-            excerpt = text[idx:idx + cap] if idx >= 0 else text[:cap]
-            out[c] = {"source": str(cand.relative_to(REPO_ROOT)), "excerpt": excerpt}
-    return out
+            units[c] = {"source": str(cand.relative_to(REPO_ROOT)),
+                        "text": (text[idx:idx + cap] if idx >= 0 else text[:cap])}
+    return units
 
 
 def short_verdict(path: str, stage: str, findings: list[dict], report_path: str | None) -> str:
@@ -239,7 +297,7 @@ def cmd_llm(args, cfg, rules) -> int:
     t0 = time.time()
     stage, findings = scan_file(args.file, read_content(args), cfg, rules)
     exit_code = verdict_of(findings)
-    kb = kb_excerpts(cfg, sorted({c for f_ in findings for c in f_["citations"]})) if findings else {}
+    kb = kb_retrieve(cfg, sorted({c for f_ in findings for c in f_["citations"]}), stage)
     adjudication = ""
     if cfg.get("llm_command"):
         try:
@@ -249,7 +307,7 @@ def cmd_llm(args, cfg, rules) -> int:
             adjudication = r.stdout.strip()
         except Exception as e:  # noqa: BLE001 — hook context must never crash the agent
             adjudication = f"(adjudicator error: {e})"
-    report = write_report(cfg, args.file, "llm", stage, findings) if (findings or adjudication) else None
+    report = write_report(cfg, args.file, "llm", stage, findings, kb=kb) if (findings or adjudication) else None
     ledger_append(cfg, {
         "ts": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "session": args.session or "",

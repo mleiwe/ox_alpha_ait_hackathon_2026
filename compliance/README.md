@@ -22,8 +22,13 @@ compliance/compliance-check --fast --file <p> [--content <s>] [--session <id>]
     Used by the OpenCode gate (throw on exit 2 = write refused) and Hermes pre_tool_call.
 
 compliance/compliance-check --llm --file <p> [--json]
-    Tier 1 + KB excerpts from data/eu-ai-act/articles/ (+ LLM adjudication when
-    config.llm_command is set). Used by background review and the compliance_review tool.
+    KB-FIRST review. Queries the knowledge graph (kb.query --search/--unit via
+    the kb/ layer, DOMAIN_SIGNALS per stage) for the obligations relevant to
+    the artifact, then fetches each unit's text and assesses applicability
+    against it. Reports include a "Relevant obligations" section. Seed rules
+    (rules.json) are triggers, not the assessment. Falls back to raw article
+    markdown when the kb/ layer is absent. (+ LLM adjudication when
+    config.llm_command is set.) Used by background review and the compliance_review tool.
 
 compliance/compliance-check --report --session <id>
     Aggregate one session's ledger entries. Fired on OpenCode session.idle.

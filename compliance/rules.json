@@ -1,6 +1,6 @@
 {
   "version": "seed-0.1",
-  "note": "Seed rules for the Tier 1 deterministic check. Line-scoped matching: every term in a pattern group is a case-insensitive regex that must match within the same line. A rule fires if any of its pattern groups matches. Article citations are verifiable against data/eu-ai-act/articles/ once PR #1 merges; recital mapping is intentionally deferred to the KB layer.",
+  "note": "Seed rules are TRIGGERS for the KB-first review, not the assessment: a match makes --llm mode query the knowledge graph (kb.query --search/--unit) for the obligations relevant to the artifact and assess applicability against them. Line-scoped matching: every term in a pattern group is a case-insensitive regex that must match within the same line. A rule fires if any of its pattern groups matches. Citations are verifiable against the KB graph (kb/graph.py node ids, e.g. article-5) once the kb/ layer is in the worktree.",
   "rules": [
     {
       "id": "SOC-01",
