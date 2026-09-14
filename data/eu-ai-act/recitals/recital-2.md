@@ -3,7 +3,7 @@ id: recital-2
 type: recital
 celex: 32024R1689
 source_url: http://publications.europa.eu/resource/celex/32024R1689
-retrieved: 2026-09-12
+retrieved: 2026-09-14
 attribution: "© European Union, http://eur-lex.europa.eu"
 ---
 (2) |  This Regulation should be applied in accordance with the values of the Union enshrined as in the Charter, facilitating the protection of natural persons, undertakings, democracy, the rule of law and environmental protection, while boosting innovation and employment and making the Union a leader in the uptake of trustworthy AI.  

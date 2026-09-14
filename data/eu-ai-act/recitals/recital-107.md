@@ -3,7 +3,7 @@ id: recital-107
 type: recital
 celex: 32024R1689
 source_url: http://publications.europa.eu/resource/celex/32024R1689
-retrieved: 2026-09-12
+retrieved: 2026-09-14
 attribution: "© European Union, http://eur-lex.europa.eu"
 ---
 (107) |  In order to increase transparency on the data that is used in the pre-training and training of general-purpose AI models, including text and data protected by copyright law, it is adequate that providers of such models draw up and make publicly available a sufficiently detailed summary of the content used for training the general-purpose AI model. While taking into due account the need to protect trade secrets and confidential business information, this summary should be generally comprehensive in its scope instead of technically detailed to facilitate parties with legitimate interests, including copyright holders, to exercise and enforce their rights under Union law, for example by listing the main data collections or sets that went into training the model, such as large private or public databases or data archives, and by providing a narrative explanation about other data sources used. It is appropriate for the AI Office to provide a template for the summary, which should be simple, effective, and allow the provider to provide the required summary in narrative form.  

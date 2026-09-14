@@ -3,7 +3,7 @@ id: recital-157
 type: recital
 celex: 32024R1689
 source_url: http://publications.europa.eu/resource/celex/32024R1689
-retrieved: 2026-09-12
+retrieved: 2026-09-14
 attribution: "© European Union, http://eur-lex.europa.eu"
 ---
 (157) |  This Regulation is without prejudice to the competences, tasks, powers and independence of relevant national public authorities or bodies which supervise the application of Union law protecting fundamental rights, including equality bodies and data protection authorities. Where necessary for their mandate, those national public authorities or bodies should also have access to any documentation created under this Regulation. A specific safeguard procedure should be set for ensuring adequate and timely enforcement against AI systems presenting a risk to health, safety and fundamental rights. The procedure for such AI systems presenting a risk should be applied to high-risk AI systems presenting a risk, prohibited systems which have been placed on the market, put into service or used in violation of the prohibited practices laid down in this Regulation and AI systems which have been made available in violation of the transparency requirements laid down in this Regulation and present a risk.  
