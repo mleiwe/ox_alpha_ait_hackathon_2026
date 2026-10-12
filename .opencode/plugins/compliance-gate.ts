@@ -66,6 +66,21 @@ export const ComplianceGate: Plugin = async ({ client, $, directory, worktree })
   const rel = (p: string) => (isAbsolute(p) ? relative(root, p) : p)
   const resolve = (p: string) => (isAbsolute(p) ? p : join(root, p))
 
+  // Armed flag: the middleware is opt-in. The /compliance-arm and
+  // /compliance-disarm commands set `armed` in config.json; when disarmed
+  // only the on-demand tools stay available. Re-read on every gated call so
+  // arming takes effect without restarting OpenCode.
+  const configPath = (cfg._source === "global")
+    ? CLI_FALLBACK.replace("compliance-check", "config.json")
+    : join(root, "compliance/config.json")
+  const isArmed = (): boolean => {
+    try {
+      return JSON.parse(readFileSync(configPath, "utf-8")).armed === true
+    } catch {
+      return false
+    }
+  }
+
   // Candidate content for the edit BEFORE it lands: write->content,
   // edit/patch->oldString replaced by newString in the on-disk file.
   function candidateContent(args: any): string | null {
@@ -88,6 +103,7 @@ export const ComplianceGate: Plugin = async ({ client, $, directory, worktree })
     // (toast + permission prompt), never a silent failed tool result the model
     // can iterate around. Warn → allow with warning; Block → user decides.
     "tool.execute.before": async (input, output) => {
+      if (!isArmed()) return // disarmed: on-demand tools only
       if (!GATED_TOOLS.includes(input.tool)) return
       const p = output.args?.filePath ?? output.args?.path ?? output.args?.file
       if (!p) return
@@ -123,6 +139,7 @@ export const ComplianceGate: Plugin = async ({ client, $, directory, worktree })
     // ── 2. Ambient channel: Tier 2 after edits (debounced), session summary on idle. ──
     event: async ({ event }) => {
       if (event.type === "file.edited") {
+        if (!isArmed()) return // disarmed: no ambient review
         const file = (event.properties as any).file as string
         if (!file) return
         const stage = stageOf(rel(file), cfg)
@@ -138,6 +155,7 @@ export const ComplianceGate: Plugin = async ({ client, $, directory, worktree })
         })
       }
       if (event.type === "session.idle") {
+        if (!isArmed()) return // disarmed: no session report
         const sid = (event.properties as any).sessionID as string
         if (!sid) return
         const proc = await $`python3 ${[cliPath(cfg), "--report", "--session", sid]}`.quiet().nothrow()

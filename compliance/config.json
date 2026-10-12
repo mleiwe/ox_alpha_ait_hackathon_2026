@@ -8,6 +8,7 @@
   "ledger": ".compliance/ledger.jsonl",
   "reports_dir": ".compliance",
   "llm_command": "",
+  "armed": false,
   "llm": {
     "enabled": true,
     "base_url": "http://192.168.0.237:8000/v1",
@@ -19,11 +20,35 @@
   "llm_timeout_s": 240,
   "debounce_ms": 30000,
   "stage_globs": {
-    "planning": ["**/prd.md", "docs/requirements/**", "**/requirements/**", "**/PRD*.md", "**/plan.md", "**/plan-*.md", "**/PLAN*.md"],
-    "implementation": ["src/**", "prompts/**", "**/agent/**", "lib/**"],
-    "documentation": ["**/README.md", "docs/**", "**/modelcard*.md", "**/model-card*.md"],
-    "ci": [".github/**"],
-    "release": ["RELEASE.md", "dist/**", "release/**"]
+    "planning": [
+      "**/prd.md",
+      "docs/requirements/**",
+      "**/requirements/**",
+      "**/PRD*.md",
+      "**/plan.md",
+      "**/plan-*.md",
+      "**/PLAN*.md"
+    ],
+    "implementation": [
+      "src/**",
+      "prompts/**",
+      "**/agent/**",
+      "lib/**"
+    ],
+    "documentation": [
+      "**/README.md",
+      "docs/**",
+      "**/modelcard*.md",
+      "**/model-card*.md"
+    ],
+    "ci": [
+      ".github/**"
+    ],
+    "release": [
+      "RELEASE.md",
+      "dist/**",
+      "release/**"
+    ]
   },
   "stage_first_match_wins": true,
   "default_stage": "other"
