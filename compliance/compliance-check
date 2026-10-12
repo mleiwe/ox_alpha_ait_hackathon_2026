@@ -543,6 +543,22 @@ def main():
     ap.add_argument("--stage", help="lifecycle stage of the flagged write (for --decision)")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
+    # Derive the repo root from the reviewed file when possible: the CLI may
+    # be spawned by a harness whose cwd is not the repo (OpenCode server
+    # cwd), which previously left kb retrieval empty (uv run needs the repo
+    # cwd to find the kb/ package).
+    if args.file:
+        fdir = Path(args.file).resolve().parent
+        top = subprocess.run(["git", "rev-parse", "--show-toplevel"],
+                             capture_output=True, text=True, cwd=str(fdir)
+                             ).stdout.strip()
+        if top:
+            globals()["REPO_ROOT"] = Path(top)
+        elif (fdir / "compliance" / "config.json").exists() or (fdir / "kb").is_dir():
+            globals()["REPO_ROOT"] = fdir
+        CFG_PATH = REPO_ROOT / "compliance" / "config.json"
+        if not CFG_PATH.exists():
+            CFG_PATH = Path(__file__).resolve().parent / "config.json"
     cfg, rules = load_config(), load_rules()
     if args.fast:
         sys.exit(cmd_fast(args, cfg, rules))
